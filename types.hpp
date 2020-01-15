@@ -23,16 +23,18 @@
 
 #ifdef SCHNAR_ONE_DIM
 static const size_t DIMENSION = 1;
+enum Direction {west, east};
 #endif
 
 #ifdef SCHNAR_TWO_DIM
 static const size_t DIMENSION = 2;
+enum Direction {west, east, south, north};
 #endif
 
 #ifdef SCHNAR_THREE_DIM
 static const size_t DIMENSION = 3;
+enum Direction {west, east, south, north, down, up};
 #endif
-
 
 typedef schnek::Array<int, DIMENSION> Index;
 typedef schnek::Array<double, DIMENSION> Vector;
@@ -43,6 +45,32 @@ typedef boost::shared_ptr<Field> pField;
 typedef schnek::Range<int, DIMENSION> Range;
 typedef schnek::Array<bool, DIMENSION> Stagger;
 
-enum Direction {north, south, west, east, up, down};
+typedef schnek::Array<int, 1> Index1d;
+typedef schnek::Array<double, 1> Vector1d;
+typedef schnek::Grid<double, 1, SchnarGridChecker> Grid1d;
+typedef boost::shared_ptr<Grid> pGrid1d;
+typedef schnek::Field<double, 1, SchnarGridChecker> Field1d;
+typedef boost::shared_ptr<Field> pField1d;
+typedef schnek::Range<int, 1> Range1d;
+typedef schnek::Array<bool, 1> Stagger1d;
 
-#endif // MPULSE_TYPES_H
+typedef schnek::Array<int, 2> Index2d;
+typedef schnek::Array<double, 2> Vector2d;
+typedef schnek::Grid<double, 2, SchnarGridChecker> Grid2d;
+typedef boost::shared_ptr<Grid> pGrid2d;
+typedef schnek::Field<double, 2, SchnarGridChecker> Field2d;
+typedef boost::shared_ptr<Field> pField2d;
+typedef schnek::Range<int, 2> Range2d;
+typedef schnek::Array<bool, 2> Stagger2d;
+
+typedef schnek::Array<int, 3> Index3d;
+typedef schnek::Array<double, 3> Vector3d;
+typedef schnek::Grid<double, 3, SchnarGridChecker> Grid3d;
+typedef boost::shared_ptr<Grid> pGrid3d;
+typedef schnek::Field<double, 3, SchnarGridChecker> Field3d;
+typedef boost::shared_ptr<Field> pField3d;
+typedef schnek::Range<int, 3> Range3d;
+typedef schnek::Array<bool, 3> Stagger3d;
+
+
+#endif // SCHNAR_TYPES_H
