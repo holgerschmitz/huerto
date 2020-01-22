@@ -175,66 +175,66 @@ BOOST_AUTO_TEST_CASE( cross_3d )
   BOOST_CHECK(is_equal(cross(v2, v5),  v7));
   BOOST_CHECK(is_equal(cross(v2, v6),  v5));
   BOOST_CHECK(is_equal(cross(v2, v7),  v4));
-  BOOST_CHECK(is_equal(cross(v2, v8),  3.0));
-  BOOST_CHECK(is_equal(cross(v2, v13), -1e-42));
+  BOOST_CHECK(is_equal(cross(v2, v8),  Vector3d(0.0, -6.0, 2.0)));
+  BOOST_CHECK(is_equal(cross(v2, v13), Vector3d(0.0, -4.0, 3.0)));
 
   BOOST_CHECK(is_equal(cross(v3, v1),  v1));
   BOOST_CHECK(is_equal(cross(v3, v2),  v1));
   BOOST_CHECK(is_equal(cross(v3, v3),  v1));
-  BOOST_CHECK(is_equal(cross(v3, v4),  0.0));
-  BOOST_CHECK(is_equal(cross(v3, v5),  0.0));
-  BOOST_CHECK(is_equal(cross(v3, v6),  0.0));
-  BOOST_CHECK(is_equal(cross(v3, v7),  0.0));
-  BOOST_CHECK(is_equal(cross(v3, v8), -3.0));
-  BOOST_CHECK(is_equal(cross(v3, v13), 1e-42));
+  BOOST_CHECK(is_equal(cross(v3, v4),  v7));
+  BOOST_CHECK(is_equal(cross(v3, v5),  v6));
+  BOOST_CHECK(is_equal(cross(v3, v6),  v4));
+  BOOST_CHECK(is_equal(cross(v3, v7),  v5));
+  BOOST_CHECK(is_equal(cross(v3, v8),  Vector3d(0.0, 6.0, -2.0)));
+  BOOST_CHECK(is_equal(cross(v3, v13), Vector3d(0.0, 4.0, -3.0)));
 
   BOOST_CHECK(is_equal(cross(v4, v1),  v1));
-  BOOST_CHECK(is_equal(cross(v4, v2),  0.0));
-  BOOST_CHECK(is_equal(cross(v4, v3),  0.0));
+  BOOST_CHECK(is_equal(cross(v4, v2),  v7));
+  BOOST_CHECK(is_equal(cross(v4, v3),  v6));
   BOOST_CHECK(is_equal(cross(v4, v4),  v1));
   BOOST_CHECK(is_equal(cross(v4, v5),  v1));
-  BOOST_CHECK(is_equal(cross(v4, v6),  0.0));
-  BOOST_CHECK(is_equal(cross(v4, v7),  0.0));
-  BOOST_CHECK(is_equal(cross(v4, v8),  2.0));
-  BOOST_CHECK(is_equal(cross(v4, v14), 1e-42));
+  BOOST_CHECK(is_equal(cross(v4, v6),  v2));
+  BOOST_CHECK(is_equal(cross(v4, v7),  v3));
+  BOOST_CHECK(is_equal(cross(v4, v8),  Vector3d(6.0, 0.0, -3.0)));
+  BOOST_CHECK(is_equal(cross(v4, v14), Vector3d(3.0, 0.0, -4.0)));
 
   BOOST_CHECK(is_equal(cross(v5, v1),  v1));
-  BOOST_CHECK(is_equal(cross(v5, v2),  0.0));
-  BOOST_CHECK(is_equal(cross(v5, v3),  0.0));
+  BOOST_CHECK(is_equal(cross(v5, v2),  v6));
+  BOOST_CHECK(is_equal(cross(v5, v3),  v7));
   BOOST_CHECK(is_equal(cross(v5, v4),  v1));
   BOOST_CHECK(is_equal(cross(v5, v5),  v1));
-  BOOST_CHECK(is_equal(cross(v5, v6),  0.0));
-  BOOST_CHECK(is_equal(cross(v5, v7),  0.0));
-  BOOST_CHECK(is_equal(cross(v5, v8), -2.0));
-  BOOST_CHECK(is_equal(cross(v5, v14), -1e-42));
+  BOOST_CHECK(is_equal(cross(v5, v6),  v3));
+  BOOST_CHECK(is_equal(cross(v5, v7),  v2));
+  BOOST_CHECK(is_equal(cross(v5, v8),  Vector3d(-6.0, 0.0, 3.0)));
+  BOOST_CHECK(is_equal(cross(v5, v14), Vector3d(-3.0, 0.0, 4.0)));
 
   BOOST_CHECK(is_equal(cross(v6, v1),  v1));
-  BOOST_CHECK(is_equal(cross(v6, v2),  0.0));
-  BOOST_CHECK(is_equal(cross(v6, v3),  0.0));
-  BOOST_CHECK(is_equal(cross(v6, v4),  0.0));
-  BOOST_CHECK(is_equal(cross(v6, v5),  0.0));
+  BOOST_CHECK(is_equal(cross(v6, v2),  v4));
+  BOOST_CHECK(is_equal(cross(v6, v3),  v5));
+  BOOST_CHECK(is_equal(cross(v6, v4),  v3));
+  BOOST_CHECK(is_equal(cross(v6, v5),  v2));
   BOOST_CHECK(is_equal(cross(v6, v6),  v1));
   BOOST_CHECK(is_equal(cross(v6, v7),  v1));
-  BOOST_CHECK(is_equal(cross(v6, v8),  6.0));
-  BOOST_CHECK(is_equal(cross(v6, v15), 1e-42));
+  BOOST_CHECK(is_equal(cross(v6, v8),  Vector3d(-2.0, 3.0, 0.0)));
+  BOOST_CHECK(is_equal(cross(v6, v15), Vector3d(-4.0, 3.0, 0.0)));
 
   BOOST_CHECK(is_equal(cross(v7, v1),  v1));
-  BOOST_CHECK(is_equal(cross(v7, v2),  0.0));
-  BOOST_CHECK(is_equal(cross(v7, v3),  0.0));
-  BOOST_CHECK(is_equal(cross(v7, v4),  0.0));
-  BOOST_CHECK(is_equal(cross(v7, v5),  0.0));
+  BOOST_CHECK(is_equal(cross(v7, v2),  v5));
+  BOOST_CHECK(is_equal(cross(v7, v3),  v4));
+  BOOST_CHECK(is_equal(cross(v7, v4),  v2));
+  BOOST_CHECK(is_equal(cross(v7, v5),  v3));
   BOOST_CHECK(is_equal(cross(v7, v6),  v1));
   BOOST_CHECK(is_equal(cross(v7, v7),  v1));
-  BOOST_CHECK(is_equal(cross(v7, v8), -6.0));
-  BOOST_CHECK(is_equal(cross(v7, v15), -1e-42));
+  BOOST_CHECK(is_equal(cross(v7, v8),  Vector3d(2.0, -3.0, 0.0)));
+  BOOST_CHECK(is_equal(cross(v7, v15), Vector3d(4.0, -3.0, 0.0)));
 
   BOOST_CHECK(is_equal(cross(v8, v8),  v1));
-  BOOST_CHECK(is_equal(cross(v8, v9),  77.0));
-  BOOST_CHECK(is_equal(cross(v8, v10), 31.0));
-  BOOST_CHECK(is_equal(cross(v9, v11),  0.0));
-  BOOST_CHECK(is_equal(cross(v13, v14), 12.0));
-  BOOST_CHECK(is_equal(cross(v13, v15), 12.0));
-  BOOST_CHECK(is_equal(cross(v14, v15), 12.0));
+  BOOST_CHECK(is_equal(cross(v8, v9),  Vector3d(-24.0, -9.0, 15.0)));
+  BOOST_CHECK(is_equal(cross(v8, v10), Vector3d(0.0, -36.0, 12.0)));
+  BOOST_CHECK(is_equal(cross(v9, v11), Vector3d(27.0, 63.0, -58.0)));
+  BOOST_CHECK(is_equal(cross(v13, v14), Vector3d(9.0, 16.0, -12.0)));
+  BOOST_CHECK(is_equal(cross(v13, v15), Vector3d(-16.0, 12.0, -9.0)));
+  BOOST_CHECK(is_equal(cross(v14, v15), Vector3d(-12.0, 9.0, 16.0)));
 }
 
 BOOST_AUTO_TEST_CASE( absMaxIndex_3d )
