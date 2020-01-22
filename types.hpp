@@ -11,6 +11,10 @@
 
 #include <schnek/grid.hpp>
 
+#if !defined(SCHNAR_ONE_DIM) && !defined(SCHNAR_TWO_DIM) && !defined(SCHNAR_THREE_DIM)
+std::static_assert(false, "Must define Schnar Dimension before including types.hpp");
+#endif
+
 #ifndef SCHNAR_GRID_CHECKER
 #ifdef SCHNAR_NDEBUG
 #define SchnarGridChecker schnek::GridNoArgCheck
