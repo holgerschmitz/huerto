@@ -8,6 +8,8 @@
 #ifndef SCHNAR_IO_TABLE_DATA_SOURCE_HPP_
 #define SCHNAR_IO_TABLE_DATA_SOURCE_HPP_
 
+#include "../types.hpp"
+
 #include <schnek/variables/block.hpp>
 #include <schnek/grid.hpp>
 
@@ -40,7 +42,7 @@ class TableDataSource
     /**
      * Get the value array of column n
      */
-    virtual schnek::Grid<double, 1> &getValues(size_t n) const = 0;
+    virtual Grid1d &getValues(size_t n) const = 0;
 
     /**
      * Get the number of columns
@@ -70,7 +72,7 @@ class FileTableDataReader : public TableDataSource
      * A vector of value arrays. Each vector element corresponds to a column in
      * the file
      */
-    std::vector<boost::shared_ptr<schnek::Grid<double, 1>>> values;
+    std::vector<pGrid1d> values;
   public:
 
     /**
@@ -86,7 +88,7 @@ class FileTableDataReader : public TableDataSource
     /**
      * Get the value array of column n
      */
-    schnek::Grid<double, 1> &getValues(size_t n) const override { return *(values[n]); }
+    Grid1d &getValues(size_t n) const override { return *(values[n]); }
 
     /**
      * Get the number of columns

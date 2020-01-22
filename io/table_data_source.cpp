@@ -59,7 +59,7 @@ void FileTableDataReader::preInit()
 
   for (size_t i=0; i<readValues.size(); ++i)
   {
-    boost::shared_ptr<schnek::Grid<double, 1>> column(boost::make_shared<schnek::Grid<double, 1>>(schnek::Grid<double, 1>::IndexType(count)));
+    pGrid1d column(boost::make_shared<Grid1d>(Grid1d::IndexType(count)));
     std::vector<double> &readColumn = *readValues[i];
     for (size_t row=0; row<count; ++row)
     {
