@@ -11,10 +11,13 @@ CXXFLAGS = $(OFLAGS) -std=c++11
 
 BUILD_DIR = build
 BIN_DIR = bin
-SOURCES = tests/main.cpp \
+SOURCES =  \
+	io/table_data_source.cpp \
+	tests/main.cpp \
 	tests/maths/vector1d.cpp \
 	tests/maths/vector2d.cpp \
-	tests/maths/vector3d.cpp
+	tests/maths/vector3d.cpp \
+	tests/io/test_table_data_source.cpp
 
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 
