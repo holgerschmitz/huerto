@@ -35,7 +35,7 @@ void TableBlock::preInit()
 /*    TableLookup                                                             */
 /******************************************************************************/
 
-inline std::pair<int, int> findIndex(const DataLine &X, double x)
+inline std::pair<int, int> findIndex(const Grid1d &X, double x)
 {
   int lo = X.getLo(0);
   int hi = X.getHi(0);
@@ -58,7 +58,7 @@ inline std::pair<int, int> findIndex(const DataLine &X, double x)
   return std::pair<int, int>(lo, hi);
 }
 
-inline double doInterpolate(const DataLine &X, const DataLine &Y, double x)
+inline double doInterpolate(const Grid1d &X, const Grid1d &Y, double x)
 {
   if (x<=X(X.getLo(0))) return Y(X.getLo(0));
   if (x>=X(X.getHi(0))) return Y(X.getHi(0));
@@ -83,12 +83,12 @@ void TableLookup::init(TableLookup &tableA, double weightA, TableLookup &tableB,
   int lo = xValues->getLo(0);
   int hi = xValues->getHi(0);
 
-  pDataLine combined = boost::make_shared<DataLine>(lo, hi);
+  pGrid1d combined = boost::make_shared<Grid1d>(lo, hi);
   ownedData.push_back(combined);
   yValues = combined.get();
 
-  DataLine &yA = *(tableA.yValues);
-  DataLine &yB = *(tableB.yValues);
+  Grid1d &yA = *(tableA.yValues);
+  Grid1d &yB = *(tableB.yValues);
 
   for (int i=lo+1; i<=hi; ++i)
   {
@@ -109,16 +109,16 @@ double TableLookup::interpolate(double x) const
 
 void TableLookup::initCumulative()
 {
-  DataLine &X = *xValues;
-  DataLine &Y = *yValues;
+  Grid1d &X = *xValues;
+  Grid1d &Y = *yValues;
   int lo = X.getLo(0);
   int hi = X.getHi(0);
 
-  pDataLine yCumulativePtr = boost::make_shared<DataLine>(lo, hi);
+  pGrid1d yCumulativePtr = boost::make_shared<Grid1d>(lo, hi);
   ownedData.push_back(yCumulativePtr);
   yCumulative = yCumulativePtr.get();
 
-  DataLine &Yc = *yCumulative;
+  Grid1d &Yc = *yCumulative;
 
   // sum up values
   Yc(lo) = 0;
@@ -153,7 +153,7 @@ double TableLookup::randomDist()
 /******************************************************************************/
 
 
-inline double doInterpolate2d(const DataLine &X, const DataLine &Y, const Grid2d &T, double x, double y)
+inline double doInterpolate2d(const Grid1d &X, const Grid1d &Y, const Grid2d &T, double x, double y)
 {
   std::pair<int, int> pX = findIndex(X, x);
   std::pair<int, int> pY = findIndex(Y, y);
@@ -186,7 +186,7 @@ void TableLookup2d::init(TableBlock &tableBlock)
   yValues.resize(0, Ny - 1);
   table.resize(Index2d(0, 0), Index2d(Nx-1, Ny-1));
 
-  DataLine &firstCol = tableBlock.getValues(0);
+  Grid1d &firstCol = tableBlock.getValues(0);
   for (int i=0; i<Nx; ++i)
   {
     xValues[i] = firstCol[i+1];
