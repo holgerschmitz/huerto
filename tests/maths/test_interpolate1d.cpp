@@ -44,7 +44,8 @@ BOOST_AUTO_TEST_CASE( findInsertIndex_regular )
   // out of range
   BOOST_CHECK_EQUAL(findInsertIndex(v, -1.0), -1);
   BOOST_CHECK_EQUAL(findInsertIndex(v, 1.5), 100);
-
+  BOOST_CHECK_EQUAL(findInsertIndex(v, -std::numeric_limits<double>::min()), -1);
+  BOOST_CHECK_EQUAL(findInsertIndex(v, 1 + std::numeric_limits<double>::epsilon()), 100);
 
   BOOST_CHECK_EQUAL(findInsertIndex(v, 0.5 - std::numeric_limits<double>::epsilon()), 49);
 }
