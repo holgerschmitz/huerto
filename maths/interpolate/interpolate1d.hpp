@@ -16,16 +16,16 @@ inline int findInsertIndex(const Grid1d &X, double x)
   int hi = X.getHi(0);
 
   while (lo <= hi) {
-      int mid = (hi + lo) / 2;
+    int mid = (hi + lo) / 2;
 
-      if (x < X(mid))
-      {
-          hi = mid - 1;
-      }
-      else
-      {
-          lo = mid + 1;
-      }
+    if (x < X(mid))
+    {
+      hi = mid - 1;
+    }
+    else
+    {
+      lo = mid + 1;
+    }
   }
   return hi;
 }

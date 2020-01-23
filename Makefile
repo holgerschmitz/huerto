@@ -1,8 +1,8 @@
 
 TARGET=schnar_tests
 
-#OFLAGS  = -g -O0 -Wall
-OFLAGS  = -O3 -Wall
+OFLAGS  = -g -O0 -Wall
+#OFLAGS  = -O3 -Wall
 
 INCLUDE = -I/usr/local/include -I/usr/include/hdf5/mpich
 CXX     = mpiCC
@@ -15,6 +15,7 @@ SOURCES =  \
 	io/table_data_source.cpp \
 	tests/main.cpp \
 	tests/maths/test_interpolate1d.cpp \
+	tests/maths/test_interpolate2d.cpp \
 	tests/maths/vector1d.cpp \
 	tests/maths/vector2d.cpp \
 	tests/maths/vector3d.cpp \
