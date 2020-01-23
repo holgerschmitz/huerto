@@ -27,7 +27,7 @@ void TableBlock::registerData()
 
 void TableBlock::preInit()
 {
-  DataReader::preInit();
+  FileTableDataReader::preInit();
 }
 
 
@@ -35,13 +35,10 @@ void TableBlock::preInit()
 /*    TableLookup                                                             */
 /******************************************************************************/
 
-inline std::pair<int, int> findIndex(const Grid1d &X, double x)
+inline int findInsertIndex(const Grid1d &X, double x)
 {
   int lo = X.getLo(0);
   int hi = X.getHi(0);
-
-  if (x<=X(lo)) return std::pair<int, int>(lo, lo);
-  if (x>=X(hi)) return std::pair<int, int>(hi, hi);
 
   while (lo <= hi) {
       int mid = (hi + lo) / 2;
@@ -55,7 +52,7 @@ inline std::pair<int, int> findIndex(const Grid1d &X, double x)
           lo = mid + 1;
       }
   }
-  return std::pair<int, int>(lo, hi);
+  return hi;
 }
 
 inline double doInterpolate(const Grid1d &X, const Grid1d &Y, double x)
