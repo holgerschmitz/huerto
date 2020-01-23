@@ -48,12 +48,12 @@ class TableLookup
 {
   private:
     TableLookup *self;
-    std::vector<pGrid1d> ownedData;
+    std::vector<std::unique_ptr<Grid1d>> ownedData;
   protected:
     Grid1d *xValues;
     Grid1d *yValues;
 
-    Grid1d *yCumulative;
+    const std::unique_ptr<Grid1d> yCumulative;
   protected:
     void initCumulative();
   public:
