@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_SUITE( maths )
 
 BOOST_AUTO_TEST_SUITE( tables )
 
-BOOST_FIXTURE_TEST_CASE( readTableLookup, SingleBlockRunner )
+BOOST_FIXTURE_TEST_CASE( test_read_TableBlock, SingleBlockRunner )
 {
   pTableBlock block = createBlock<TableBlock>("TableBlock", "tests/io/test_table_data_source_1.setup");
 
@@ -56,6 +56,15 @@ BOOST_FIXTURE_TEST_CASE( readTableLookup, SingleBlockRunner )
   );
   BOOST_CHECK(retrievedBlock);
 }
+
+BOOST_FIXTURE_TEST_CASE( test_TableLookup, SingleBlockRunner )
+{
+  pTableBlock block = createBlock<TableBlock>("TableBlock", "tests/io/test_table_data_source_1.setup");
+
+  TableLookup lookup;
+  lookup.init()
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

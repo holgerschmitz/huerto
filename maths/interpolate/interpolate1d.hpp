@@ -30,7 +30,7 @@ inline int findInsertIndex(const Grid1d &X, double x)
   return hi;
 }
 
-inline bool checkSorted(const Grid1d &X)
+inline bool checkStrictlyAscending(const Grid1d &X)
 {
   int lo = X.getLo(0);
   int hi = X.getHi(0);

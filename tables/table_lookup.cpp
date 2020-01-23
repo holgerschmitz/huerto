@@ -12,6 +12,8 @@
 
 #include <boost/make_shared.hpp>
 
+#include <exception>
+
 /******************************************************************************/
 /*    TableBlock                                                              */
 /******************************************************************************/
@@ -41,6 +43,12 @@ void TableLookup::init(TableBlock &table, int xIndex, int yIndex, bool cumulativ
 {
   xValues = &table.getValues(xIndex);
   yValues = &table.getValues(yIndex);
+
+  if (!checkStrictlyAscending(*xValues))
+  {
+    throw std::runtime_error("In table "+table.getName()+": x axis not strictly ascending");
+  }
+
   if (cumulative)
   {
     initCumulative();
@@ -51,12 +59,16 @@ void TableLookup::init(TableLookup &tableA, double weightA, TableLookup &tableB,
 {
   xValues = tableA.xValues;
 
+  if (!checkStrictlyAscending(*xValues))
+  {
+    throw std::runtime_error("In table lookup: x axis not strictly ascending");
+  }
+
   int lo = xValues->getLo(0);
   int hi = xValues->getHi(0);
 
-  pGrid1d combined = boost::make_shared<Grid1d>(lo, hi);
-  ownedData.push_back(combined);
-  yValues = combined.get();
+  yValues = new Grid1d(lo, hi);
+  ownedData.push_back(std::unique_ptr<Grid1d>(yValues));
 
   Grid1d &yA = *(tableA.yValues);
   Grid1d &yB = *(tableB.yValues);
@@ -85,9 +97,7 @@ void TableLookup::initCumulative()
   int lo = X.getLo(0);
   int hi = X.getHi(0);
 
-  pGrid1d yCumulativePtr = boost::make_shared<Grid1d>(lo, hi);
-  ownedData.push_back(yCumulativePtr);
-  yCumulative = yCumulativePtr.get();
+  yCumulative = new Grid1d(lo, hi);
 
   Grid1d &Yc = *yCumulative;
 
@@ -99,8 +109,7 @@ void TableLookup::initCumulative()
     double delta = Y(i) * (X(i) - X(i-1));
     if (delta<=0)
     {
-      std::cerr << "Negative values in probability distribution!" << std::endl;
-      exit(-1);
+      throw std::runtime_error("Negative values in probability distribution!");
     }
     sum += delta;
     Yc(i) = sum;

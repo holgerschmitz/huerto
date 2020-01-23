@@ -50,6 +50,23 @@ BOOST_AUTO_TEST_CASE( findInsertIndex_regular )
   BOOST_CHECK_EQUAL(findInsertIndex(v, 0.5 - std::numeric_limits<double>::epsilon()), 49);
 }
 
+
+BOOST_AUTO_TEST_CASE( test_checkSorted )
+{
+  Grid1d a(Index1d(0),Index1d(100));
+  Grid1d b(Index1d(0),Index1d(100));
+  Grid1d c(Index1d(0),Index1d(100));
+  for (int i=0; i<=100; i++)
+  {
+    a(i) = i/100.0;
+    b(i) = (i>50?i:i+1)/100.0;
+    c(i) = sin(TWO_PI*i/100.);
+  }
+  BOOST_CHECK(checkStrictlyAscending(a));
+  BOOST_CHECK(!checkStrictlyAscending(b));
+  BOOST_CHECK(!checkStrictlyAscending(c));
+}
+
 BOOST_AUTO_TEST_CASE( linearInterpolate_regular )
 {
   Grid1d x(Index1d(0),Index1d(100));

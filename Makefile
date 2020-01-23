@@ -13,6 +13,7 @@ BUILD_DIR = build
 BIN_DIR = bin
 SOURCES =  \
 	io/table_data_source.cpp \
+	maths/random.cpp \
 	tables/table_lookup.cpp \
 	tests/main.cpp \
 	tests/maths/test_interpolate1d.cpp \
