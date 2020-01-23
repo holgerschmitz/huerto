@@ -1,8 +1,8 @@
 
 TARGET=schnar_tests
 
-OFLAGS  = -g -O0 -Wall
-#OFLAGS  = -O3 -Wall
+#OFLAGS  = -g -O0 -Wall
+OFLAGS  = -O3 -Wall
 
 INCLUDE = -I/usr/local/include -I/usr/include/hdf5/mpich
 CXX     = mpiCC
@@ -13,13 +13,15 @@ BUILD_DIR = build
 BIN_DIR = bin
 SOURCES =  \
 	io/table_data_source.cpp \
+	tables/table_lookup.cpp \
 	tests/main.cpp \
 	tests/maths/test_interpolate1d.cpp \
 	tests/maths/test_interpolate2d.cpp \
 	tests/maths/vector1d.cpp \
 	tests/maths/vector2d.cpp \
 	tests/maths/vector3d.cpp \
-	tests/io/test_table_data_source.cpp
+	tests/io/test_table_data_source.cpp \
+	tests/tables/test_table_lookup.cpp
 
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 

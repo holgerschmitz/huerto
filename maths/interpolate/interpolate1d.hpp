@@ -30,6 +30,20 @@ inline int findInsertIndex(const Grid1d &X, double x)
   return hi;
 }
 
+inline bool checkSorted(const Grid1d &X)
+{
+  int lo = X.getLo(0);
+  int hi = X.getHi(0);
+
+  double last = std::numeric_limits<double>::lowest();
+  for (int i=lo; i<=hi; ++i)
+  {
+    if (X(i) <= last) return false;
+    last = X(i);
+  }
+  return true;
+}
+
 inline double linearInterpolate(const Grid1d &X, const Grid1d &Y, double x)
 {
   if (x<=X(X.getLo(0))) return Y(X.getLo(0));
