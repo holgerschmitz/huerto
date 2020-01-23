@@ -7,13 +7,14 @@ OFLAGS  = -O3 -Wall
 INCLUDE = -I/usr/local/include -I/usr/include/hdf5/mpich
 CXX     = mpiCC
 
-CXXFLAGS = $(OFLAGS) -std=c++11
+CXXFLAGS = $(OFLAGS) -std=c++11 -DSCHNAR_THREE_DIM
 
 BUILD_DIR = build
 BIN_DIR = bin
 SOURCES =  \
 	io/table_data_source.cpp \
 	tests/main.cpp \
+	tests/maths/test_interpolate1d.cpp \
 	tests/maths/vector1d.cpp \
 	tests/maths/vector2d.cpp \
 	tests/maths/vector3d.cpp \

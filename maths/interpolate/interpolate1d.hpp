@@ -8,7 +8,7 @@
 #ifndef SCHNAR_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
 #define SCHNAR_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
 
-#include "../types.hpp"
+#include "../../types.hpp"
 
 inline int findInsertIndex(const Grid1d &X, double x)
 {

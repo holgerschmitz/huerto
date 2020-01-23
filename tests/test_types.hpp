@@ -8,7 +8,6 @@
 #ifndef SCHNAR_TESTS_TEST_TYPES_HPP_
 #define SCHNAR_TESTS_TEST_TYPES_HPP_
 
-#define SCHNAR_THREE_DIM
 #include "../types.hpp"
 
 bool is_equal(double a, double b);
