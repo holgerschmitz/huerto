@@ -7,6 +7,8 @@
 
 #include "table_lookup.hpp"
 #include "../maths/interpolate/interpolate1d.hpp"
+#include "../maths/interpolate/interpolate2d.hpp"
+#include "../maths/random.hpp"
 
 #include <boost/make_shared.hpp>
 
@@ -122,30 +124,6 @@ double TableLookup::randomDist()
 /******************************************************************************/
 
 
-inline double doInterpolate2d(const Grid1d &X, const Grid1d &Y, const Grid2d &T, double x, double y)
-{
-  std::pair<int, int> pX = findIndex(X, x);
-  std::pair<int, int> pY = findIndex(Y, y);
-
-  double Xl = X(pX.first);
-  double Xh = X(pX.second);
-  double Yl = Y(pY.first);
-  double Yh = Y(pY.second);
-
-  double Tll = T(pX.first, pY.first);
-  double Tlh = T(pX.first, pY.second);
-  double Thl = T(pX.second, pY.first);
-  double Thh = T(pX.second, pY.second);
-
-  double xA = pX.first != pX.second ? (x - Xl)/(Xh - Xl) : 0.0;
-  double yA = pY.first != pY.second ? (y - Yl)/(Yh - Yl) : 0.0;
-
-  double Tli = (Tlh - Tll)*xA + Tll;
-  double Thi = (Thh - Thl)*xA + Thl;
-  return (Thi - Tli)*yA + Tli;
-}
-
-
 void TableLookup2d::init(TableBlock &tableBlock)
 {
   int Nx = tableBlock.getValues(0).getDims(0) - 1;
@@ -156,6 +134,7 @@ void TableLookup2d::init(TableBlock &tableBlock)
   table.resize(Index2d(0, 0), Index2d(Nx-1, Ny-1));
 
   Grid1d &firstCol = tableBlock.getValues(0);
+
   for (int i=0; i<Nx; ++i)
   {
     xValues[i] = firstCol[i+1];
@@ -176,5 +155,5 @@ void TableLookup2d::init(TableBlock &tableBlock)
 
 double TableLookup2d::interpolate(double x, double y) const
 {
-  return doInterpolate2d(xValues, yValues, table, x, y);
+  return linearInterpolate2d(xValues, yValues, table, x, y);
 }

@@ -13,17 +13,36 @@
 
 #include <boost/scoped_ptr.hpp>
 
+/**
+ * A block that reads table data from a text file and allows lookup tables
+ * to be created from the data.
+ */
 class TableBlock : public schnek::Block, public FileTableDataReader {
   private:
+    /**
+     * A pointer to the TableBlock object
+     */
     TableBlock *self;
   protected:
+
+    /**
+     * This will register the TableBlock in the Block data repository.
+     * The lookup name is constructed by the Block name prefixed with "TABLE_"
+     */
     void registerData();
+
     /**
      * Registers the parameters to be read from the setup file
      */
     void initParameters(schnek::BlockParameters &parameters);
+
+    /**
+     * Calls FileTableDataReader::preInit() to read the data from the file
+     */
     void preInit();
 };
+
+typedef boost::shared_ptr<TableBlock> pTableBlock;
 
 class TableLookup
 {
@@ -54,7 +73,5 @@ class TableLookup2d
     void init(TableBlock &tableBlock);
     double interpolate(double x, double y) const;
 };
-
-
 
 #endif /* SCHNAR_TABLES_TABLE_LOOKUP_HPP_ */
