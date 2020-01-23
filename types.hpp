@@ -7,7 +7,7 @@
 
 
 #ifndef SCHNAR_TYPES_H
-#define SCHNAK_TYPES_H
+#define SCHNAR_TYPES_H
 
 #include <schnek/grid.hpp>
 

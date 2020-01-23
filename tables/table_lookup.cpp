@@ -6,7 +6,7 @@
  */
 
 #include "table_lookup.hpp"
-#include "../maths.hpp"
+#include "../maths/interpolate/interpolate1d.hpp"
 
 #include <boost/make_shared.hpp>
 
@@ -34,34 +34,6 @@ void TableBlock::preInit()
 /******************************************************************************/
 /*    TableLookup                                                             */
 /******************************************************************************/
-
-inline int findInsertIndex(const Grid1d &X, double x)
-{
-  int lo = X.getLo(0);
-  int hi = X.getHi(0);
-
-  while (lo <= hi) {
-      int mid = (hi + lo) / 2;
-
-      if (x < X(mid))
-      {
-          hi = mid - 1;
-      }
-      else
-      {
-          lo = mid + 1;
-      }
-  }
-  return hi;
-}
-
-inline double doInterpolate(const Grid1d &X, const Grid1d &Y, double x)
-{
-  if (x<=X(X.getLo(0))) return Y(X.getLo(0));
-  if (x>=X(X.getHi(0))) return Y(X.getHi(0));
-  std::pair<int, int> p = findIndex(X, x);
-  return (Y(p.first) - Y(p.second))*(x - X(p.second))/(X(p.first) - X(p.second)) + Y(p.second);
-}
 
 void TableLookup::init(TableBlock &table, int xIndex, int yIndex, bool cumulative)
 {
@@ -100,7 +72,7 @@ void TableLookup::init(TableLookup &tableA, double weightA, TableLookup &tableB,
 
 double TableLookup::interpolate(double x) const
 {
-  return doInterpolate(*xValues, *yValues, x);
+  return linearInterpolate(*xValues, *yValues, x);
 }
 
 
@@ -141,7 +113,7 @@ void TableLookup::initCumulative()
 
 double TableLookup::randomDist()
 {
-  return doInterpolate(*yCumulative, *xValues, random_unit_interval(rng));
+  return linearInterpolate(*yCumulative, *xValues, random_unit_interval(rng));
 }
 
 

@@ -5,11 +5,11 @@
  *      Author: Holger Schmitz
  */
 
-#include "../../io/table_data_source.hpp"
-#include "../../constants.hpp"
+#include "../test_types.hpp"
 
 #include "../fixtures/block_runner.hpp"
-#include "../test_types.hpp"
+#include "../../constants.hpp"
+#include "../../io/table_data_source.hpp"
 
 #include <cmath>
 
@@ -40,9 +40,9 @@ BOOST_FIXTURE_TEST_CASE( readTable, SingleBlockRunner )
 
   BOOST_CHECK_EQUAL(block->getColumns(), 3);
 
-  schnek::Grid<double, 1> &col0 = block->getValues(0);
-  schnek::Grid<double, 1> &col1 = block->getValues(1);
-  schnek::Grid<double, 1> &col2 = block->getValues(2);
+  Grid1d &col0 = block->getValues(0);
+  Grid1d &col1 = block->getValues(1);
+  Grid1d &col2 = block->getValues(2);
 
   BOOST_CHECK_EQUAL(col0.getLo(0), 0);
   BOOST_CHECK_EQUAL(col0.getHi(0), 100);
