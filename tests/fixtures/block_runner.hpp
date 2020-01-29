@@ -46,8 +46,9 @@ class SingleBlockRunner
         }
         catch (schnek::ParserError &e)
         {
-          BOOST_FAIL("SingleBlockRunner: Parse error in " + e.getFilename() + " at line "
-              + boost::lexical_cast<std::string>(e.getLine()) + ": " + e.message);
+        BOOST_FAIL(
+            "SingleBlockRunner: Parse error in " + e.getFilename() + " at line "
+                + boost::lexical_cast<std::string>(e.getLine()) + ": " + e.message);
         }
         catch (schnek::VariableNotInitialisedException &e)
         {

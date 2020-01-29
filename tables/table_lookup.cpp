@@ -97,7 +97,7 @@ void TableLookup::initCumulative()
   int lo = X.getLo(0);
   int hi = X.getHi(0);
 
-  yCumulative = new Grid1d(lo, hi);
+  yCumulative.reset(new Grid1d(lo, hi));
 
   Grid1d &Yc = *yCumulative;
 
@@ -106,7 +106,7 @@ void TableLookup::initCumulative()
   double sum = 0;
   for (int i=lo+1; i<=hi; ++i)
   {
-    double delta = Y(i) * (X(i) - X(i-1));
+    double delta = 0.5 * (Y(i) + Y(i - 1)) * (X(i) - X(i - 1));
     if (delta<=0)
     {
       throw std::runtime_error("Negative values in probability distribution!");
