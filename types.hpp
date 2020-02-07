@@ -47,7 +47,11 @@ typedef boost::shared_ptr<Grid> pGrid;
 typedef schnek::Field<double, DIMENSION, SchnarGridChecker> Field;
 typedef boost::shared_ptr<Field> pField;
 typedef schnek::Range<int, DIMENSION> Range;
+typedef schnek::Range<double, DIMENSION> Domain;
 typedef schnek::Array<bool, DIMENSION> Stagger;
+
+typedef schnek::Field<double, DIMENSION-1, SchnarGridChecker> Surface;
+typedef boost::shared_ptr<Surface> pSurface;
 
 typedef schnek::Array<int, 1> Index1d;
 typedef schnek::Array<double, 1> Vector1d;
@@ -56,6 +60,7 @@ typedef boost::shared_ptr<Grid1d> pGrid1d;
 typedef schnek::Field<double, 1, SchnarGridChecker> Field1d;
 typedef boost::shared_ptr<Field1d> pField1d;
 typedef schnek::Range<int, 1> Range1d;
+typedef schnek::Range<double, 1> Domain1d;
 typedef schnek::Array<bool, 1> Stagger1d;
 
 typedef schnek::Array<int, 2> Index2d;
@@ -65,6 +70,7 @@ typedef boost::shared_ptr<Grid2d> pGrid2d;
 typedef schnek::Field<double, 2, SchnarGridChecker> Field2d;
 typedef boost::shared_ptr<Field2d> pField2d;
 typedef schnek::Range<int, 2> Range2d;
+typedef schnek::Range<double, 2> Domain2d;
 typedef schnek::Array<bool, 2> Stagger2d;
 
 typedef schnek::Array<int, 3> Index3d;
@@ -74,6 +80,7 @@ typedef boost::shared_ptr<Grid3d> pGrid3d;
 typedef schnek::Field<double, 3, SchnarGridChecker> Field3d;
 typedef boost::shared_ptr<Field3d> pField3d;
 typedef schnek::Range<int, 3> Range3d;
+typedef schnek::Range<double, 3> Domain3d;
 typedef schnek::Array<bool, 3> Stagger3d;
 
 

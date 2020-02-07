@@ -11,6 +11,8 @@
 #include <schnek/grid.hpp>
 #include <cmath>
 
+#include "../../util/generic_defs.hpp"
+
 template<int Rank, template<int> class CheckingPolicy>
 inline double norm(const schnek::Array<double, Rank, CheckingPolicy> &v)
 {
@@ -32,6 +34,10 @@ inline double dot(const schnek::Array<double, Rank, CheckingPolicyA> &a,
     }
     return sum;
 }
+
+SCHNAR_FUNC_ARR_EXPR(double, dot)
+SCHNAR_FUNC_EXPR_ARR(double, dot)
+SCHNAR_FUNC_EXPR_EXPR(double, dot)
 
 template<
   template<int> class CheckingPolicyA,
@@ -83,6 +89,8 @@ inline schnek::Array<double, 3, CheckingPolicy>
     perp[xP] = -v[xM];
     return perp;
 }
+
+#include "../../util/generic_undefs.hpp"
 
 
 #endif /* SCHNAR_MATHS_VECTOR_VECTOR_HPP_ */
