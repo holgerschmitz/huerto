@@ -19,6 +19,17 @@ inline double norm(const schnek::Array<double, Rank, CheckingPolicy> &v)
     return sqrt(v.sqr());
 }
 
+template<typename T, int Rank, template<int> class CheckingPolicy>
+inline double min(const schnek::Array<T, Rank, CheckingPolicy> &v)
+{
+    T m = v[0];
+    for (int d=0; d<Rank; ++d)
+    {
+      m = std::min(m, v[d]);
+    }
+    return m;
+}
+
 template<
   int Rank,
   template<int> class CheckingPolicyA,
