@@ -98,4 +98,4 @@ class FileTableDataReader : public TableDataSource
 
 
 
-#endif /* ASE3D_IO_DATA_READER_HPP_ */
+#endif /* SOLENA_IO_DATA_READER_HPP_ */
