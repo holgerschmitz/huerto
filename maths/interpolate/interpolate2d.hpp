@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_
-#define SCHNAR_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_
+#ifndef HUERTO_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_
+#define HUERTO_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_
 
 #include "interpolate1d.hpp"
 
@@ -66,4 +66,4 @@ inline double linearInterpolate2d(const Grid1d &X, const Grid1d &Y, const Grid2d
 }
 
 
-#endif /* SCHNAR_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_ */
+#endif /* HUERTO_MATHS_INTERPOLATE_INTERPOLATE2D_HPP_ */

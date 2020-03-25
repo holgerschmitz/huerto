@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_MATHS_VECTOR_VECTOR_HPP_
-#define SCHNAR_MATHS_VECTOR_VECTOR_HPP_
+#ifndef HUERTO_MATHS_VECTOR_VECTOR_HPP_
+#define HUERTO_MATHS_VECTOR_VECTOR_HPP_
 
 #include <schnek/grid.hpp>
 #include <cmath>
@@ -46,9 +46,9 @@ inline double dot(const schnek::Array<double, Rank, CheckingPolicyA> &a,
     return sum;
 }
 
-SCHNAR_FUNC_ARR_EXPR(double, dot)
-SCHNAR_FUNC_EXPR_ARR(double, dot)
-SCHNAR_FUNC_EXPR_EXPR(double, dot)
+HUERTO_FUNC_ARR_EXPR(double, dot)
+HUERTO_FUNC_EXPR_ARR(double, dot)
+HUERTO_FUNC_EXPR_EXPR(double, dot)
 
 template<
   template<int> class CheckingPolicyA,
@@ -104,4 +104,4 @@ inline schnek::Array<double, 3, CheckingPolicy>
 #include "../../util/generic_undefs.hpp"
 
 
-#endif /* SCHNAR_MATHS_VECTOR_VECTOR_HPP_ */
+#endif /* HUERTO_MATHS_VECTOR_VECTOR_HPP_ */

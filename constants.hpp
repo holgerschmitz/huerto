@@ -5,8 +5,8 @@
  *  Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_CONSTANTS_HPP_
-#define SCHNAR_CONSTANTS_HPP_
+#ifndef HUERTO_CONSTANTS_HPP_
+#define HUERTO_CONSTANTS_HPP_
 
 static const double PI          = 3.141592653589793238462643383279502884L;
 static const double TWO_PI      = 6.283185307179586476925286766559005768L;
@@ -21,4 +21,4 @@ static const double eps_0_inv   = (mu_0*clight2);
 static const double planck_h = 6.62607015e-34;
 static const double planck_hbar = planck_h/TWO_PI;
 
-#endif /* SCHNAR_CONSTANTS_HPP_ */
+#endif /* HUERTO_CONSTANTS_HPP_ */

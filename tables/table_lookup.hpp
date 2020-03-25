@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_TABLES_TABLE_LOOKUP_HPP_
-#define SCHNAR_TABLES_TABLE_LOOKUP_HPP_
+#ifndef HUERTO_TABLES_TABLE_LOOKUP_HPP_
+#define HUERTO_TABLES_TABLE_LOOKUP_HPP_
 
 #include "../types.hpp"
 #include "../io/table_data_source.hpp"
@@ -192,4 +192,4 @@ class TableLookup2d
     double interpolate(double x, double y) const;
 };
 
-#endif /* SCHNAR_TABLES_TABLE_LOOKUP_HPP_ */
+#endif /* HUERTO_TABLES_TABLE_LOOKUP_HPP_ */

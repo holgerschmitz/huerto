@@ -7,7 +7,7 @@
 
 #include <schnek/grid/arrayexpression.hpp>
 
-#define SCHNAR_FUNC_EXPR_EXPR(type, func)                                       \
+#define HUERTO_FUNC_EXPR_EXPR(type, func)                                       \
   template<class exp1, class exp2, int rank>                                    \
   inline type func (                                                            \
     const schnek::ArrayExpression<exp1, rank> &A,                             \
@@ -16,7 +16,7 @@
     return func(schnek::Array<type, rank>(A), schnek::Array<type, rank>(B));    \
   }
 
-#define SCHNAR_FUNC_ARR_EXPR(type, func)                                        \
+#define HUERTO_FUNC_ARR_EXPR(type, func)                                        \
   template<class exp, int rank, template<int> class CheckPolicy>                              \
   inline type func (                                                            \
     const schnek::ArrayExpression<exp, rank> &A,                              \
@@ -25,7 +25,7 @@
     return func(schnek::Array<type, rank>(A), B);                               \
   }
 
-#define SCHNAR_FUNC_EXPR_ARR(type, func)                                        \
+#define HUERTO_FUNC_EXPR_ARR(type, func)                                        \
   template<class exp, int rank, template<int> class CheckPolicy>                              \
   inline type func (                                                            \
     const schnek::Array<type, rank, CheckPolicy> &A,                           \

@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_TESTS_FIXTURES_BLOCK_RUNNER_HPP_
-#define SCHNAR_TESTS_FIXTURES_BLOCK_RUNNER_HPP_
+#ifndef HUERTO_TESTS_FIXTURES_BLOCK_RUNNER_HPP_
+#define HUERTO_TESTS_FIXTURES_BLOCK_RUNNER_HPP_
 
 #include <mpi.h>
 
@@ -81,4 +81,4 @@ class SingleBlockRunner
 //boost::shared_ptr<BlockType> SingleBlockRunner::createBlock<BlockType>(std::string blockName, std::string fileName)
 
 
-#endif /* SCHNAR_TESTS_FIXTURES_BLOCK_RUNNER_HPP_ */
+#endif /* HUERTO_TESTS_FIXTURES_BLOCK_RUNNER_HPP_ */

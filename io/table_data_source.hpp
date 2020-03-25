@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_IO_TABLE_DATA_SOURCE_HPP_
-#define SCHNAR_IO_TABLE_DATA_SOURCE_HPP_
+#ifndef HUERTO_IO_TABLE_DATA_SOURCE_HPP_
+#define HUERTO_IO_TABLE_DATA_SOURCE_HPP_
 
 #include "../types.hpp"
 

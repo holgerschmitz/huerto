@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_MATHS_RANDOM_HPP_
-#define SCHNAR_MATHS_RANDOM_HPP_
+#ifndef HUERTO_MATHS_RANDOM_HPP_
+#define HUERTO_MATHS_RANDOM_HPP_
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
@@ -16,4 +16,4 @@ extern boost::random::mt19937 rng;
 extern boost::random::uniform_real_distribution<> random_unit_interval;
 extern boost::random::uniform_on_sphere<> random_sphere;
 
-#endif /* SCHNAR_MATHS_RANDOM_HPP_ */
+#endif /* HUERTO_MATHS_RANDOM_HPP_ */

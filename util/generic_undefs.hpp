@@ -5,6 +5,6 @@
  *      Author: Holger Schmitz
  */
 
-#undef SCHNAR_FUNC_EXPR_EXPR
-#undef SCHNAR_FUNC_ARR_EXPR
-#undef SCHNAR_FUNC_EXPR_ARR
+#undef HUERTO_FUNC_EXPR_EXPR
+#undef HUERTO_FUNC_ARR_EXPR
+#undef HUERTO_FUNC_EXPR_ARR
