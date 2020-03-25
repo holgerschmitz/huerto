@@ -5,8 +5,8 @@
  *  Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
-#define SCHNAR_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
+#ifndef HUERTO_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
+#define HUERTO_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_
 
 #include "../../types.hpp"
 
@@ -52,4 +52,4 @@ inline double linearInterpolate(const Grid1d &X, const Grid1d &Y, double x)
   return (Y(p+1) - Y(p))*(x - X(p))/(X(p+1) - X(p)) + Y(p);
 }
 
-#endif /* SCHNAR_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_ */
+#endif /* HUERTO_MATHS_INTERPOLATE_INTERPOLATE1D_HPP_ */

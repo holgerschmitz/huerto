@@ -6,36 +6,36 @@
  */
 
 
-#ifndef SCHNAR_TYPES_H
-#define SCHNAR_TYPES_H
+#ifndef HUERTO_TYPES_H
+#define HUERTO_TYPES_H
 
 #include <schnek/grid.hpp>
 
-#if !defined(SCHNAR_ONE_DIM) && !defined(SCHNAR_TWO_DIM) && !defined(SCHNAR_THREE_DIM)
+#if !defined(HUERTO_ONE_DIM) && !defined(HUERTO_TWO_DIM) && !defined(HUERTO_THREE_DIM)
 std::static_assert(false, "Must define Schnar Dimension before including types.hpp");
 #endif
 
-#ifndef SCHNAR_GRID_CHECKER
-#ifdef SCHNAR_NDEBUG
+#ifndef HUERTO_GRID_CHECKER
+#ifdef HUERTO_NDEBUG
 #define SchnarGridChecker schnek::GridNoArgCheck
 #else
 #define SchnarGridChecker schnek::GridAssertCheck
 #endif
 #else
-#define SchnarGridChecker SCHNAR_GRID_CHECKER
+#define SchnarGridChecker HUERTO_GRID_CHECKER
 #endif
 
-#ifdef SCHNAR_ONE_DIM
+#ifdef HUERTO_ONE_DIM
 static const size_t DIMENSION = 1;
 enum Direction {west, east};
 #endif
 
-#ifdef SCHNAR_TWO_DIM
+#ifdef HUERTO_TWO_DIM
 static const size_t DIMENSION = 2;
 enum Direction {west, east, south, north};
 #endif
 
-#ifdef SCHNAR_THREE_DIM
+#ifdef HUERTO_THREE_DIM
 static const size_t DIMENSION = 3;
 enum Direction {west, east, south, north, down, up};
 #endif
@@ -83,5 +83,10 @@ typedef schnek::Range<int, 3> Range3d;
 typedef schnek::Range<double, 3> Domain3d;
 typedef schnek::Array<bool, 3> Stagger3d;
 
+#define LOG_ERROR 0
+#define LOG_WARN 1
+#define LOG_DEBUG 2
+#define LOG_TRACE 3
 
-#endif // SCHNAR_TYPES_H
+
+#endif // HUERTO_TYPES_H

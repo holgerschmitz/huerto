@@ -5,8 +5,8 @@
  *      Author: Holger Schmitz
  */
 
-#ifndef SCHNAR_TESTS_TEST_TYPES_HPP_
-#define SCHNAR_TESTS_TEST_TYPES_HPP_
+#ifndef HUERTO_TESTS_TEST_TYPES_HPP_
+#define HUERTO_TESTS_TEST_TYPES_HPP_
 
 #include "../types.hpp"
 
@@ -22,4 +22,4 @@ bool is_equal(const schnek::Array<double, Rank> &a, const schnek::Array<double, 
   return true;
 }
 
-#endif /* SCHNAR_TESTS_TEST_TYPES_HPP_ */
+#endif /* HUERTO_TESTS_TEST_TYPES_HPP_ */
