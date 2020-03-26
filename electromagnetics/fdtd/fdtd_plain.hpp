@@ -41,6 +41,35 @@ class FDTD_Plain : public FieldSolver,
      */
     pField pBx, pBy, pBz;
 
+#ifdef HUERTO_ONE_DIM
+    /**
+     * Stretch factors for the grid cell size of the electric fields; used by CPML
+     * schemes.
+     */
+    pGrid1d pKappaEdx;
+
+    /**
+     * Stretch factors for the grid cell size of the magnetic fields; used by CPML
+     * schemes.
+     */
+    pGrid1d pKappaHdx;
+#endif
+
+#ifdef HUERTO_TWO_DIM
+    /**
+     * Stretch factors for the grid cell size of the electric fields; used by CPML
+     * schemes.
+     */
+    pGrid1d pKappaEdx, pKappaEdy;
+
+    /**
+     * Stretch factors for the grid cell size of the magnetic fields; used by CPML
+     * schemes.
+     */
+    pGrid1d pKappaHdx, pKappaHdy;
+#endif
+
+#ifdef HUERTO_THREE_DIM
     /**
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
@@ -52,6 +81,8 @@ class FDTD_Plain : public FieldSolver,
      * schemes.
      */
     pGrid1d pKappaHdx, pKappaHdy, pKappaHdz;
+#endif
+
   public:
 
     /**
