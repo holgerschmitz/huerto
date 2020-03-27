@@ -6,6 +6,7 @@
  */
 
 #include "em_fields.hpp"
+#include "../types.hpp"
 
 #include <schnek/util/logger.hpp>
 
