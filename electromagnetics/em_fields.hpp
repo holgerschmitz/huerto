@@ -10,6 +10,8 @@
 #define HUERTO_EM_FIELDS_H
 
 #include "../../types.hpp"
+#include "../../../simulation/simulation_context.hpp"
+#include "../../../simulation/initialiser.hpp"
 
 #include <schnek/variables/blockcontainer.hpp>
 
@@ -20,22 +22,21 @@ class MPulse;
  *
  * Multiple sets of fields can be defined
  */
-class EMFields : public schnek::ChildBlock<EMFields>
+class EMFields :
+        public schnek::ChildBlock<EMFields>,
+        public SimulationEntity
 {
   private:
-    friend class MPulse;
-    /// The x-component of the electric field in V/m
-    pField pEx;
-    /// The y-component of the electric field in V/m
-    pField pEy;
-    /// The z-component of the electric field in V/m
-    pField pEz;
-    /// The x-component of the magnetic field in Tesla
-    pField pBx;
-    /// The y-component of the magnetic field in Tesla
-    pField pBy;
-    /// The z-component of the magnetic field in Tesla
-    pField pBz;
+    /// The electric field in V/m
+    schnek::Array<InitialsedField<double>, DIMENSION> E;
+
+    /// The magnetic field in Tesla
+    schnek::Array<InitialsedField<double>, DIMENSION> B;
+
+    /**
+     * Fill the field values from the expressions provided in the setup file
+     */
+    void fillValues();
   public:
 
     /**
@@ -53,6 +54,16 @@ class EMFields : public schnek::ChildBlock<EMFields>
      * The electromagnetic fields are created and registered with the Block storage.
      */
     void registerData();
+
+    /**
+     * Initialise the parameters available through the setup file
+     */
+    void initParameters(schnek::BlockParameters &parameters);
+
+    /**
+     * Initialise the simulation data
+     */
+    void init();
 };
 
 
