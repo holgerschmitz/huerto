@@ -22,8 +22,9 @@ void HydroFields::initParameters(schnek::BlockParameters &parameters)
   Rho.parameter = parameters.addParameter("Rho", &Rho.value, 1.0);
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    M[i].parameter = parameters.addParameter(indexToString(i, "M"), &M[i].value , 0.0);
+    M[i].parameter = parameters.addParameter(indexToCoord(i, "M"), &M[i].value , 0.0);
   }
+
   E.parameter = parameters.addParameter("E", &E.value, 1.0);
 }
 
@@ -32,11 +33,10 @@ void HydroFields::registerData()
   Rho.field = boost::make_shared<Field>();
   addData("Rho", Rho.field);
 
-  const std::string coords[] = {"x", "y", "z"};
   for (size_t i=0; i<DIMENSION; ++i)
   {
     M[i].field = boost::make_shared<Field>();
-    addData(indexToString(i, "M"), M[i].field);
+    addData(indexToCoord(i, "M"), M[i].field);
   }
 
   E = boost::make_shared<Field>();
