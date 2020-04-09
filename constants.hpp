@@ -8,6 +8,8 @@
 #ifndef HUERTO_CONSTANTS_HPP_
 #define HUERTO_CONSTANTS_HPP_
 
+#include <string>
+
 static const double PI          = 3.141592653589793238462643383279502884L;
 static const double TWO_PI      = 6.283185307179586476925286766559005768L;
 static const double clight      = 299792458;
@@ -20,5 +22,11 @@ static const double eps_0       = 1/(mu_0*clight2);
 static const double eps_0_inv   = (mu_0*clight2);
 static const double planck_h = 6.62607015e-34;
 static const double planck_hbar = planck_h/TWO_PI;
+
+
+const std::string indexToStringMapping[] = {"x", "y", "z", "u", "v", "w"};
+const std::string indexToString(int index, std::string prefix = "", std::string postfix = "") {
+  return prefix+indexToStringMapping[index] + postfix;
+}
 
 #endif /* HUERTO_CONSTANTS_HPP_ */

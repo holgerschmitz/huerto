@@ -63,6 +63,16 @@ class SimulationContext
     double time;
 
     /**
+     * The position vector that is exposed in the setup file and can be used for initialisation
+     */
+    Vector x;
+
+    /**
+     * The parser parameters associated with the position `x`
+     */
+    schnek::Array<schnek::pParameter, DIMENSION> x_parameters;
+
+    /**
      * The Cartesian MPI subdivision of the grids containing the electromagnetic field
      */
     boost::shared_ptr<schnek::DomainSubdivision<Field>> subdivision;
@@ -94,9 +104,29 @@ class SimulationContext
     double getTime() { return time; }
 
     /**
+     * Get a reference to the independent position vector
+     */
+    Vector &getX() { return x; }
+
+    /**
+     * The parser parameters associated with the position vector
+     */
+    schnek::Array<schnek::pParameter, DIMENSION> &getXParameter() { return x_parameters; }
+
+    /**
      * Get the grid subdivision
      */
     schnek::DomainSubdivision<Field> &getSubdivision() { return *subdivision; };
+
+    /**
+     * Initialise the global parameters exposed in the setup file
+     *
+     * This function needs to be called explicitly by the simulation that is inheriting from the
+     * simulation context
+     */
+    void initParameters(schnek::BlockParameters &blockPars) {
+      x_parameters = blockPars.addArrayParameter("", x, schnek::BlockParameters::readonly);
+    }
 };
 
 /**

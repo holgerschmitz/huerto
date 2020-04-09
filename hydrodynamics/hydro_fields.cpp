@@ -5,46 +5,45 @@
  *      Author: Holger Schmitz
  */
 
-#include "em_fields.hpp"
-#include "../types.hpp"
+#include "hydro_fields.hpp"
 #include "../constants.hpp"
-
-#include <schnek/util/logger.hpp>
 #include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
 #include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <iostream>
 
-
-void EMFields::initParameters(schnek::BlockParameters &parameters)
+void HydroFields::initParameters(schnek::BlockParameters &parameters)
 {
+  Rho.parameter = parameters.addParameter("Rho", &Rho.value, 1.0);
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    E[i].parameter = parameters.addParameter(indexToString(i, "E"), &E[i].value , 0.0);
-    B[i].parameter = parameters.addParameter(indexToString(i, "B"), &B[i].value , 0.0);
+    M[i].parameter = parameters.addParameter(indexToString(i, "M"), &M[i].value , 0.0);
   }
+  E.parameter = parameters.addParameter("E", &E.value, 1.0);
 }
 
-
-void EMFields::registerData()
+void HydroFields::registerData()
 {
+  Rho.field = boost::make_shared<Field>();
+  addData("Rho", Rho.field);
+
   const std::string coords[] = {"x", "y", "z"};
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    E[i].field = boost::make_shared<Field>();
-    B[i].field = boost::make_shared<Field>();
-    addData(std::string("E")+coords[i], E[i].field);
-    addData(std::string("B")+coords[i], B[i].field);
+    M[i].field = boost::make_shared<Field>();
+    addData(indexToString(i, "M"), M[i].field);
   }
+
+  E = boost::make_shared<Field>();
+  addData("E", E.field);
 }
 
-
-
-void EMFields::fillValues()
+void HydroFields::fillValues()
 {
   std::cout << "Filling fields" << std::endl;
   schnek::pBlockVariables blockVars = getVariables();
@@ -56,14 +55,17 @@ void EMFields::fillValues()
   schnek::Array<schnek::pParameter, DIMENSION> x_parameters = getContext().getXParameter();
   updater.addIndependentArray(x_parameters);
 
+  schnek::fill_field(*Rho.field, x, Rho.value, updater, Rho.parameter);
+
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    schnek::fill_field(*E[i].field, x, E[i].value, updater, E[i].parameter);
-    schnek::fill_field(*B[i].field, x, B[i].value, updater, B[i].parameter);
+    schnek::fill_field(*M[i].field, x, M[i].value, updater, M[i].parameter);
   }
+
+  schnek::fill_field(*E.field, x, E.value, updater, E.parameter);
 }
 
-void EMFields::init()
+void HydroFields::init()
 {
   SimulationEntity::init(this);
   const schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
@@ -72,13 +74,14 @@ void EMFields::init()
 
   schnek::Range<double, DIMENSION> domainSize(Vector::Zero(), getContext().getSize());
 
-  E[0].field->resize(lowIn, highIn, domainSize, exStaggerYee, 2);
-  E[1].field->resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  E[2].field->resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
+  schnek::Array<bool, DIMENSION> stagger;
+  stagger = false;
 
-  B[0].field->resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  B[1].field->resize(lowIn, highIn, domainSize, byStaggerYee, 2);
-  B[2].field->resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
+  Rho.field->resize(lowIn, highIn, domainSize, stagger, 2);
+  for (size_t i=0; i<DIMENSION; ++i)
+  {
+    M[i].field->resize(lowIn, highIn, domainSize, stagger, 2);
+  }
+  E.field->resize(lowIn, highIn, domainSize, stagger, 2);
   fillValues();
 }
-// end of main
