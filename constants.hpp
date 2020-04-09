@@ -24,9 +24,9 @@ static const double planck_h = 6.62607015e-34;
 static const double planck_hbar = planck_h/TWO_PI;
 
 
-const std::string indexToStringMapping[] = {"x", "y", "z", "u", "v", "w"};
-const std::string indexToString(int index, std::string prefix = "", std::string postfix = "") {
-  return prefix+indexToStringMapping[index] + postfix;
+const std::string indexToCoordMapping[] = {"x", "y", "z", "u", "v", "w"};
+const std::string indexToCoord(int index, std::string prefix = "", std::string postfix = "") {
+  return prefix+indexToCoordMapping[index] + postfix;
 }
 
 #endif /* HUERTO_CONSTANTS_HPP_ */

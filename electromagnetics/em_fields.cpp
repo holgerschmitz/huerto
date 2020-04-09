@@ -24,21 +24,20 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
 {
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    E[i].parameter = parameters.addParameter(indexToString(i, "E"), &E[i].value , 0.0);
-    B[i].parameter = parameters.addParameter(indexToString(i, "B"), &B[i].value , 0.0);
+    E[i].parameter = parameters.addParameter(indexToCoord(i, "E"), &E[i].value , 0.0);
+    B[i].parameter = parameters.addParameter(indexToCoord(i, "B"), &B[i].value , 0.0);
   }
 }
 
 
 void EMFields::registerData()
 {
-  const std::string coords[] = {"x", "y", "z"};
   for (size_t i=0; i<DIMENSION; ++i)
   {
     E[i].field = boost::make_shared<Field>();
     B[i].field = boost::make_shared<Field>();
-    addData(std::string("E")+coords[i], E[i].field);
-    addData(std::string("B")+coords[i], B[i].field);
+    addData(indexToCoord(i, "E"), E[i].field);
+    addData(indexToCoord(i, "B"), B[i].field);
   }
 }
 
