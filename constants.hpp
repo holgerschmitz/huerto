@@ -20,7 +20,7 @@ static const double unit_charge = 1.602176565e-19;
 static const double mu_0        = 4e-7*PI;
 static const double eps_0       = 1/(mu_0*clight2);
 static const double eps_0_inv   = (mu_0*clight2);
-static const double planck_h = 6.62607015e-34;
+static const double planck_h    = 6.62607015e-34;
 static const double planck_hbar = planck_h/TWO_PI;
 
 
