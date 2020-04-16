@@ -69,7 +69,7 @@ void EMFields::init()
   Index lowIn  = subdivision.getInnerLo();
   Index highIn = subdivision.getInnerHi();
 
-  schnek::Range<double, DIMENSION> domainSize(Vector::Zero(), getContext().getSize());
+  schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
   E[0].field->resize(lowIn, highIn, domainSize, exStaggerYee, 2);
   E[1].field->resize(lowIn, highIn, domainSize, eyStaggerYee, 2);

@@ -29,4 +29,16 @@ const std::string indexToCoord(int index, std::string prefix = "", std::string p
   return prefix+indexToCoordMapping[index] + postfix;
 }
 
+void initConstantParameters(schnek::BlockParameters &parameters) {
+  parameters.addConstant("pi", PI);
+  parameters.addConstant("clight", clight);
+  parameters.addConstant("me", mass_e);
+  parameters.addConstant("mp", mass_p);
+  parameters.addConstant("e", unit_charge);
+  parameters.addConstant("mu0", mu_0);
+  parameters.addConstant("eps0", eps_0);
+  parameters.addConstant("planck_h", planck_h);
+  parameters.addConstant("planck_hbar", planck_hbar);
+}
+
 #endif /* HUERTO_CONSTANTS_HPP_ */

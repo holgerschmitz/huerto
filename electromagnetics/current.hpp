@@ -94,7 +94,9 @@ class CurrentContainer
 /**
  * An abstract block type that calculates currents
  */
-class CurrentBlock : public schnek::ChildBlock<CurrentBlock>
+class CurrentBlock :
+        public schnek::ChildBlock<CurrentBlock>,
+        public SimulationEntity
 {
   public:
     /**
@@ -105,6 +107,11 @@ class CurrentBlock : public schnek::ChildBlock<CurrentBlock>
      * This should be called by the parent block during the `Block.init` phase
      */
     virtual void initCurrents(CurrentContainer &container) = 0;
+
+    /**
+     * Initialises the current block
+     */
+    void init();
 };
 
 /**

@@ -8,6 +8,8 @@
 #ifndef HUERTO_EM_FIELDSOLVER_H
 #define HUERTO_EM_FIELDSOLVER_H
 
+#include "../simulation/simulation_context.hpp"
+
 #include <schnek/variables/blockcontainer.hpp>
 
 /**
@@ -19,7 +21,9 @@
  * the #EMFields class. They should instead acquire their copy through the
  * `retrieveData` method.
  */
-class FieldSolver : public schnek::ChildBlock<FieldSolver>
+class FieldSolver :
+        public schnek::ChildBlock<FieldSolver>,
+        public SimulationEntity
 {
   public:
 
@@ -40,6 +44,14 @@ class FieldSolver : public schnek::ChildBlock<FieldSolver>
      * Perform a simulation time step
      */
     virtual void stepScheme(double dt) = 0;
+
+    /**
+     * Initialise the field solver
+     */
+    void init()
+    {
+      SimulationEntity::init(this);
+    }
 };
 
 typedef boost::shared_ptr<FieldSolver> pFieldSolver;
