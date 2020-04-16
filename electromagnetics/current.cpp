@@ -100,3 +100,12 @@ void CurrentContainer::init(SimulationContext &context)
 }
 
 
+//===============================================================
+//==========  CurrentBlock
+//===============================================================
+
+void CurrentBlock::init()
+{
+  SimulationEntity::init(this);
+}
+

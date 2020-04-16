@@ -127,6 +127,10 @@ class SimulationContext
     void initParameters(schnek::BlockParameters &blockPars) {
       x_parameters = blockPars.addArrayParameter("", x, schnek::BlockParameters::readonly);
     }
+
+    void init() {
+
+    }
 };
 
 /**
