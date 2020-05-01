@@ -13,9 +13,6 @@
 #include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
-#include <boost/make_shared.hpp>
-#include <boost/foreach.hpp>
-
 #include <string>
 #include <iostream>
 
@@ -29,19 +26,16 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
   }
 }
 
-
 void EMFields::registerData()
 {
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    E[i].field = boost::make_shared<Field>();
-    B[i].field = boost::make_shared<Field>();
+    E[i].field = std::make_shared<Field>();
+    B[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "E"), E[i].field);
     addData(indexToCoord(i, "B"), B[i].field);
   }
 }
-
-
 
 void EMFields::fillValues()
 {
