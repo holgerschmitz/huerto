@@ -42,7 +42,7 @@ class TableBlock : public schnek::Block, public FileTableDataReader {
     void preInit();
 };
 
-typedef boost::shared_ptr<TableBlock> pTableBlock;
+typedef std::shared_ptr<TableBlock> pTableBlock;
 
 /**
  * A table lookup that can be constructed from a table block
@@ -56,7 +56,7 @@ class TableLookup
      * A vector containing the grids that have been dynamically created within
      * this object. Ensuring RAII
      */
-    std::vector<std::unique_ptr<Grid1d>> ownedData;
+    std::vector<rGrid1d> ownedData;
   protected:
 
     /**

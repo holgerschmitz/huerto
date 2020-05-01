@@ -68,7 +68,7 @@ void TableLookup::init(TableLookup &tableA, double weightA, TableLookup &tableB,
   int hi = xValues->getHi(0);
 
   yValues = new Grid1d(lo, hi);
-  ownedData.push_back(std::unique_ptr<Grid1d>(yValues));
+  ownedData.push_back(*yValues);
 
   Grid1d &yA = *(tableA.yValues);
   Grid1d &yB = *(tableB.yValues);

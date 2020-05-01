@@ -11,13 +11,10 @@
 #include <cmath>
 
 template<int rank, int dim>
-void FieldRungeKutta4<rank, dim>::setField(int pos, pField field)
+void FieldRungeKutta4<rank, dim>::setField(int d, Field &field)
 {
-  fields[pos] = field;
-  fields_tmp[pos] = boost::make_shared<Field>(field);
-
-  fields_fast[pos] = *(fields[pos]);
-  fields_tmp_fast[pos] = *(fields_tmp[pos]);
+  fields[d] = field;
+  fields_tmp[d] = Field(field);
 }
 
 
@@ -35,19 +32,19 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, RHS rhs, BC boundary)
   // First step
   BOOST_FOREACH(p, range)
   {
-    rhs(p, dudt, 0.5);
+    rhs(p, dudt);
 
     for (int d=0; d<dim; ++d)
     {
-      (*fields_tmp_fast[d])[p] = (*fields_fast[d])[p] + dt*dudt[d];
+      fields_tmp[d][p] = fields[d][p] + dt*dudt[d];
     }
   }
 
   // Swap starred fields and the unstarred fields
   for (int d=0; d<dim; ++d)
   {
-    Field &f = *fields_fast[d];
-    Field &f_tmp = *fields_tmp_fast[d];
+    Field &f = *fields[d];
+    Field &f_tmp = *fields_tmp[d];
     BOOST_FOREACH(p, range)
     {
       std::swap(f[p], f_tmp[p]);
@@ -59,12 +56,12 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, RHS rhs, BC boundary)
   // Second step
   BOOST_FOREACH(p, range)
   {
-    rhs(p, dudt, 0.0);
+    rhs(p, dudt);
 
     for (int d=0; d<dim; ++d)
     {
-      (*fields_tmp_fast[d])[p] =
-              0.5*((*fields_fast[d])[p] + (*fields_tmp_fast[d])[p])
+      fields_tmp[d][p] =
+              0.5*(fields[d][p] + fields_tmp[d][p])
               + dt*dudt[d];
     }
   }
@@ -72,8 +69,8 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, RHS rhs, BC boundary)
   // Copy starred fields back into the unstarred fields
   for (int d=0; d<dim; ++d)
   {
-    Field &f = *fields_fast[d];
-    Field &f_tmp = *fields_tmp_fast[d];
+    Field &f = fields[d];
+    Field &f_tmp = fields_tmp[d];
     BOOST_FOREACH(p, range)
     {
       f[p] = f_tmp[p];
