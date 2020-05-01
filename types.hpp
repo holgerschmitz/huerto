@@ -17,12 +17,12 @@ std::static_assert(false, "Must define Schnar Dimension before including types.h
 
 #ifndef HUERTO_GRID_CHECKER
 #ifdef HUERTO_NDEBUG
-#define SchnarGridChecker schnek::GridNoArgCheck
+#define HuertoGridChecker schnek::GridNoArgCheck
 #else
-#define SchnarGridChecker schnek::GridAssertCheck
+#define HuertoGridChecker schnek::GridAssertCheck
 #endif
 #else
-#define SchnarGridChecker HUERTO_GRID_CHECKER
+#define HuertoGridChecker HUERTO_GRID_CHECKER
 #endif
 
 #ifdef HUERTO_ONE_DIM
@@ -42,11 +42,11 @@ enum Direction {west, east, south, north, down, up};
 
 typedef schnek::Array<int, DIMENSION> Index;
 typedef schnek::Array<double, DIMENSION> Vector;
-typedef schnek::Grid<double, DIMENSION, SchnarGridChecker> Grid;
+typedef schnek::Grid<double, DIMENSION, HuertoGridChecker> Grid;
 typedef std::shared_ptr<Grid> pGrid;
 typedef std::unique_ptr<Grid> uGrid;
 typedef std::reference_wrapper<Grid> rGrid;
-typedef schnek::Field<double, DIMENSION, SchnarGridChecker> Field;
+typedef schnek::Field<double, DIMENSION, HuertoGridChecker> Field;
 typedef std::shared_ptr<Field> pField;
 typedef std::unique_ptr<Field> uField;
 typedef std::reference_wrapper<Field> rField;
@@ -54,18 +54,18 @@ typedef schnek::Range<int, DIMENSION> Range;
 typedef schnek::Range<double, DIMENSION> Domain;
 typedef schnek::Array<bool, DIMENSION> Stagger;
 
-typedef schnek::Field<double, DIMENSION-1, SchnarGridChecker> Surface;
+typedef schnek::Field<double, DIMENSION-1, HuertoGridChecker> Surface;
 typedef std::shared_ptr<Surface> pSurface;
 typedef std::unique_ptr<Surface> uSurface;
 typedef std::reference_wrapper<Surface> rSurface;
 
 typedef schnek::Array<int, 1> Index1d;
 typedef schnek::Array<double, 1> Vector1d;
-typedef schnek::Grid<double, 1, SchnarGridChecker> Grid1d;
+typedef schnek::Grid<double, 1, HuertoGridChecker> Grid1d;
 typedef std::shared_ptr<Grid1d> pGrid1d;
 typedef std::unique_ptr<Grid1d> uGrid1d;
 typedef std::reference_wrapper<Grid1d> rGrid1d;
-typedef schnek::Field<double, 1, SchnarGridChecker> Field1d;
+typedef schnek::Field<double, 1, HuertoGridChecker> Field1d;
 typedef std::shared_ptr<Field1d> pField1d;
 typedef std::unique_ptr<Field1d> uField1d;
 typedef std::reference_wrapper<Field1d> rField1d;
@@ -75,11 +75,11 @@ typedef schnek::Array<bool, 1> Stagger1d;
 
 typedef schnek::Array<int, 2> Index2d;
 typedef schnek::Array<double, 2> Vector2d;
-typedef schnek::Grid<double, 2, SchnarGridChecker> Grid2d;
+typedef schnek::Grid<double, 2, HuertoGridChecker> Grid2d;
 typedef std::shared_ptr<Grid2d> pGrid2d;
 typedef std::unique_ptr<Grid2d> uGrid2d;
 typedef std::reference_wrapper<Grid2d> rGrid2d;
-typedef schnek::Field<double, 2, SchnarGridChecker> Field2d;
+typedef schnek::Field<double, 2, HuertoGridChecker> Field2d;
 typedef std::shared_ptr<Field2d> pField2d;
 typedef std::unique_ptr<Field2d> uField2d;
 typedef std::reference_wrapper<Field2d> rField2d;
@@ -89,11 +89,11 @@ typedef schnek::Array<bool, 2> Stagger2d;
 
 typedef schnek::Array<int, 3> Index3d;
 typedef schnek::Array<double, 3> Vector3d;
-typedef schnek::Grid<double, 3, SchnarGridChecker> Grid3d;
+typedef schnek::Grid<double, 3, HuertoGridChecker> Grid3d;
 typedef std::shared_ptr<Grid3d> pGrid3d;
 typedef std::unique_ptr<Grid3d> uGrid3d;
 typedef std::reference_wrapper<Grid3d> rGrid3d;
-typedef schnek::Field<double, 3, SchnarGridChecker> Field3d;
+typedef schnek::Field<double, 3, HuertoGridChecker> Field3d;
 typedef std::shared_ptr<Field3d> pField3d;
 typedef std::unique_ptr<Field3d> uField3d;
 typedef std::reference_wrapper<Field3d> rField3d;
