@@ -24,7 +24,7 @@ template<int rank, int dim, template<int, int> class Model>
 class KurganovNoellePetrova : public Model<rank, dim>
 {
   public:
-    typedef schnek::Field<double, rank, SchnarGridChecker> Field;
+    typedef schnek::Field<double, rank, HuertoGridChecker> Field;
     typedef std::reference_wrapper<Field> rField;
 
     typedef schnek::Array<double, dim> FluidValues;
