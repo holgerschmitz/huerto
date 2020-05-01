@@ -30,16 +30,16 @@ void HydroFields::initParameters(schnek::BlockParameters &parameters)
 
 void HydroFields::registerData()
 {
-  Rho.field = boost::make_shared<Field>();
+  Rho.field = std::make_shared<Field>();
   addData("Rho", Rho.field);
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    M[i].field = boost::make_shared<Field>();
+    M[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "M"), M[i].field);
   }
 
-  E = boost::make_shared<Field>();
+  E.field = std::make_shared<Field>();
   addData("E", E.field);
 }
 
