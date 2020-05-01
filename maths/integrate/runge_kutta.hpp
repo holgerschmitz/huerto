@@ -18,15 +18,13 @@ class FieldRungeKutta4
 {
   public:
     typedef schnek::Field<double, rank, SchnarGridChecker> Field;
-    typedef boost::shared_ptr<Field> pField;
+    typedef std::shared_ptr<Field> pField;
+    typedef std::reference_wrapper<Field> rField;
   private:
-    schnek::Array<pField, dim> fields;
-    schnek::Array<pField, dim> fields_tmp;
-
-    schnek::Array<Field*, dim> fields_fast;
-    schnek::Array<Field*, dim> fields_tmp_fast;
+    schnek::Array<rField, dim> fields;
+    schnek::Array<rField, dim> fields_tmp;
   public:
-    void setField(int pos, pField field);
+    void setField(int d, Field &field);
 
     template<typename RHS, typename BC>
     void integrateStep(double dt, RHS rhs, BC boundary);

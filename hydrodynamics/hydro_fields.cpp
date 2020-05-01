@@ -72,7 +72,7 @@ void HydroFields::init()
   Index lowIn  = subdivision.getInnerLo();
   Index highIn = subdivision.getInnerHi();
 
-  schnek::Range<double, DIMENSION> domainSize(Vector::Zero(), getContext().getSize());
+  schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
   schnek::Array<bool, DIMENSION> stagger;
   stagger = false;
