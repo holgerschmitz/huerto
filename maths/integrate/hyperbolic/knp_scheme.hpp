@@ -13,8 +13,20 @@
 #include <schnek/grid/array.hpp>
 
 /**
+ * Kurganov, Noelle, Petrova solver for conservative equations
+ *
+ * The solver defines rhs() that calculates the fluxes and returns the right hand side of the time
+ * advance equation \f$\partial_t M = \nabla F\f$. These can then be used in a time stepping algorithm
+ * such as Runge Kutta
+ *
+ * The `rank` template argument defines the dimensional rank of the simulation domain.
+ *
+ * The `dim` template argument defines the number of fields, i.e. the dimensionality of the conservation equation.
+ *
+ * The solver does not define the fluxes but is templated with a Model.
+ *
  * Model must implement
- * * `flux_function`
+ * * `flux_function` a function that calculates
  * * `calc_internal_vars` should calculate any additional variables from the local fluid values,
  *   for example pressure, temperature, etc
  * * `flow_speed` calculate the fluid flow speed
@@ -36,10 +48,10 @@ class KurganovNoellePetrova : public Model<rank, dim>
     void setField(int d, Field &field);
 
     double van_leer(double u, double up, double um);
-    void reconstruct(size_t dim, const Index &pos, int dir, FluidValues &u);
-    void flux(size_t dim, const Index &pos, FluidValues& flux);
+    void reconstruct(size_t direction, const Index &pos, int dir, FluidValues &u);
+    void flux(size_t direction, const Index &pos, FluidValues& flux);
     void rhs(Index p, FluidValues &dudt);
-    void minmax_local_speed(size_t dim,
+    void minmax_local_speed(size_t direction,
                             const FluidValues &uW,
                             const FluidValues &uE,
                             const InternalVars &pW,
@@ -47,6 +59,7 @@ class KurganovNoellePetrova : public Model<rank, dim>
                             double &ap,
                             double &am);
 
+    void operator()(Index p, FluidValues &dudt) { rhs(p, dudt); }
 };
 
 #include "knp_scheme.t"

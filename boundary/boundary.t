@@ -113,25 +113,46 @@ void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension>
 
   for (size_t i=0; i<DIMENSION; i++)
   {
-    if (bool(applyLo[i]) && subdivision.isBoundLo(i)) applyLoDim(i, Rho, M, E);
-    if (bool(applyHi[i]) && subdivision.isBoundHi(i)) applyHiDim(i, Rho, M, E);
+    if (bool(applyLo[i]) && subdivision.isBoundLo(i)) applyLoDim(i, fields);
+    if (bool(applyHi[i]) && subdivision.isBoundHi(i)) applyHiDim(i, fields);
   }
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(int dim, schnek::Array<pField, dimension> fields)
 {
-    for (size_t i=0; i<dimension; i++)
-    {
-      boundary.applyLo(dim, *fields[i]);
-    }
+  for (size_t i=0; i<dimension; i++)
+  {
+    boundary.applyLo(dim, *fields[i]);
+  }
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(int dim, schnek::Array<pField, dimension> fields)
 {
   for (size_t i=0; i<dimension; i++)
   {
     boundary.applyHi(dim, *fields[i]);
+  }
+}
+
+template<class Field, size_t dimension>
+template<class iterator>
+void BoundaryApplicator<Field, dimension>::addBoundaries(iterator start, iterator end) {
+  boundaryConditions.insert(boundaryConditions.end(), start, end);
+}
+
+template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::setField(int dim, pField f)
+{
+  fields[dim] = f;
+}
+
+template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::operator()()
+{
+  for (auto boundary : boundaryConditions)
+  {
+    boundary->apply(fields);
   }
 }

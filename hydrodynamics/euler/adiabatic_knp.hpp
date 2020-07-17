@@ -13,6 +13,9 @@
 #include "../../types.hpp"
 #include "../../maths/integrate/hyperbolic/knp_scheme.hpp"
 
+/**
+ *
+ */
 template<int rank>
 class AdiabaticKnpModel
 {
@@ -42,19 +45,24 @@ class AdiabaticKnpModel
 
 
 template<int rank>
-class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim>
+class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field, typename AdiabaticKnpModel<rank>::dim>
 {
   public:
     static const int dim = AdiabaticKnpModel<rank>::dim;
   private:
+    typedef HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim> Super;
+    typedef typename AdiabaticKnpModel<rank>::Field Field;
+
     KurganovNoellePetrova<rank, dim, AdiabaticKnpModel> scheme;
     FieldRungeKutta4<rank, dim> integrator;
+    BoundaryApplicator<Field, rank> boundary;
 
     double adiabaticGamma;
 
     pField Rho;
     schnek::Array<pField, DIMENSION> M;
     pField E;
+
   public:
     /**
      * Initialise the parameters available through the setup file
@@ -62,9 +70,9 @@ class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field,
     void initParameters(schnek::BlockParameters &parameters) override;
 
     void init() override;
-    void postInit() override;
-    void timeStep(double dt) override;
+//    void postInit() override;
     double maxDt() override;
+    void timeStep(double dt) override;
 };
 
 #include "adiabatic_knp.t"
