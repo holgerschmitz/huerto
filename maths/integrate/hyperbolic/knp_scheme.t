@@ -5,14 +5,14 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
-template<int rank, int dim, template<int, int> class Model>
-void KurganovNoellePetrova<rank, dim, Model>::setField(int d, Field &field)
+template<int rank, template<int> class Model>
+void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 {
   fields[d] = field;
 }
 
-template<int rank, int dim, template<int, int> class Model>
-inline double KurganovNoellePetrova<rank, dim, Model>::van_leer(double u, double up, double um)
+template<int rank, template<int> class Model>
+inline double KurganovNoellePetrova<rank, Model>::van_leer(double u, double up, double um)
 {
   double du = (up-u)*(u-um);
 
@@ -20,8 +20,8 @@ inline double KurganovNoellePetrova<rank, dim, Model>::van_leer(double u, double
 }
 
 
-template<int rank, int dim, template<int, int> class Model>
-void KurganovNoellePetrova<rank, dim, Model>::reconstruct(size_t direction, const Index &pos, int dir, FluidValues& u)
+template<int rank, template<int> class Model>
+void KurganovNoellePetrova<rank, Model>::reconstruct(size_t direction, const Index &pos, int dir, FluidValues& u)
 {
   Index posp = pos;
   ++posp[direction];
@@ -35,8 +35,8 @@ void KurganovNoellePetrova<rank, dim, Model>::reconstruct(size_t direction, cons
   }
 }
 
-template<int rank, int dim, template<int, int> class Model>
-void KurganovNoellePetrova<rank, dim, Model>::minmax_local_speed(
+template<int rank, template<int> class Model>
+void KurganovNoellePetrova<rank, Model>::minmax_local_speed(
         size_t direction,
         const FluidValues &uW,
         const FluidValues &uE,
@@ -58,8 +58,8 @@ void KurganovNoellePetrova<rank, dim, Model>::minmax_local_speed(
   am = std::min( (vW-cfW), std::min( (vE-cfE), 0.0 ));
 }
 
-template<int rank, int dim, template<int, int> class Model>
-inline void KurganovNoellePetrova<rank, dim, Model>::flux(size_t direction, const Index &pos, FluidValues& flux)
+template<int rank, template<int> class Model>
+inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Index &pos, FluidValues& flux)
 {
   FluidValues uW, uE;
   double ap, am;
@@ -88,8 +88,8 @@ inline void KurganovNoellePetrova<rank, dim, Model>::flux(size_t direction, cons
   flux = (ap*fE - am*fW + ap*am*(uW-uE))/(ap-am);
 }
 
-template<int rank, int dim, template<int, int> class Model>
-inline void KurganovNoellePetrova<rank, dim, Model>::rhs(Index pos, FluidValues& dudt)
+template<int rank, template<int> class Model>
+inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt)
 {
 
   FluidValues sum = 0;
@@ -102,7 +102,7 @@ inline void KurganovNoellePetrova<rank, dim, Model>::rhs(Index pos, FluidValues&
     flux(i, posm, fm);
     flux(i, pos,  fp);
 
-    sum += (fm - fp) / dx[i];
+    sum += (fm - fp) / this->getDx()[i];
   }
 
   dudt = sum;
