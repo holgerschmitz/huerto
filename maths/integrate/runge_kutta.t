@@ -20,7 +20,7 @@ void FieldRungeKutta4<rank, dim>::setField(int d, Field &field)
 
 template<int rank, int dim>
 template<typename RHS, typename BC>
-void FieldRungeKutta4<rank, dim>::integrateStep(double dt, RHS rhs, BC boundary)
+void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC boundary)
 {
   typename Field::IndexType lo = fields[0].getInnerLo();
   typename Field::IndexType hi = fields[0].getInnerHi();

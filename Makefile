@@ -7,7 +7,7 @@ OFLAGS  = -O3 -Wall
 INCLUDE = -I/usr/local/include -I/usr/include/hdf5/mpich
 CXX     = mpiCC
 
-CXXFLAGS = $(OFLAGS) -std=c++11 -DSCHNAR_THREE_DIM
+CXXFLAGS = $(OFLAGS) -std=c++11 -DHUERTO_THREE_DIM
 
 BUILD_DIR = build
 BIN_DIR = bin

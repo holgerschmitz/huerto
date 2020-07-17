@@ -32,7 +32,7 @@ class ZeroDirichletBoundary
 };
 
 template<class Field, size_t dimension>
-class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition>
+class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition<Field, dimension> >
 {
   private:
     Index applyLo;
@@ -48,8 +48,8 @@ class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition>
     void initParameters(schnek::BlockParameters &blockPars) override;
     void apply(schnek::Array<pField, dimension> fields);
 
-    virtual void applyLoDim(schnek::Array<pField, dimension> fields) = 0;
-    virtual void applyHiDim(schnek::Array<pField, dimension> fields) = 0;
+    virtual void applyLoDim(int dim, schnek::Array<pField, dimension> fields) = 0;
+    virtual void applyHiDim(int dim, schnek::Array<pField, dimension> fields) = 0;
 };
 
 template<class Field, size_t dimension>
@@ -58,8 +58,21 @@ class ZeroNeumannBoundaryBlock : public BoundaryCondition<Field, dimension>
   private:
     ZeroNeumannBoundary<Field> boundary;
   public:
-    void applyLoDim(schnek::Array<pField, dimension> fields) override;
-    void applyHiDim(schnek::Array<pField, dimension> fields) override;
+    void applyLoDim(int dim, schnek::Array<pField, dimension> fields) override;
+    void applyHiDim(int dim, schnek::Array<pField, dimension> fields) override;
+};
+
+template<class Field, size_t dimension>
+class BoundaryApplicator
+{
+  private:
+    schnek::Array<pField, dimension> fields;
+    std::list<boost::shared_ptr<BoundaryCondition<Field, dimension>>> boundaryConditions;
+  public:
+    template<class iterator>
+    void addBoundaries(iterator start, iterator end);
+    void setField(int dim, pField f);
+    void operator()();
 };
 
 #include "boundary.t"
