@@ -12,6 +12,20 @@
 
 #include <schnek/grid/array.hpp>
 
+template<int rank, int dimension, int internalDimension>
+struct KurganovNoellePetrovaTypes
+{
+    static const int dim = dimension;
+    static const int internalDim = internalDimension;
+    typedef schnek::Field<double, rank, SchnarGridChecker> Field;
+    typedef std::reference_wrapper<Field> rField;
+
+    typedef schnek::Array<double, dimension> FluidValues;
+    typedef schnek::Array<int, rank> Index;
+    typedef schnek::Array<double, internalDimension> InternalVars;
+};
+
+
 /**
  * Kurganov, Noelle, Petrova solver for conservative equations
  *
@@ -32,16 +46,19 @@
  * * `flow_speed` calculate the fluid flow speed
  * * `sound_speed` calculate the fluid sound speed, i.e. the speed of the fastest travelling wave
  */
-template<int rank, int dim, template<int, int> class Model>
-class KurganovNoellePetrova : public Model<rank, dim>
+template<int rank, template<int> class Model>
+class KurganovNoellePetrova : public Model<rank>
 {
   public:
-    typedef schnek::Field<double, rank, SchnarGridChecker> Field;
-    typedef std::reference_wrapper<Field> rField;
+    typedef KurganovNoellePetrovaTypes<rank, Model<rank>::dim, Model<rank>::internalDim> KNP;
+    static const int dim = KNP::dim;
+    static const int internalDim = KNP::internalDim;
+    typedef typename KNP::Field Field;
+    typedef typename KNP::rField rField;
+    typedef typename KNP::FluidValues FluidValues;
+    typedef typename KNP::InternalVars InternalVars;
 
-    typedef schnek::Array<double, dim> FluidValues;
     typedef schnek::Array<int, rank> Index;
-    typedef schnek::Array<double, Model<rank, dim>::internalDim> InternalVars;
 
     schnek::Array<rField, dim> fields;
   private:

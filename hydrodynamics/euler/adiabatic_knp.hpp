@@ -12,6 +12,7 @@
 
 #include "../../types.hpp"
 #include "../../maths/integrate/hyperbolic/knp_scheme.hpp"
+#include "../../maths/integrate/runge_kutta.hpp"
 
 /**
  *
@@ -20,49 +21,52 @@ template<int rank>
 class AdiabaticKnpModel
 {
   public:
-    static const int dim = rank + 2;
-    static const int internalDim = 1;
-    typedef KurganovNoellePetrova<rank, dim, AdiabaticKnpModel> KNP;
+    typedef KurganovNoellePetrovaTypes<rank, rank + 2, 1> KNP;
+    static const int dim = KNP::dim;
+    static const int internalDim = KNP::internalDim;
     typedef typename KNP::Field Field;
     typedef typename KNP::rField rField;
     typedef typename KNP::FluidValues FluidValues;
     typedef typename KNP::InternalVars InternalVars;
 
-  private:
-    double adiabaticGamma;
-
     static const int C_RHO = 0;
     static const int C_E   = 1;
-    static const int C_M[]  = {2, 3, 4};
+    static const int C_M[];
+  private:
+    double adiabaticGamma;
+    schnek::Array<double, rank> dx;
   protected:
     double flow_speed(size_t direction, const FluidValues &u, const InternalVars &p);
     double sound_speed(const FluidValues &u, const InternalVars &p);
     void calc_internal_vars(const FluidValues &u, InternalVars &p);
     void flux_function(size_t direction, const FluidValues &u, const InternalVars &p, FluidValues &f);
+    const schnek::Array<double, rank> &getDx() { return dx; }
   public:
-    void setAdiabaticGamma(double adiabaticGamma);
+    void setParameters(double adiabaticGamma, const schnek::Array<double, rank> &dx);
 };
 
 
 template<int rank>
-class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field, typename AdiabaticKnpModel<rank>::dim>
+class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim>
 {
   public:
     static const int dim = AdiabaticKnpModel<rank>::dim;
+    typedef typename AdiabaticKnpModel<rank>::Field Field;
+    typedef typename AdiabaticKnpModel<rank>::FluidValues FluidValues;
   private:
     typedef HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim> Super;
-    typedef typename AdiabaticKnpModel<rank>::Field Field;
 
-    KurganovNoellePetrova<rank, dim, AdiabaticKnpModel> scheme;
+    KurganovNoellePetrova<rank, AdiabaticKnpModel> scheme;
     FieldRungeKutta4<rank, dim> integrator;
     BoundaryApplicator<Field, rank> boundary;
 
     double adiabaticGamma;
 
     pField Rho;
-    schnek::Array<pField, DIMENSION> M;
+    schnek::Array<pField, rank> M;
     pField E;
 
+    schnek::Array<double, rank> dx;
   public:
     /**
      * Initialise the parameters available through the setup file

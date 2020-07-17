@@ -54,6 +54,13 @@ void AdiabaticKnpModel<rank>::flux_function(size_t direction,
 }
 
 template<int rank>
+void AdiabaticKnpModel<rank>::setParameters(double adiabaticGamma, const schnek::Array<double, rank> &dx)
+{
+  this->adiabaticGamma = adiabaticGamma;
+  this->dx = dx;
+}
+
+template<int rank>
 void AdiabaticKnp<rank>::initParameters(schnek::BlockParameters &parameters)
 {
   parameters.addParameter("gamma", &adiabaticGamma, 1.4);
@@ -64,28 +71,30 @@ void AdiabaticKnp<rank>::init()
 {
   Super::init();
 
-  retrieveData("Rho", Rho);
-  scheme.setField(C_RHO, *Rho);
-  integrator.setField(C_RHO, *Rho);
-  boundary.setField(C_RHO, *Rho);
+  this->retrieveData("Rho", Rho);
+  scheme.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
+  integrator.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
+  boundary.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
 
-  retrieveData("E", E);
-  scheme.setField(C_E, *E);
-  integrator.setField(C_E, *E);
-  boundary.setField(C_E, *E);
+  this->retrieveData("E", E);
+  scheme.setField(AdiabaticKnp<rank>::C_E, *E);
+  integrator.setField(AdiabaticKnp<rank>::C_E, *E);
+  boundary.setField(AdiabaticKnp<rank>::C_E, *E);
 
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    retrieveData(indexToCoord(i, "M"), M[i]);
-    scheme.setField(C_M[i], *M[i]);
-    integrator.setField(C_M[i], *M[i]);
-    boundary.setField(C_M[i], *M[i]);
+    this->retrieveData(indexToCoord(i, "M"), M[i]);
+    scheme.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
+    integrator.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
+    boundary.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
   }
 
-  auto boundaries = BlockContainer<BoundaryCondition<Field, rank>>::childBlocks();
+  auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, rank> >::childBlocks();
   boundary.addBoundaries(boundaries.begin(), boundaries.end());
 
+  dx = this->getContext().getDx();
+  scheme.setParameters(adiabaticGamma, dx);
 
   schnek::LiteratureArticle Kurganov2001("Kurganov2001", "A. Kurganov and S. Noelle and G. Petrova",
       "Semidiscrete central-upwind schemes for hyperbolic conservation laws and Hamilton--Jacobi equations",
@@ -98,7 +107,7 @@ void AdiabaticKnp<rank>::init()
 template<int rank>
 double AdiabaticKnp<rank>::maxDt()
 {
-  schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
+  schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
 
   Field &Rho = *(this->Rho);
   Field &E = *(this->E);
@@ -128,22 +137,22 @@ double AdiabaticKnp<rank>::maxDt()
        ++it)
   {
     const Index &p = *it;
-    u[C_RHO]    = Rho[p];
+    u[AdiabaticKnp<rank>::C_RHO]    = Rho[p];
 
     double maxU = 0.0;
     for (size_t i=0; i<DIMENSION; ++i)
     {
-      u[C_M[i]]    = (*M[i])[p];
-      maxU = std::max(maxU, fabs(u[C_M[i]]));
+      u[AdiabaticKnp<rank>::C_M[i]]    = (*M[i])[p];
+      maxU = std::max(maxU, fabs(u[AdiabaticKnp<rank>::C_M[i]]));
     }
-    u[C_E] = E[p];
+    u[AdiabaticKnp<rank>::C_E] = E[p];
 
     // TODO this won't work yet
     double pressure = eqn_state_ideal_gas(u);
 
-    double v_max = maxU/u[C_RHO];
+    double v_max = maxU/u[AdiabaticKnp<rank>::C_RHO];
 
-    max_speed = std::max(max_speed,speed_cf(u[C_RHO], pressure)+v_max);
+    max_speed = std::max(max_speed,speed_cf(u[AdiabaticKnp<rank>::C_RHO], pressure)+v_max);
   }
 
   max_speed = subdivision.maxReduce(max_speed);
