@@ -25,9 +25,9 @@ class SingleBlockRunner
     schnek::pBlock block;
 
     template<class BlockType>
-    boost::shared_ptr<BlockType> createBlock(std::string blockName, std::string fileName)
+    std::shared_ptr<BlockType> createBlock(std::string blockName, std::string fileName)
     {
-        boost::shared_ptr<BlockType> block;
+        std::shared_ptr<BlockType> block;
         try
         {
           schnek::BlockClasses blocks;
@@ -78,7 +78,7 @@ class SingleBlockRunner
 // ============================================================================
 
 //template<class BlockType>
-//boost::shared_ptr<BlockType> SingleBlockRunner::createBlock<BlockType>(std::string blockName, std::string fileName)
+//std::shared_ptr<BlockType> SingleBlockRunner::createBlock<BlockType>(std::string blockName, std::string fileName)
 
 
 #endif /* HUERTO_TESTS_FIXTURES_BLOCK_RUNNER_HPP_ */

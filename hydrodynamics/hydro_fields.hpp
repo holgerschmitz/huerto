@@ -10,8 +10,8 @@
 #define VELLAMO_HYDRO_FIELDS_H
 
 #include "../types.hpp"
-#include "../../../simulation/simulation_context.hpp"
-#include "../../../simulation/initialiser.hpp"
+#include "../simulation/simulation_context.hpp"
+#include "../simulation/initialiser.hpp"
 
 #include <schnek/variables/blockcontainer.hpp>
 

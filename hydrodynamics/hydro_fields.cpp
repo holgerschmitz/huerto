@@ -10,7 +10,6 @@
 #include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -30,16 +29,16 @@ void HydroFields::initParameters(schnek::BlockParameters &parameters)
 
 void HydroFields::registerData()
 {
-  Rho.field = boost::make_shared<Field>();
+  Rho.field = std::make_shared<Field>();
   addData("Rho", Rho.field);
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    M[i].field = boost::make_shared<Field>();
+    M[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "M"), M[i].field);
   }
 
-  E = boost::make_shared<Field>();
+  E.field = std::make_shared<Field>();
   addData("E", E.field);
 }
 
@@ -63,6 +62,7 @@ void HydroFields::fillValues()
   }
 
   schnek::fill_field(*E.field, x, E.value, updater, E.parameter);
+  std::cout << "Done: Filling fields" << std::endl;
 }
 
 void HydroFields::init()

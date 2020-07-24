@@ -25,7 +25,6 @@ class AdiabaticKnpModel
     static const int dim = KNP::dim;
     static const int internalDim = KNP::internalDim;
     typedef typename KNP::Field Field;
-    typedef typename KNP::rField rField;
     typedef typename KNP::FluidValues FluidValues;
     typedef typename KNP::InternalVars InternalVars;
 
@@ -36,12 +35,14 @@ class AdiabaticKnpModel
     double adiabaticGamma;
     schnek::Array<double, rank> dx;
   protected:
-    double flow_speed(size_t direction, const FluidValues &u, const InternalVars &p);
-    double sound_speed(const FluidValues &u, const InternalVars &p);
-    void calc_internal_vars(const FluidValues &u, InternalVars &p);
-    void flux_function(size_t direction, const FluidValues &u, const InternalVars &p, FluidValues &f);
-    const schnek::Array<double, rank> &getDx() { return dx; }
+    double flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const;
+    double sound_speed(const FluidValues &u, const InternalVars &p) const;
+    void flux_function(size_t direction, const FluidValues &u, const InternalVars &p, FluidValues &f) const;
+
+    const schnek::Array<double, rank> &getDx() const { return dx; }
   public:
+    void calc_internal_vars(const FluidValues &u, InternalVars &p) const;
+    double speed_cf(double rho, double p);
     void setParameters(double adiabaticGamma, const schnek::Array<double, rank> &dx);
 };
 
@@ -53,12 +54,13 @@ class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field,
     static const int dim = AdiabaticKnpModel<rank>::dim;
     typedef typename AdiabaticKnpModel<rank>::Field Field;
     typedef typename AdiabaticKnpModel<rank>::FluidValues FluidValues;
+    typedef typename AdiabaticKnpModel<rank>::InternalVars InternalVars;
   private:
     typedef HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim> Super;
 
     KurganovNoellePetrova<rank, AdiabaticKnpModel> scheme;
     FieldRungeKutta4<rank, dim> integrator;
-    BoundaryApplicator<Field, rank> boundary;
+    BoundaryApplicator<Field, dim> boundary;
 
     double adiabaticGamma;
 
