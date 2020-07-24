@@ -8,6 +8,8 @@
 #ifndef HUERTO_CONSTANTS_HPP_
 #define HUERTO_CONSTANTS_HPP_
 
+#include <schnek/variables/blockparameters.hpp>
+
 #include <string>
 
 static const double PI          = 3.141592653589793238462643383279502884L;
@@ -24,21 +26,11 @@ static const double planck_h    = 6.62607015e-34;
 static const double planck_hbar = planck_h/TWO_PI;
 
 
-const std::string indexToCoordMapping[] = {"x", "y", "z", "u", "v", "w"};
-const std::string indexToCoord(int index, std::string prefix = "", std::string postfix = "") {
+static const std::string indexToCoordMapping[] = {"x", "y", "z", "u", "v", "w"};
+inline const std::string indexToCoord(int index, std::string prefix = "", std::string postfix = "") {
   return prefix+indexToCoordMapping[index] + postfix;
 }
 
-void initConstantParameters(schnek::BlockParameters &parameters) {
-  parameters.addConstant("pi", PI);
-  parameters.addConstant("clight", clight);
-  parameters.addConstant("me", mass_e);
-  parameters.addConstant("mp", mass_p);
-  parameters.addConstant("e", unit_charge);
-  parameters.addConstant("mu0", mu_0);
-  parameters.addConstant("eps0", eps_0);
-  parameters.addConstant("planck_h", planck_h);
-  parameters.addConstant("planck_hbar", planck_hbar);
-}
+void initConstantParameters(schnek::BlockParameters &parameters);
 
 #endif /* HUERTO_CONSTANTS_HPP_ */

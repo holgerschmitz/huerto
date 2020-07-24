@@ -19,10 +19,9 @@ class FieldRungeKutta4
   public:
     typedef schnek::Field<double, rank, SchnarGridChecker> Field;
     typedef std::shared_ptr<Field> pField;
-    typedef std::reference_wrapper<Field> rField;
   private:
-    schnek::Array<rField, dim> fields;
-    schnek::Array<rField, dim> fields_tmp;
+    schnek::Array<Field*, dim> fields;
+    schnek::Array<std::unique_ptr<Field>, dim> fields_tmp;
   public:
     void setField(int d, Field &field);
 

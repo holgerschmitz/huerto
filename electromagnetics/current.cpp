@@ -90,13 +90,13 @@ void CurrentContainer::init(SimulationContext &context)
 
   schnek::Range<double, DIMENSION> domainSize(schnek::Array<double, DIMENSION>(0,0,0), context.getSize());
 
-  pJx = boost::make_shared<Field>(lowIn, highIn, domainSize, exStaggerYee, 2);
-  pJy = boost::make_shared<Field>(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  pJz = boost::make_shared<Field>(lowIn, highIn, domainSize, ezStaggerYee, 2);
+  pJx = std::make_shared<Field>(lowIn, highIn, domainSize, exStaggerYee, 2);
+  pJy = std::make_shared<Field>(lowIn, highIn, domainSize, eyStaggerYee, 2);
+  pJz = std::make_shared<Field>(lowIn, highIn, domainSize, ezStaggerYee, 2);
 
-  pMx = boost::make_shared<Field>(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  pMy = boost::make_shared<Field>(lowIn, highIn, domainSize, byStaggerYee, 2);
-  pMz = boost::make_shared<Field>(lowIn, highIn, domainSize, bzStaggerYee, 2);
+  pMx = std::make_shared<Field>(lowIn, highIn, domainSize, bxStaggerYee, 2);
+  pMy = std::make_shared<Field>(lowIn, highIn, domainSize, byStaggerYee, 2);
+  pMz = std::make_shared<Field>(lowIn, highIn, domainSize, bzStaggerYee, 2);
 }
 
 

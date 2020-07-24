@@ -18,7 +18,6 @@ struct KurganovNoellePetrovaTypes
     static const int dim = dimension;
     static const int internalDim = internalDimension;
     typedef schnek::Field<double, rank, SchnarGridChecker> Field;
-    typedef std::reference_wrapper<Field> rField;
 
     typedef schnek::Array<double, dimension> FluidValues;
     typedef schnek::Array<int, rank> Index;
@@ -54,29 +53,30 @@ class KurganovNoellePetrova : public Model<rank>
     static const int dim = KNP::dim;
     static const int internalDim = KNP::internalDim;
     typedef typename KNP::Field Field;
-    typedef typename KNP::rField rField;
     typedef typename KNP::FluidValues FluidValues;
     typedef typename KNP::InternalVars InternalVars;
 
     typedef schnek::Array<int, rank> Index;
+    typedef std::shared_ptr<Field> pField;
 
-    schnek::Array<rField, dim> fields;
   private:
+    schnek::Array<Field*, dim> fields;
+  public:
     void setField(int d, Field &field);
 
-    double van_leer(double u, double up, double um);
-    void reconstruct(size_t direction, const Index &pos, int dir, FluidValues &u);
-    void flux(size_t direction, const Index &pos, FluidValues& flux);
-    void rhs(Index p, FluidValues &dudt);
+    double van_leer(double u, double up, double um) const;
+    void reconstruct(size_t direction, const Index &pos, int dir, FluidValues &u) const;
+    void flux(size_t direction, const Index &pos, FluidValues& flux) const;
+    void rhs(Index p, FluidValues &dudt) const;
     void minmax_local_speed(size_t direction,
                             const FluidValues &uW,
                             const FluidValues &uE,
                             const InternalVars &pW,
                             const InternalVars &pE,
                             double &ap,
-                            double &am);
+                            double &am) const;
 
-    void operator()(Index p, FluidValues &dudt) { rhs(p, dudt); }
+    void operator()(Index p, FluidValues &dudt) const { rhs(p, dudt); }
 };
 
 #include "knp_scheme.t"

@@ -17,19 +17,19 @@
 void FDTD_Plain::registerData()
 {
 #ifdef HUERTO_ONE_DIM
-  pKappaEdx = boost::make_shared<Grid1d>();
-  pKappaHdx = boost::make_shared<Grid1d>();
+  pKappaEdx = std::make_shared<Grid1d>();
+  pKappaHdx = std::make_shared<Grid1d>();
 
   addData("KappaEdx", pKappaEdx);
   addData("KappaHdx", pKappaHdx);
 #endif
 
 #ifdef HUERTO_TWO_DIM
-  pKappaEdx = boost::make_shared<Grid1d>();
-  pKappaEdy = boost::make_shared<Grid1d>();
+  pKappaEdx = std::make_shared<Grid1d>();
+  pKappaEdy = std::make_shared<Grid1d>();
 
-  pKappaHdx = boost::make_shared<Grid1d>();
-  pKappaHdy = boost::make_shared<Grid1d>();
+  pKappaHdx = std::make_shared<Grid1d>();
+  pKappaHdy = std::make_shared<Grid1d>();
 
   addData("KappaEdx", pKappaEdx);
   addData("KappaEdy", pKappaEdy);
@@ -39,13 +39,13 @@ void FDTD_Plain::registerData()
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  pKappaEdx = boost::make_shared<Grid1d>();
-  pKappaEdy = boost::make_shared<Grid1d>();
-  pKappaEdz = boost::make_shared<Grid1d>();
+  pKappaEdx = std::make_shared<Grid1d>();
+  pKappaEdy = std::make_shared<Grid1d>();
+  pKappaEdz = std::make_shared<Grid1d>();
 
-  pKappaHdx = boost::make_shared<Grid1d>();
-  pKappaHdy = boost::make_shared<Grid1d>();
-  pKappaHdz = boost::make_shared<Grid1d>();
+  pKappaHdx = std::make_shared<Grid1d>();
+  pKappaHdy = std::make_shared<Grid1d>();
+  pKappaHdz = std::make_shared<Grid1d>();
 
   addData("KappaEdx", pKappaEdx);
   addData("KappaEdy", pKappaEdy);

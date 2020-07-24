@@ -30,22 +30,26 @@ class ZeroDirichletBoundary
     void applyLo(size_t dim, Field &f);
     void applyHi(size_t dim, Field &f);
 };
-
+/**
+ * A base class for boundary conditions
+ *
+ * Field: the field type to apply boundary conditions to
+ * dimension: the number of fields
+ */
 template<class Field, size_t dimension>
-class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition<Field, dimension> >
+class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition<Field, dimension> >,
+                          public SimulationEntity
 {
   private:
     Index applyLo;
     Index applyHi;
-
-    SimulationContext &context;
   public:
     typedef Field* pField;
 
-    BoundaryCondition(SimulationContext &context);
-    virtual ~BoundaryCondition();
+    virtual ~BoundaryCondition() {};
 
     void initParameters(schnek::BlockParameters &blockPars) override;
+
     void apply(schnek::Array<pField, dimension> fields);
 
     virtual void applyLoDim(int dim, schnek::Array<pField, dimension> fields) = 0;
@@ -58,6 +62,7 @@ class ZeroNeumannBoundaryBlock : public BoundaryCondition<Field, dimension>
   private:
     ZeroNeumannBoundary<Field> boundary;
   public:
+    typedef Field* pField;
     void applyLoDim(int dim, schnek::Array<pField, dimension> fields) override;
     void applyHiDim(int dim, schnek::Array<pField, dimension> fields) override;
 };
@@ -65,6 +70,8 @@ class ZeroNeumannBoundaryBlock : public BoundaryCondition<Field, dimension>
 template<class Field, size_t dimension>
 class BoundaryApplicator
 {
+  public:
+    typedef Field* pField;
   private:
     schnek::Array<pField, dimension> fields;
     std::list<boost::shared_ptr<BoundaryCondition<Field, dimension>>> boundaryConditions;

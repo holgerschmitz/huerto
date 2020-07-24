@@ -34,8 +34,8 @@ void EMFields::registerData()
 {
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    E[i].field = boost::make_shared<Field>();
-    B[i].field = boost::make_shared<Field>();
+    E[i].field = std::make_shared<Field>();
+    B[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "E"), E[i].field);
     addData(indexToCoord(i, "B"), B[i].field);
   }

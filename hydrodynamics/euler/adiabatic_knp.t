@@ -5,22 +5,24 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
+#include "../../constants.hpp"
+
 #include <schnek/tools/literature.hpp>
 
 template<int rank>
-inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars &p)
+inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const
 {
   return u[C_M[direction]] / u[C_RHO];
 }
 
 template<int rank>
-inline double AdiabaticKnpModel<rank>::sound_speed(const FluidValues &u, const InternalVars &p)
+inline double AdiabaticKnpModel<rank>::sound_speed(const FluidValues &u, const InternalVars &p) const
 {
-  return (p[0]>0.0)?(0.5*sqrt(4.0*adiabaticGamma*p/u[C_RHO])):0.0;
+  return (p[0]>0.0)?(0.5*sqrt(4.0*adiabaticGamma*p[0]/u[C_RHO])):0.0;
 }
 
 template<int rank>
-inline void AdiabaticKnpModel<rank>::calc_internal_vars(const FluidValues &u, InternalVars &p)
+inline void AdiabaticKnpModel<rank>::calc_internal_vars(const FluidValues &u, InternalVars &p) const
 {
   double sqrU = 0.0;
   for (size_t i=0; i<dim; ++i)
@@ -37,7 +39,7 @@ template<int rank>
 void AdiabaticKnpModel<rank>::flux_function(size_t direction,
                                             const FluidValues &u,
                                             const InternalVars &p,
-                                            FluidValues &f)
+                                            FluidValues &f) const
 {
   double rho = u[C_RHO];
   double mdir = u[C_M[direction]];
@@ -61,10 +63,19 @@ void AdiabaticKnpModel<rank>::setParameters(double adiabaticGamma, const schnek:
 }
 
 template<int rank>
+inline double AdiabaticKnpModel<rank>::speed_cf(double rho, double p)
+{
+ return (p>0.0)?(0.5*sqrt(4.0*adiabaticGamma*p/rho)):0.0;
+}
+
+
+
+template<int rank>
 void AdiabaticKnp<rank>::initParameters(schnek::BlockParameters &parameters)
 {
   parameters.addParameter("gamma", &adiabaticGamma, 1.4);
 }
+
 
 template<int rank>
 void AdiabaticKnp<rank>::init()
@@ -72,25 +83,25 @@ void AdiabaticKnp<rank>::init()
   Super::init();
 
   this->retrieveData("Rho", Rho);
-  scheme.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
-  integrator.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
-  boundary.setField(AdiabaticKnp<rank>::C_RHO, *Rho);
+  scheme.setField(AdiabaticKnpModel<rank>::C_RHO, *Rho);
+  integrator.setField(AdiabaticKnpModel<rank>::C_RHO, *Rho);
+  boundary.setField(AdiabaticKnpModel<rank>::C_RHO, &(*Rho));
 
   this->retrieveData("E", E);
-  scheme.setField(AdiabaticKnp<rank>::C_E, *E);
-  integrator.setField(AdiabaticKnp<rank>::C_E, *E);
-  boundary.setField(AdiabaticKnp<rank>::C_E, *E);
+  scheme.setField(AdiabaticKnpModel<rank>::C_E, *E);
+  integrator.setField(AdiabaticKnpModel<rank>::C_E, *E);
+  boundary.setField(AdiabaticKnpModel<rank>::C_E, &(*E));
 
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
     this->retrieveData(indexToCoord(i, "M"), M[i]);
-    scheme.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
-    integrator.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
-    boundary.setField(AdiabaticKnp<rank>::C_M[i], *M[i]);
+    scheme.setField(AdiabaticKnpModel<rank>::C_M[i], *M[i]);
+    integrator.setField(AdiabaticKnpModel<rank>::C_M[i], *M[i]);
+    boundary.setField(AdiabaticKnpModel<rank>::C_M[i], &(*M[i]));
   }
 
-  auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, rank> >::childBlocks();
+  auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, dim> >::childBlocks();
   boundary.addBoundaries(boundaries.begin(), boundaries.end());
 
   dx = this->getContext().getDx();
@@ -137,22 +148,22 @@ double AdiabaticKnp<rank>::maxDt()
        ++it)
   {
     const Index &p = *it;
-    u[AdiabaticKnp<rank>::C_RHO]    = Rho[p];
+    u[AdiabaticKnpModel<rank>::C_RHO]    = Rho[p];
 
     double maxU = 0.0;
     for (size_t i=0; i<DIMENSION; ++i)
     {
-      u[AdiabaticKnp<rank>::C_M[i]]    = (*M[i])[p];
-      maxU = std::max(maxU, fabs(u[AdiabaticKnp<rank>::C_M[i]]));
+      u[AdiabaticKnpModel<rank>::C_M[i]]    = (*M[i])[p];
+      maxU = std::max(maxU, fabs(u[AdiabaticKnpModel<rank>::C_M[i]]));
     }
-    u[AdiabaticKnp<rank>::C_E] = E[p];
+    u[AdiabaticKnpModel<rank>::C_E] = E[p];
 
-    // TODO this won't work yet
-    double pressure = eqn_state_ideal_gas(u);
+    InternalVars pressure;
+    scheme.calc_internal_vars(u, pressure);
 
-    double v_max = maxU/u[AdiabaticKnp<rank>::C_RHO];
+    double v_max = maxU/u[AdiabaticKnpModel<rank>::C_RHO];
 
-    max_speed = std::max(max_speed,speed_cf(u[AdiabaticKnp<rank>::C_RHO], pressure)+v_max);
+    max_speed = std::max(max_speed,scheme.speed_cf(u[AdiabaticKnpModel<rank>::C_RHO], pressure[0])+v_max);
   }
 
   max_speed = subdivision.maxReduce(max_speed);

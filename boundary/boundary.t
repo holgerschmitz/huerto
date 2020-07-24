@@ -94,12 +94,6 @@ void ZeroDirichletBoundary<Field>::applyHi(size_t dim, Field& f)
 }
 
 template<class Field, size_t dimension>
-BoundaryCondition<Field, dimension>::BoundaryCondition(SimulationContext &context) :
-  context(context)
-{
-}
-
-template<class Field, size_t dimension>
 void BoundaryCondition<Field, dimension>::initParameters(schnek::BlockParameters &blockPars)
 {
   blockPars.addArrayParameter("low_", applyLo, Index(0));
@@ -109,7 +103,7 @@ void BoundaryCondition<Field, dimension>::initParameters(schnek::BlockParameters
 template<class Field, size_t dimension>
 void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> fields)
 {
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
+  schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
 
   for (size_t i=0; i<DIMENSION; i++)
   {
@@ -135,6 +129,7 @@ void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(int dim, schnek::Arr
     boundary.applyHi(dim, *fields[i]);
   }
 }
+
 
 template<class Field, size_t dimension>
 template<class iterator>

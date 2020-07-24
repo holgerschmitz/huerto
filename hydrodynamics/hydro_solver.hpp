@@ -20,13 +20,13 @@ template<class Field, int dimension>
 class HydroSolver :
         public schnek::ChildBlock<HydroSolver<Field, dimension> >,
         public schnek::BlockContainer<BoundaryCondition<Field, dimension> >,
-        SimulationEntity
+        public SimulationEntity
 {
   public:
-    typedef boost::shared_ptr<HydroSolver> pSolver;
+    typedef std::shared_ptr<HydroSolver> pSolver;
 
     virtual ~HydroSolver() {}
-    void init() override { SimulationEntity::init(*this); }
+    void init() override { SimulationEntity::init(this); }
 
     virtual double maxDt() = 0;
     virtual void timeStep(double dt) = 0;

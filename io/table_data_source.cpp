@@ -29,7 +29,7 @@ void FileTableDataReader::preInit()
     exit(-1);
   }
 
-  std::vector<boost::shared_ptr<std::vector<double>>> readValues;
+  std::vector<std::shared_ptr<std::vector<double>>> readValues;
 
   size_t count = 0;
   std::string line;
@@ -41,7 +41,7 @@ void FileTableDataReader::preInit()
 
     while (splitVec.size() > readValues.size())
     {
-      readValues.push_back(boost::make_shared<std::vector<double>>(count, 0.0));
+      readValues.push_back(std::make_shared<std::vector<double>>(count, 0.0));
     }
 
     for (size_t i=0; i<splitVec.size(); ++i)
@@ -59,7 +59,7 @@ void FileTableDataReader::preInit()
 
   for (size_t i=0; i<readValues.size(); ++i)
   {
-    pGrid1d column(boost::make_shared<Grid1d>(Grid1d::IndexType(count)));
+    pGrid1d column(std::make_shared<Grid1d>(Grid1d::IndexType(count)));
     std::vector<double> &readColumn = *readValues[i];
     for (size_t row=0; row<count; ++row)
     {
