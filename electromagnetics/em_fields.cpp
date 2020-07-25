@@ -13,9 +13,6 @@
 #include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
-#include <boost/make_shared.hpp>
-#include <boost/foreach.hpp>
-
 #include <string>
 #include <iostream>
 
@@ -29,7 +26,6 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
   }
 }
 
-
 void EMFields::registerData()
 {
   for (size_t i=0; i<DIMENSION; ++i)
@@ -40,8 +36,6 @@ void EMFields::registerData()
     addData(indexToCoord(i, "B"), B[i].field);
   }
 }
-
-
 
 void EMFields::fillValues()
 {
