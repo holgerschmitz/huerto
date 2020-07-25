@@ -1,5 +1,5 @@
 
-TARGET=schnar_tests
+TARGET=huerto_tests
 
 #OFLAGS  = -g -O0 -Wall
 OFLAGS  = -O3 -Wall
@@ -16,6 +16,7 @@ SOURCES =  \
 	maths/random.cpp \
 	tables/table_lookup.cpp \
 	tests/main.cpp \
+	tests/maths/runge_kutta1d.cpp \
 	tests/maths/test_interpolate1d.cpp \
 	tests/maths/test_interpolate2d.cpp \
 	tests/maths/vector1d.cpp \

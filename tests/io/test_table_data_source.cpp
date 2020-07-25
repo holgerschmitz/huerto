@@ -28,7 +28,7 @@ class FileTableDataReaderBlock : public schnek::Block, public FileTableDataReade
     }
 };
 
-typedef std::shared_ptr<FileTableDataReaderBlock> pFileTableDataReaderBlock;
+typedef boost::shared_ptr<FileTableDataReaderBlock> pFileTableDataReaderBlock;
 
 BOOST_AUTO_TEST_SUITE( maths )
 
