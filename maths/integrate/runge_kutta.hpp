@@ -17,7 +17,7 @@ template<int rank, int dim>
 class FieldRungeKutta4
 {
   public:
-    typedef schnek::Field<double, rank, SchnarGridChecker> Field;
+    typedef schnek::Field<double, rank, HuertoGridChecker> Field;
     typedef std::shared_ptr<Field> pField;
   private:
     schnek::Array<Field*, dim> fields;
