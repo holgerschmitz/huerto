@@ -38,6 +38,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
     }
   }
 
+
   // Swap starred fields and the unstarred fields
   for (int d=0; d<dim; ++d)
   {
@@ -59,8 +60,8 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
     for (int d=0; d<dim; ++d)
     {
       (*fields_tmp[d])[p] =
-              0.5*((*fields[d])[p] + (*fields_tmp[d])[p])
-              + dt*dudt[d];
+              0.5*((*fields[d])[p] + (*fields_tmp[d])[p]
+              + dt*dudt[d]);
     }
   }
 
