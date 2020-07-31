@@ -17,7 +17,7 @@ struct KurganovNoellePetrovaTypes
 {
     static const int dim = dimension;
     static const int internalDim = internalDimension;
-    typedef schnek::Field<double, rank, SchnarGridChecker> Field;
+    typedef schnek::Field<double, rank, HuertoGridChecker> Field;
 
     typedef schnek::Array<double, dimension> FluidValues;
     typedef schnek::Array<int, rank> Index;

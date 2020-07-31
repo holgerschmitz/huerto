@@ -78,7 +78,7 @@ inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Ind
   this->calc_internal_vars(uW, pW);
 
   // determine the minimum and maximum local speeds
-  this->minmax_local_speed(0, uW, uE, pW, pE, ap, am);
+  this->minmax_local_speed(direction, uW, uE, pW, pE, ap, am);
 
   // evaluate the flux function
   this->flux_function(direction, uW, pW, fW);

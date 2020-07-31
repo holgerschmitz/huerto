@@ -64,4 +64,12 @@ class HydroFields :
     void init();
 };
 
+//inline void diagField(Field &f, std::string msg) {
+//  std::cout << "DIAG " << msg << std::endl;
+//  for (int i=f.getLo(0); i<=f.getHi(0); ++i)
+//    for (int j=f.getLo(1); j<=f.getHi(1); ++j) {
+//      std::cout << i << " " << j << " " << f(i,j) << std::endl;
+//    }
+//}
+
 #endif

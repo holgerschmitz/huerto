@@ -36,13 +36,12 @@ class AdiabaticKnpModel
     schnek::Array<double, rank> dx;
   protected:
     double flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const;
-    double sound_speed(const FluidValues &u, const InternalVars &p) const;
     void flux_function(size_t direction, const FluidValues &u, const InternalVars &p, FluidValues &f) const;
 
     const schnek::Array<double, rank> &getDx() const { return dx; }
   public:
+    double sound_speed(const FluidValues &u, const InternalVars &p) const;
     void calc_internal_vars(const FluidValues &u, InternalVars &p) const;
-    double speed_cf(double rho, double p);
     void setParameters(double adiabaticGamma, const schnek::Array<double, rank> &dx);
 };
 
@@ -53,6 +52,7 @@ class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field,
   public:
     static const int dim = AdiabaticKnpModel<rank>::dim;
     typedef typename AdiabaticKnpModel<rank>::Field Field;
+    typedef std::shared_ptr<Field> pField;
     typedef typename AdiabaticKnpModel<rank>::FluidValues FluidValues;
     typedef typename AdiabaticKnpModel<rank>::InternalVars InternalVars;
   private:
