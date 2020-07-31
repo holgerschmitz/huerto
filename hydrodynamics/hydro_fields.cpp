@@ -44,7 +44,6 @@ void HydroFields::registerData()
 
 void HydroFields::fillValues()
 {
-  std::cout << "Filling fields" << std::endl;
   schnek::pBlockVariables blockVars = getVariables();
   schnek::pDependencyMap depMap(new schnek::DependencyMap(blockVars));
 
@@ -62,7 +61,6 @@ void HydroFields::fillValues()
   }
 
   schnek::fill_field(*E.field, x, E.value, updater, E.parameter);
-  std::cout << "Done: Filling fields" << std::endl;
 }
 
 void HydroFields::init()
@@ -75,7 +73,7 @@ void HydroFields::init()
   schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
   schnek::Array<bool, DIMENSION> stagger;
-  stagger = false;
+  stagger = true;
 
   Rho.field->resize(lowIn, highIn, domainSize, stagger, 2);
   for (size_t i=0; i<DIMENSION; ++i)

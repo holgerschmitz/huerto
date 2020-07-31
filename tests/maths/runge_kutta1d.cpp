@@ -57,7 +57,6 @@ BOOST_AUTO_TEST_CASE( oscillator ){
     rk4.integrateStep(PI, osc, noopBoundary);
     double err = fabs(1.0 + x(i));
     BOOST_CHECK(err <= 12.5*pow(1.0/(i+1.0), 3));
-    std::cout << "Result: " << (i+1) << " " << err << " " << 12.5*pow(1.0/(i+1.0), 3) << std::endl;
   }
 }
 

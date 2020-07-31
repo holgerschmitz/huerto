@@ -101,7 +101,7 @@ void BoundaryCondition<Field, dimension>::initParameters(schnek::BlockParameters
 }
 
 template<class Field, size_t dimension>
-void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> fields)
+void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> &fields)
 {
   schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
 
@@ -113,7 +113,7 @@ void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension>
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(int dim, schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(int dim, schnek::Array<pField, dimension> &fields)
 {
   for (size_t i=0; i<dimension; i++)
   {
@@ -122,7 +122,7 @@ void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(int dim, schnek::Arr
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(int dim, schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(int dim, schnek::Array<pField, dimension> &fields)
 {
   for (size_t i=0; i<dimension; i++)
   {
@@ -144,8 +144,22 @@ void BoundaryApplicator<Field, dimension>::setField(int dim, pField f)
 }
 
 template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::setSubdivision(schnek::DomainSubdivision<Field> &sub)
+{
+  subdivision = &sub;
+}
+
+template<class Field, size_t dimension>
 void BoundaryApplicator<Field, dimension>::operator()()
 {
+  if (subdivision != NULL)
+  {
+    for (size_t i=0; i<dimension; i++)
+    {
+      subdivision->exchange(*fields[i]);
+    }
+  }
+
   for (auto boundary : boundaryConditions)
   {
     boundary->apply(fields);
