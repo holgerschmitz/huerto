@@ -49,6 +49,7 @@ class BoundaryCondition : public schnek::ChildBlock<BoundaryCondition<Field, dim
     virtual ~BoundaryCondition() {};
 
     void initParameters(schnek::BlockParameters &blockPars) override;
+    void init() override;
 
     void apply(schnek::Array<pField, dimension> &fields);
 

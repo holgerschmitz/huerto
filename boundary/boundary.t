@@ -100,6 +100,13 @@ void BoundaryCondition<Field, dimension>::initParameters(schnek::BlockParameters
   blockPars.addArrayParameter("high_", applyHi, Index(0));
 }
 
+
+template<class Field, size_t dimension>
+void BoundaryCondition<Field, dimension>::init() {
+    schnek::ChildBlock<BoundaryCondition<Field, dimension> >::init();
+    SimulationEntity::init(this);
+}
+
 template<class Field, size_t dimension>
 void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> &fields)
 {
