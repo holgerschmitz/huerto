@@ -94,44 +94,81 @@ void ZeroDirichletBoundary<Field>::applyHi(size_t dim, Field& f)
 }
 
 template<class Field, size_t dimension>
-BoundaryCondition<Field, dimension>::BoundaryCondition(SimulationContext &context) :
-  context(context)
-{
-}
-
-template<class Field, size_t dimension>
 void BoundaryCondition<Field, dimension>::initParameters(schnek::BlockParameters &blockPars)
 {
   blockPars.addArrayParameter("low_", applyLo, Index(0));
   blockPars.addArrayParameter("high_", applyHi, Index(0));
 }
 
+
 template<class Field, size_t dimension>
-void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> fields)
+void BoundaryCondition<Field, dimension>::init() {
+    schnek::ChildBlock<BoundaryCondition<Field, dimension> >::init();
+    SimulationEntity::init(this);
+}
+
+template<class Field, size_t dimension>
+void BoundaryCondition<Field, dimension>::apply(schnek::Array<pField, dimension> &fields)
 {
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
+  schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
 
   for (size_t i=0; i<DIMENSION; i++)
   {
-    if (bool(applyLo[i]) && subdivision.isBoundLo(i)) applyLoDim(i, Rho, M, E);
-    if (bool(applyHi[i]) && subdivision.isBoundHi(i)) applyHiDim(i, Rho, M, E);
+    if (bool(applyLo[i]) && subdivision.isBoundLo(i)) applyLoDim(i, fields);
+    if (bool(applyHi[i]) && subdivision.isBoundHi(i)) applyHiDim(i, fields);
   }
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyLoDim(int dim, schnek::Array<pField, dimension> &fields)
 {
-    for (size_t i=0; i<dimension; i++)
-    {
-      boundary.applyLo(dim, *fields[i]);
-    }
+  for (size_t i=0; i<dimension; i++)
+  {
+    boundary.applyLo(dim, *fields[i]);
+  }
 }
 
 template<class Field, size_t dimension>
-void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(schnek::Array<pField, dimension> fields)
+void ZeroNeumannBoundaryBlock<Field, dimension>::applyHiDim(int dim, schnek::Array<pField, dimension> &fields)
 {
   for (size_t i=0; i<dimension; i++)
   {
     boundary.applyHi(dim, *fields[i]);
+  }
+}
+
+
+template<class Field, size_t dimension>
+template<class iterator>
+void BoundaryApplicator<Field, dimension>::addBoundaries(iterator start, iterator end) {
+  boundaryConditions.insert(boundaryConditions.end(), start, end);
+}
+
+template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::setField(int dim, pField f)
+{
+  fields[dim] = f;
+}
+
+template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::setSubdivision(schnek::DomainSubdivision<Field> &sub)
+{
+  subdivision = &sub;
+}
+
+template<class Field, size_t dimension>
+void BoundaryApplicator<Field, dimension>::operator()()
+{
+  if (subdivision != NULL)
+  {
+    for (size_t i=0; i<dimension; i++)
+    {
+      subdivision->exchange(*fields[i]);
+    }
+  }
+
+  for (auto boundary : boundaryConditions)
+  {
+    boundary->apply(fields);
   }
 }
