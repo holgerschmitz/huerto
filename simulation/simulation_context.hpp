@@ -11,6 +11,7 @@
 #include "../types.hpp"
 
 #include <schnek/variables/block.hpp>
+#include <schnek/grid/domainsubdivision.hpp>
 
 /**
  * A simulation context representing a regular grid domain simulated through time
