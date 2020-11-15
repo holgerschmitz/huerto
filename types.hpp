@@ -9,7 +9,11 @@
 #ifndef HUERTO_TYPES_H
 #define HUERTO_TYPES_H
 
-#include <schnek/grid.hpp>
+#include <schnek/grid/array.hpp>
+#include <schnek/grid/grid.hpp>
+#include <schnek/grid/field.hpp>
+
+#include <memory>
 
 #if !defined(HUERTO_ONE_DIM) && !defined(HUERTO_TWO_DIM) && !defined(HUERTO_THREE_DIM)
 std::static_assert(false, "Must define Schnar Dimension before including types.hpp");
