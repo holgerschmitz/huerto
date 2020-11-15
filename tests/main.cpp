@@ -5,7 +5,7 @@
  *      Author: Holger Schmitz
  */
 
-#define BOOST_TEST_MODULE "Unit Tests for SchnAR"
+#define BOOST_TEST_MODULE "Unit Tests for Huerto"
 #include <boost/test/included/unit_test.hpp>
 
 #include <cmath>

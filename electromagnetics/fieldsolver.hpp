@@ -54,6 +54,6 @@ class FieldSolver :
     }
 };
 
-typedef boost::shared_ptr<FieldSolver> pFieldSolver;
+typedef std::shared_ptr<FieldSolver> pFieldSolver;
 
 #endif

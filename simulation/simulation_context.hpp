@@ -76,7 +76,7 @@ class SimulationContext
     /**
      * The Cartesian MPI subdivision of the grids containing the electromagnetic field
      */
-    boost::shared_ptr<schnek::DomainSubdivision<Field>> subdivision;
+    std::shared_ptr<schnek::DomainSubdivision<Field>> subdivision;
 
   public:
     /**

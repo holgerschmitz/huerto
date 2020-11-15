@@ -10,7 +10,6 @@
 #include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -45,7 +44,6 @@ void HydroFields::registerData()
 
 void HydroFields::fillValues()
 {
-  std::cout << "Filling fields" << std::endl;
   schnek::pBlockVariables blockVars = getVariables();
   schnek::pDependencyMap depMap(new schnek::DependencyMap(blockVars));
 
@@ -75,7 +73,7 @@ void HydroFields::init()
   schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
   schnek::Array<bool, DIMENSION> stagger;
-  stagger = false;
+  stagger = true;
 
   Rho.field->resize(lowIn, highIn, domainSize, stagger, 2);
   for (size_t i=0; i<DIMENSION; ++i)

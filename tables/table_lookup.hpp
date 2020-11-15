@@ -42,7 +42,7 @@ class TableBlock : public schnek::Block, public FileTableDataReader {
     void preInit();
 };
 
-typedef std::shared_ptr<TableBlock> pTableBlock;
+typedef boost::shared_ptr<TableBlock> pTableBlock;
 
 /**
  * A table lookup that can be constructed from a table block
