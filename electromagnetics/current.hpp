@@ -11,9 +11,9 @@
 
 #include "em_fields.hpp"
 
-#include "../../simulation/simulation_context.hpp"
+#include "../simulation/simulation_context.hpp"
 
-#include "../../types.hpp"
+#include "../types.hpp"
 
 #include <schnek/variables/blockcontainer.hpp>
 
@@ -117,7 +117,7 @@ class CurrentBlock :
 /**
  * A shared pointer to a current block
  */
-typedef std::shared_ptr<CurrentBlock> pCurrentBlock;
+typedef boost::shared_ptr<CurrentBlock> pCurrentBlock;
 
 /**
  * An abstract base class for currents

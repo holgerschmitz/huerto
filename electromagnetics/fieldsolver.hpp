@@ -21,10 +21,8 @@
  * the #EMFields class. They should instead acquire their copy through the
  * `retrieveData` method.
  */
-class FieldSolver :
-        public schnek::ChildBlock<FieldSolver>,
-        public SimulationEntity
-{
+class FieldSolver : public schnek::ChildBlock<FieldSolver>,
+                    public SimulationEntity {
   public:
 
     /**
@@ -54,6 +52,6 @@ class FieldSolver :
     }
 };
 
-typedef std::shared_ptr<FieldSolver> pFieldSolver;
+typedef boost::shared_ptr<FieldSolver> pFieldSolver;
 
 #endif
