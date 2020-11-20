@@ -9,9 +9,9 @@
 #ifndef HUERTO_EM_FIELDS_H
 #define HUERTO_EM_FIELDS_H
 
-#include "../../types.hpp"
-#include "../../../simulation/simulation_context.hpp"
-#include "../../../simulation/initialiser.hpp"
+#include "../types.hpp"
+#include "../simulation/simulation_context.hpp"
+#include "../simulation/initialiser.hpp"
 
 #include <schnek/variables/blockcontainer.hpp>
 
@@ -59,6 +59,11 @@ class EMFields :
      * Initialise the parameters available through the setup file
      */
     void initParameters(schnek::BlockParameters &parameters);
+
+    /**
+     * Make preInit lifecycle hook public
+     */
+    void preInit();
 
     /**
      * Initialise the simulation data

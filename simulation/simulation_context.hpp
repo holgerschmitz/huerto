@@ -154,6 +154,7 @@ class SimulationEntity
       }
     }
 
+  public:
     SimulationContext &getContext() { return *context; }
 };
 

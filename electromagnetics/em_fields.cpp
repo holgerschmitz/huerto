@@ -26,10 +26,8 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
   }
 }
 
-void EMFields::registerData()
-{
-  for (size_t i=0; i<DIMENSION; ++i)
-  {
+void EMFields::registerData() {
+  for (size_t i=0; i<DIMENSION; ++i) {
     E[i].field = std::make_shared<Field>();
     B[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "E"), E[i].field);
@@ -37,8 +35,7 @@ void EMFields::registerData()
   }
 }
 
-void EMFields::fillValues()
-{
+void EMFields::fillValues() {
   std::cout << "Filling fields" << std::endl;
   schnek::pBlockVariables blockVars = getVariables();
   schnek::pDependencyMap depMap(new schnek::DependencyMap(blockVars));
@@ -49,15 +46,17 @@ void EMFields::fillValues()
   schnek::Array<schnek::pParameter, DIMENSION> x_parameters = getContext().getXParameter();
   updater.addIndependentArray(x_parameters);
 
-  for (size_t i=0; i<DIMENSION; ++i)
-  {
+  for (size_t i=0; i<DIMENSION; ++i) {
     schnek::fill_field(*E[i].field, x, E[i].value, updater, E[i].parameter);
     schnek::fill_field(*B[i].field, x, B[i].value, updater, B[i].parameter);
   }
 }
 
-void EMFields::init()
-{
+void EMFields::preInit() {
+  schnek::ChildBlock<EMFields>::preInit();
+}
+
+void EMFields::init() {
   SimulationEntity::init(this);
   const schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
   Index lowIn  = subdivision.getInnerLo();

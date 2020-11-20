@@ -12,9 +12,9 @@
 #include "../fieldsolver.hpp"
 #include "../current.hpp"
 
-#include "../../../simulation/simulation_context.hpp"
+#include "../../simulation/simulation_context.hpp"
 
-#include "../../../types.hpp"
+#include "../../types.hpp"
 
 
 /**
@@ -24,8 +24,7 @@
  */
 class FDTD_Plain : public FieldSolver,
                    public CurrentContainer,
-                   public schnek::BlockContainer<CurrentBlock>,
-                   public SimulationEntity
+                   public schnek::BlockContainer<CurrentBlock>
 {
   private:
 

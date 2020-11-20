@@ -16,7 +16,7 @@
 #include <memory>
 
 #if !defined(HUERTO_ONE_DIM) && !defined(HUERTO_TWO_DIM) && !defined(HUERTO_THREE_DIM)
-std::static_assert(false, "Must define Schnar Dimension before including types.hpp");
+std::static_assert(false, "Must define Huerto Dimension before including types.hpp");
 #endif
 
 #ifndef HUERTO_GRID_CHECKER
