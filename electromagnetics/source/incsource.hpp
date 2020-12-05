@@ -215,7 +215,8 @@ class IncidentSourceHCurrent : public IncidentSourceCurrent, public SourceFunc {
 template<class FieldFunc>
 class GenericIncidentSourceESource : public FieldFunc {
   public:
-    GenericIncidentSourceESource(Vector k, Vector3d H, const Vector &front, double eps, SimulationContext &context);
+    GenericIncidentSourceESource(Direction dir, SimulationContext &context);
+    void setGenericParam(Vector k, Vector3d H, const Vector &origin, double eps);
 #ifdef HUERTO_ONE_DIM
     Vector getHField(int i, double time);
 #endif
@@ -234,7 +235,7 @@ class GenericIncidentSourceESource : public FieldFunc {
 
     double dt;
     double om;
-    Vector front;
+    Vector origin;
     Vector dx;
     SimulationContext &context;
 };
@@ -242,7 +243,8 @@ class GenericIncidentSourceESource : public FieldFunc {
 template<class FieldFunc>
 class GenericIncidentSourceHSource : public FieldFunc {
   public:
-    GenericIncidentSourceHSource(Vector k, Vector E, const Vector &front, double eps, SimulationContext &context);
+    GenericIncidentSourceHSource(Direction dir, SimulationContext &context);
+    void setGenericParam(Vector k, Vector E, const Vector &origin, double eps);
 #ifdef HUERTO_ONE_DIM
     Vector getEField(int i, double time);
 #endif
@@ -261,7 +263,7 @@ class GenericIncidentSourceHSource : public FieldFunc {
 
     double dt;
     double om;
-    Vector front;
+    Vector origin;
     Vector dx;
     SimulationContext &context;
 };
