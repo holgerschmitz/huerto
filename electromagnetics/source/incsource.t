@@ -6,6 +6,8 @@
  */
 
 #include "border.hpp"
+#include "../../maths/vector/vector.hpp"
+#include "../../constants.hpp"
 
 #include <boost/make_shared.hpp>
 
@@ -185,7 +187,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
   off[IncidentSourceCurrent::dim] = reverse?0:1;
   double factor = reverse?1:-1;
 
-#ifdef HUERTO_THREE_DIM
+#ifdef HUERTO_ONE_DIM
   for (ind[0]=low[0]; ind[0]<=high[0]; ++ind[0])
   {
     int x = ind[0]+off[0];
@@ -233,14 +235,20 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
 //===============================================================
 
 template<class FieldFunc>
-GenericIncidentSourceESource<FieldFunc>::GenericIncidentSourceESource(
+GenericIncidentSourceESource<FieldFunc>::GenericIncidentSourceESource(Direction dir, SimulationContext &context)
+: dt(0), om(0), context(context)
+{}
+
+template<class FieldFunc>
+void GenericIncidentSourceESource<FieldFunc>::setGenericParam(
         Vector k,
         Vector3d H,
-        const Vector &front,
-        double eps,
-        SimulationContext &context)
-        : k(k), H(H), front(front), context(context)
+        const Vector &origin,
+        double eps)
 {
+  this->k = k;
+  this->H = H;
+  this->origin = origin;
   dt = context.getDt();
   om = clight*norm(k)/sqrt(eps);
 
@@ -253,15 +261,15 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
 {
   double realtime = time - 0.5*dt;
 
-  double x = i*dx[0] - front[0];
+  double x = i*dx[0] - origin[0];
 
   double posx = k[0]*x - om*realtime;
   double posy = k[0]*(x+0.5*dx[0]) - om*realtime;
   double posz = k[0]*(x+0.5*dx[0]) - om*realtime;
 
-  double hx = fieldFunc(posx);
-  double hy = fieldFunc(posy);
-  double hz = fieldFunc(posz);
+  double hx = this->fieldFunc(posx, H[0]);
+  double hy = this->fieldFunc(posy, H[1]);
+  double hz = this->fieldFunc(posz, H[2]);
 
   return Vector(hx, hy, hz);
 }
@@ -273,16 +281,16 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double t
 {
   double realtime = time - 0.5*dt;
 
-  double x = i*dx[0] - front[0];
-  double y = j*dx[1] - front[1];
+  double x = i*dx[0] - origin[0];
+  double y = j*dx[1] - origin[1];
 
   double posx = k[0]*x + k[1]*(y+0.5*dx[1]) - om*realtime;
   double posy = k[0]*(x+0.5*dx[0]) + k[1]*y - om*realtime;
   double posz = k[0]*(x+0.5*dx[0]) + k[1]*(y+0.5*dx[1]) - om*realtime;
 
-  double hx = fieldFunc(posx);
-  double hy = fieldFunc(posy);
-  double hz = fieldFunc(posz);
+  double hx = this->fieldFunc(posx, H[0]);
+  double hy = this->fieldFunc(posy, H[1]);
+  double hz = this->fieldFunc(posz, H[2]);
 
   return Vector(hx, hy, hz);
 }
@@ -294,17 +302,17 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l, d
 {
   double realtime = time - 0.5*dt;
 
-  double x = i*dx[0] - front[0];
-  double y = j*dx[1] - front[1];
-  double z = l*dx[2] - front[2];
+  double x = i*dx[0] - origin[0];
+  double y = j*dx[1] - origin[1];
+  double z = l*dx[2] - origin[2];
 
   double posx = k[0]*x + k[1]*(y+0.5*dx[1]) + k[2]*(z+0.5*dx[2]) - om*realtime;
   double posy = k[0]*(x+0.5*dx[0]) + k[1]*y + k[2]*(z+0.5*dx[2]) - om*realtime;
   double posz = k[0]*(x+0.5*dx[0]) + k[1]*(y+0.5*dx[1]) + k[2]*z - om*realtime;
 
-  double hx = fieldFunc(posx);
-  double hy = fieldFunc(posy);
-  double hz = fieldFunc(posz);
+  double hx = this->fieldFunc(posx, H[0]);
+  double hy = this->fieldFunc(posy, H[1]);
+  double hz = this->fieldFunc(posz, H[2]);
 
   return Vector(hx, hy, hz);
 }
@@ -316,14 +324,21 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l, d
 //===============================================================
 
 template<class FieldFunc>
-GenericIncidentSourceHSource<FieldFunc>::GenericIncidentSourceHSource(
+GenericIncidentSourceHSource<FieldFunc>::GenericIncidentSourceHSource(Direction dir, SimulationContext &context)
+  : dt(0), om(0), context(context)
+{}
+
+template<class FieldFunc>
+void GenericIncidentSourceHSource<FieldFunc>::setGenericParam(
         Vector k,
         Vector3d E,
-        const Vector &front,
-        double eps,
-        SimulationContext &context)
-        : k(k), E(E), front(front), context(context)
+        const Vector &origin,
+        double eps)
 {
+  this->k = k;
+  this->E = E;
+  this->origin = origin;
+
   dt = context.getDt();
   om = clight*norm(k)/sqrt(eps);
 
@@ -337,15 +352,15 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
 {
   double realtime = time;
 
-  double x = i*dx[0] - front[0];
+  double x = i*dx[0] - origin[0];
 
   double posx = k[0]*(x+0.5*dx[0]) - om*realtime;
   double posy = k[0]*x - om*realtime;
   double posz = k[0]*x - om*realtime;
 
-  double ex = fieldFunc(posx, ramp, E[0]);
-  double ey = fieldFunc(posy, ramp, E[1]);
-  double ez = fieldFunc(posz, ramp, E[2]);
+  double ex = this->fieldFunc(posx, E[0]);
+  double ey = this->fieldFunc(posy, E[1]);
+  double ez = this->fieldFunc(posz, E[2]);
 
   return Vector(ex, ey, ez);
 }
@@ -357,16 +372,16 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double t
 {
   double realtime = time;
 
-  double x = i*dx[0] - front[0];
-  double y = j*dx[1] - front[1];
+  double x = i*dx[0] - origin[0];
+  double y = j*dx[1] - origin[1];
 
   double posx = k[0]*(x+0.5*dx[0]) + k[1]*y - om*realtime;
   double posy = k[0]*x + k[1]*(y+0.5*dx[1]) - om*realtime;
   double posz = k[0]*x + k[1]*y - om*realtime;
 
-  double ex = fieldFunc(posx, ramp, E[0]);
-  double ey = fieldFunc(posy, ramp, E[1]);
-  double ez = fieldFunc(posz, ramp, E[2]);
+  double ex = this->fieldFunc(posx, E[0]);
+  double ey = this->fieldFunc(posy, E[1]);
+  double ez = this->fieldFunc(posz, E[2]);
 
   return Vector(ex, ey, ez);
 }
@@ -378,17 +393,17 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, d
 {
   double realtime = time;
 
-  double x = i*dx[0] - front[0];
-  double y = j*dx[1] - front[1];
-  double z = l*dx[2] - front[2];
+  double x = i*dx[0] - origin[0];
+  double y = j*dx[1] - origin[1];
+  double z = l*dx[2] - origin[2];
 
   double posx = k[0]*(x+0.5*dx[0]) + k[1]*y + k[2]*z - om*realtime;
   double posy = k[0]*x + k[1]*(y+0.5*dx[1]) + k[2]*z - om*realtime;
   double posz = k[0]*x + k[1]*y + k[2]*(z+0.5*dx[2]) - om*realtime;
 
-  double ex = fieldFunc(posx);
-  double ey = fieldFunc(posy);
-  double ez = fieldFunc(posz);
+  double ex = this->fieldFunc(posx, E[0]);
+  double ey = this->fieldFunc(posy, E[1]);
+  double ez = this->fieldFunc(posz, E[2]);
 
   return Vector(ex, ey, ez);
 }

@@ -21,51 +21,22 @@ class PlaneWaveSource : public IncidentSource
     Vector3d H;
     double ramp;
     double eps;
-    Vector front;
+    Vector origin;
 };
 
 class PlaneWaveFieldFunc
 {
   public:
-    PlaneWaveFieldFunc();
+    PlaneWaveFieldFunc() {}
     void setParam(double ramp);
     void initSourceFunc(pGrid, pGrid, pGrid) {}
     void setTime(int) {}
 
   protected:
-    double fieldFunc(double pos);
+    double fieldFunc(double pos, double F);
   private:
     double ramp;
 };
-
-class PlaneWaveSourceHFunc
-{
-  public:
-    PlaneWaveSourceHFunc(Direction dir, SimulationContext &context);
-    void setParam(Vector k, Vector E, Vector H, double ramp, double eps, const Vector &front);
-
-    Vector getEField(int i, int j, int k, double time);
-
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
-    void setTime(int) {}
-
-  private:
-    Vector k;
-    Vector3d E;
-    Vector3d H;
-
-    double dt;
-    double om;
-    double ramp;
-    double eps;
-    Vector front;
-
-    Vector dx;
-
-    Direction dir;
-    SimulationContext &context;
-};
-
 
 //===============================================================
 //==========  Plane Gauss Packet Source
@@ -87,65 +58,22 @@ class PlaneGaussSource : public IncidentSource
     double width;
     double eps;
 
-    Vector front;
+    Vector origin;
 };
 
-class PlaneGaussSourceEFunc
+
+class PlaneGaussFieldFunc
 {
   public:
-    PlaneGaussSourceEFunc(Direction dir, bool isH, SimulationContext &context);
-    void setParam(Vector k, Vector E, Vector H, double width, double eps, const Vector &front);
-
-    Vector getHField(int i, int j, int k, double time);
-
+    PlaneGaussFieldFunc() {}
+    void setParam(double width);
     void initSourceFunc(pGrid, pGrid, pGrid) {}
     void setTime(int) {}
 
+  protected:
+    double fieldFunc(double pos, double F);
   private:
-    Vector k;
-    Vector3d E;
-    Vector3d H;
-
-    double dt;
-    double om;
     double width;
-    double eps;
-    Vector front;
-
-    Vector dx;
-
-    Direction dir;
-    bool isH;
-    SimulationContext &context;
-};
-
-class PlaneGaussSourceHFunc
-{
-  public:
-    PlaneGaussSourceHFunc(Direction dir, bool isH, SimulationContext &context);
-    void setParam(Vector k, Vector E, Vector H, double width, double eps, const Vector &front);
-
-    Vector getEField(int i, int j, int k, double time);
-
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
-    void setTime(int) {}
-
-  private:
-    Vector k;
-    Vector3d E;
-    Vector3d H;
-
-    double dt;
-    double om;
-    double width;
-    double eps;
-    Vector front;
-
-    Vector dx;
-
-    Direction dir;
-    bool isH;
-    SimulationContext &context;
 };
 
 
