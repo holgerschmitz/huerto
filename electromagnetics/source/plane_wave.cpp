@@ -79,7 +79,7 @@ void PlaneWaveSource::initParameters(schnek::BlockParameters &blockPars)
 
   blockPars.addParameter("ramp", &this->ramp, 0.5);
   blockPars.addParameter("eps", &this->eps, 1.0);
-  blockPars.addArrayParameter("origin", this->origin, Vector(0,0,0));
+  blockPars.addArrayParameter("origin", this->origin, Vector(0));
 }
 
 //===============================================================
@@ -133,6 +133,6 @@ void PlaneGaussSource::initParameters(schnek::BlockParameters &blockPars)
   blockPars.addParameter("width", &this->width, 10.0);
 
   blockPars.addParameter("eps", &this->eps, 1.0);
-  blockPars.addArrayParameter("origin", this->origin, Vector(0,0,0));
+  blockPars.addArrayParameter("origin", this->origin, Vector(0));
 }
 

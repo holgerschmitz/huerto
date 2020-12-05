@@ -82,7 +82,7 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
   for (ind[0]=low[0]; ind[0]<=high[0]; ++ind[0])
   {
     int x = ind[0]+off[0];
-    Vector H = this->getHField(x, Time);
+    Vector3d H = this->getHField(x, Time);
     J0(ind[0]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
     J1(ind[0]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
   }
@@ -95,7 +95,7 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
     for (ind[1]=low[1]; ind[1]<=high[1]; ++ind[1])
     {
       int y = ind[1]+off[1];
-      Vector H = this->getHField(x, y, Time);
+      Vector3d H = this->getHField(x, y, Time);
       J0(ind[0], ind[1]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
       J1(ind[0], ind[1]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
     }
@@ -112,7 +112,7 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
       for (ind[2]=low[2]; ind[2]<=high[2]; ++ind[2])
       {
         int z = ind[2]+off[2];
-        Vector H = this->getHField(x, y, z, Time);
+        Vector3d H = this->getHField(x, y, z, Time);
         J0(ind[0], ind[1], ind[2]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
         J1(ind[0], ind[1], ind[2]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
       }
@@ -191,7 +191,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
   for (ind[0]=low[0]; ind[0]<=high[0]; ++ind[0])
   {
     int x = ind[0]+off[0];
-    Vector E = this->getEField(x, Time);
+    Vector3d E = this->getEField(x, Time);
     J0(ind[0]) = -factor*E[IncidentSourceCurrent::transverse2]/dN;
     J1(ind[0]) = factor*E[IncidentSourceCurrent::transverse1]/dN;
   }
@@ -204,7 +204,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
     for (ind[1]=low[1]; ind[1]<=high[1]; ++ind[1])
     {
       int y = ind[1]+off[1];
-      Vector E = this->getEField(x, y, Time);
+      Vector3d E = this->getEField(x, y, Time);
       J0(ind[0], ind[1]) = -factor*E[IncidentSourceCurrent::transverse2]/dN;
       J1(ind[0], ind[1]) = factor*E[IncidentSourceCurrent::transverse1]/dN;
     }
@@ -221,7 +221,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
       for (ind[2]=low[2]; ind[2]<=high[2]; ++ind[2])
       {
         int z = ind[2]+off[2];
-        Vector E = this->getEField(x,y,z,Time);
+        Vector3d E = this->getEField(x,y,z,Time);
         J0(ind[0], ind[1], ind[2]) = -factor*E[IncidentSourceCurrent::transverse2]/dN;
         J1(ind[0], ind[1], ind[2]) = factor*E[IncidentSourceCurrent::transverse1]/dN;
       }
@@ -257,7 +257,7 @@ void GenericIncidentSourceESource<FieldFunc>::setGenericParam(
 
 #ifdef HUERTO_ONE_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
+Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
 {
   double realtime = time - 0.5*dt;
 
@@ -271,13 +271,13 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
-  return Vector(hx, hy, hz);
+  return Vector3d(hx, hy, hz);
 }
 #endif
 
 #ifdef HUERTO_TWO_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double time)
+Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double time)
 {
   double realtime = time - 0.5*dt;
 
@@ -292,13 +292,13 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double t
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
-  return Vector(hx, hy, hz);
+  return Vector3d(hx, hy, hz);
 }
 #endif
 
 #ifdef HUERTO_THREE_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l, double time)
+Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l, double time)
 {
   double realtime = time - 0.5*dt;
 
@@ -314,7 +314,7 @@ Vector GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l, d
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
-  return Vector(hx, hy, hz);
+  return Vector3d(hx, hy, hz);
 }
 #endif
 
@@ -348,7 +348,7 @@ void GenericIncidentSourceHSource<FieldFunc>::setGenericParam(
 
 #ifdef HUERTO_ONE_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
+Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
 {
   double realtime = time;
 
@@ -362,13 +362,13 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
-  return Vector(ex, ey, ez);
+  return Vector3d(ex, ey, ez);
 }
 #endif
 
 #ifdef HUERTO_TWO_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double time)
+Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double time)
 {
   double realtime = time;
 
@@ -383,13 +383,13 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double t
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
-  return Vector(ex, ey, ez);
+  return Vector3d(ex, ey, ez);
 }
 #endif
 
 #ifdef HUERTO_THREE_DIM
 template<class FieldFunc>
-Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, double time)
+Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, double time)
 {
   double realtime = time;
 
@@ -405,6 +405,6 @@ Vector GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, d
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
-  return Vector(ex, ey, ez);
+  return Vector3d(ex, ey, ez);
 }
 #endif
