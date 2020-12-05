@@ -20,7 +20,6 @@ bool getBorderExtent(Direction dir,
 {
   bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
-  int distanceHigh = distance - 0;
 
   schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
   Range gdomain = subdivision.getGlobalDomain();

@@ -41,14 +41,37 @@ void CurrentContainer::sumCurrents()
 
     Index low = jx.getLo();
     Index high = jx.getHi();
-    for (int i=low[0]; i<=high[0]; ++i)
-      for (int j=low[1]; j<=high[1]; ++j)
-        for (int k=low[2]; k<=high[2]; ++k)
-        {
+
+#ifdef HUERTO_ONE_DIM
+    for (int i=low[0]; i<=high[0]; ++i) {
+      jxT(i) += jx(i);
+      jyT(i) += jy(i);
+      jzT(i) += jz(i);
+    }
+#endif
+
+#ifdef HUERTO_TWO_DIM
+    for (int i=low[0]; i<=high[0]; ++i) {
+      for (int j=low[1]; j<=high[1]; ++j) {
+        jxT(i,j) += jx(i,j);
+        jyT(i,j) += jy(i,j);
+        jzT(i,j) += jz(i,j);
+      }
+    }
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    for (int i=low[0]; i<=high[0]; ++i) {
+      for (int j=low[1]; j<=high[1]; ++j) {
+        for (int k=low[2]; k<=high[2]; ++k) {
           jxT(i,j,k) += jx(i,j,k);
           jyT(i,j,k) += jy(i,j,k);
           jzT(i,j,k) += jz(i,j,k);
         }
+      }
+    }
+#endif
+
   }
 }
 
@@ -70,14 +93,36 @@ void CurrentContainer::sumMagCurrents()
 
     Index low = jx.getLo();
     Index high = jx.getHi();
-    for (int i=low[0]; i<=high[0]; ++i)
-      for (int j=low[1]; j<=high[1]; ++j)
-        for (int k=low[2]; k<=high[2]; ++k)
-        {
+
+#ifdef HUERTO_ONE_DIM
+    for (int i=low[0]; i<=high[0]; ++i){
+      jxT(i) += jx(i);
+      jyT(i) += jy(i);
+      jzT(i) += jz(i);
+    }
+#endif
+
+#ifdef HUERTO_TWO_DIM
+    for (int i=low[0]; i<=high[0]; ++i) {
+      for (int j=low[1]; j<=high[1]; ++j) {
+        jxT(i,j) += jx(i,j);
+        jyT(i,j) += jy(i,j);
+        jzT(i,j) += jz(i,j);
+      }
+    }
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    for (int i=low[0]; i<=high[0]; ++i) {
+      for (int j=low[1]; j<=high[1]; ++j) {
+        for (int k=low[2]; k<=high[2]; ++k) {
           jxT(i,j,k) += jx(i,j,k);
           jyT(i,j,k) += jy(i,j,k);
           jzT(i,j,k) += jz(i,j,k);
         }
+      }
+    }
+#endif
   }
 }
 
@@ -88,8 +133,7 @@ void CurrentContainer::init(SimulationContext &context)
   Index lowIn = subdivision.getInnerLo();
   Index highIn = subdivision.getInnerHi();
 
-  schnek::Range<double, DIMENSION> domainSize(schnek::Array<double, DIMENSION>(0,0,0), context.getSize());
-
+  Domain domainSize = subdivision.getInnerExtent(context.getSize());
   pJx = std::make_shared<Field>(lowIn, highIn, domainSize, exStaggerYee, 2);
   pJy = std::make_shared<Field>(lowIn, highIn, domainSize, eyStaggerYee, 2);
   pJz = std::make_shared<Field>(lowIn, highIn, domainSize, ezStaggerYee, 2);

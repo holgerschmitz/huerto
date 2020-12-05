@@ -100,19 +100,10 @@ class IncidentSourceCurrent : public Current {
      */
     int dim;
 
-#ifdef HUERTO_TWO_DIM
-    /**
-     * The transverse axes
-     */
-    int transverse1;
-#endif
-
-#ifdef HUERTO_THREE_DIM
     /**
      * The transverse axes
      */
     int transverse1, transverse2;
-#endif
 
     /**
      * The direction of the border from which the wave should be injected
@@ -136,15 +127,11 @@ class IncidentSourceCurrent : public Current {
      */
     double dt;
 
-#ifndef HUERTO_ONE_DIM
-
     /**
      * References to the transverse components of the current from #Current.pJx,
      * #Current.pJy, and #Current.pJz
      */
     pGrid pJ[2];
-
-#endif
 
     /**
      * The grid spacing in the direction normal to the injection plane
@@ -218,15 +205,15 @@ class GenericIncidentSourceESource : public FieldFunc {
     GenericIncidentSourceESource(Direction dir, SimulationContext &context);
     void setGenericParam(Vector k, Vector3d H, const Vector &origin, double eps);
 #ifdef HUERTO_ONE_DIM
-    Vector getHField(int i, double time);
+    Vector3d getHField(int i, double time);
 #endif
 
 #ifdef HUERTO_TWO_DIM
-    Vector getHField(int i, int j, double time);
+    Vector3d getHField(int i, int j, double time);
 #endif
 
 #ifdef HUERTO_THREE_DIM
-    Vector getHField(int i, int j, int k, double time);
+    Vector3d getHField(int i, int j, int k, double time);
 #endif
 
   private:
@@ -244,17 +231,17 @@ template<class FieldFunc>
 class GenericIncidentSourceHSource : public FieldFunc {
   public:
     GenericIncidentSourceHSource(Direction dir, SimulationContext &context);
-    void setGenericParam(Vector k, Vector E, const Vector &origin, double eps);
+    void setGenericParam(Vector k, Vector3d E, const Vector &origin, double eps);
 #ifdef HUERTO_ONE_DIM
-    Vector getEField(int i, double time);
+    Vector3d getEField(int i, double time);
 #endif
 
 #ifdef HUERTO_TWO_DIM
-    Vector getEField(int i, int j, double time);
+    Vector3d getEField(int i, int j, double time);
 #endif
 
 #ifdef HUERTO_THREE_DIM
-    Vector getEField(int i, int j, int k, double time);
+    Vector3d getEField(int i, int j, int k, double time);
 #endif
 
   private:

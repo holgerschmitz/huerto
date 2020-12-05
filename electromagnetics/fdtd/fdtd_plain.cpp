@@ -153,7 +153,6 @@ void FDTD_Plain::stepD(double dt)
   Field &Ey = *pEy;
   Field &Ez = *pEz;
 
-  Field &Bx = *pBx;
   Field &By = *pBy;
   Field &Bz = *pBz;
 
@@ -220,9 +219,7 @@ void FDTD_Plain::stepB(double dt)
 
   sumMagCurrents();
 
-  for (int i=low[0]; i<=high[0]; ++i)
-  {
-    double jx = (*this->pMx)(i);
+  for (int i=low[0]; i<=high[0]; ++i) {
     double jy = (*this->pMy)(i);
     double jz = (*this->pMz)(i);
 
@@ -344,17 +341,16 @@ void FDTD_Plain::stepB(double dt)
 
     double kappaHdx = rKappaHdx(i)*dx[0];
     double kappaHdy = rKappaHdy(j)*dx[1];
-    double kappaHdz = rKappaHdz(k)*dx[2];
 
     Bx(i,j) = Bx(i,j)
       + dt*(
-        - (Ez(i,j+1,k) - Ez(i,j))/kappaHdy
+        - (Ez(i,j+1) - Ez(i,j))/kappaHdy
         + jx
       );
 
     By(i,j) = By(i,j)
       + dt*(
-          (Ez(i+1,j,k) - Ez(i,j))/kappaHdx
+          (Ez(i+1,j) - Ez(i,j))/kappaHdx
         + jy
       );
 
