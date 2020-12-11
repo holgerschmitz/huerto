@@ -28,10 +28,10 @@ class EMFields :
 {
   private:
     /// The electric field in V/m
-    schnek::Array<InitialsedField<double>, DIMENSION> E;
+    schnek::Array<InitialsedField<double>, 3> E;
 
     /// The magnetic field in Tesla
-    schnek::Array<InitialsedField<double>, DIMENSION> B;
+    schnek::Array<InitialsedField<double>, 3> B;
 
     /**
      * Fill the field values from the expressions provided in the setup file

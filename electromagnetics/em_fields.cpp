@@ -19,7 +19,7 @@
 
 void EMFields::initParameters(schnek::BlockParameters &parameters)
 {
-  for (size_t i=0; i<DIMENSION; ++i)
+  for (size_t i=0; i<3; ++i)
   {
     E[i].parameter = parameters.addParameter(indexToCoord(i, "E"), &E[i].value , 0.0);
     B[i].parameter = parameters.addParameter(indexToCoord(i, "B"), &B[i].value , 0.0);
@@ -27,7 +27,7 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
 }
 
 void EMFields::registerData() {
-  for (size_t i=0; i<DIMENSION; ++i) {
+  for (size_t i=0; i<3; ++i) {
     E[i].field = std::make_shared<Field>();
     B[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "E"), E[i].field);
@@ -46,7 +46,7 @@ void EMFields::fillValues() {
   schnek::Array<schnek::pParameter, DIMENSION> x_parameters = getContext().getXParameter();
   updater.addIndependentArray(x_parameters);
 
-  for (size_t i=0; i<DIMENSION; ++i) {
+  for (size_t i=0; i<3; ++i) {
     schnek::fill_field(*E[i].field, x, E[i].value, updater, E[i].parameter);
     schnek::fill_field(*B[i].field, x, B[i].value, updater, B[i].parameter);
   }
