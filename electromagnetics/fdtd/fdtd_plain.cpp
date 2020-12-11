@@ -68,24 +68,36 @@ void FDTD_Plain::init()
 #ifdef HUERTO_ONE_DIM
   pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
   pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  (*pKappaEdx) = 1.0;
+  (*pKappaHdx) = 1.0;
 #endif
 
 #ifdef HUERTO_TWO_DIM
   pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
   pKappaEdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  (*pKappaEdx) = 1.0;
+  (*pKappaEdy) = 1.0;
 
   pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
   pKappaHdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  (*pKappaHdx) = 1.0;
+  (*pKappaHdy) = 1.0;
 #endif
 
 #ifdef HUERTO_THREE_DIM
   pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
   pKappaEdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
   pKappaEdz->resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  (*pKappaEdx) = 1.0;
+  (*pKappaEdy) = 1.0;
+  (*pKappaEdz) = 1.0;
 
   pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
   pKappaHdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
   pKappaHdz->resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  (*pKappaHdx) = 1.0;
+  (*pKappaHdy) = 1.0;
+  (*pKappaHdz) = 1.0;
 #endif
 
 
@@ -173,6 +185,12 @@ void FDTD_Plain::stepD(double dt)
 
     double kappaEdx = rKappaEdx(i)*dx[0];
 
+//    std::cout << "FDTD stepD " << i << " "
+//        << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
+//        << "(" << By(i) << ", " << Bz(i) << ") "
+//        << "(" << jx << ", " << jy << ", " << jz << ")  "
+//        << kappaEdx << std::endl;
+
     Ex(i) = Ex(i) + dt*jx/eps_0;
 
     Ey(i) = Ey(i)
@@ -224,6 +242,12 @@ void FDTD_Plain::stepB(double dt)
     double jz = (*this->pMz)(i);
 
     double kappaHdx = rKappaHdx(i)*dx[0];
+
+//    std::cout << "FDTD stepB " << i << " "
+//        << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
+//        << "(" << Bx(i) << ", " << By(i) << ", " << Bz(i) << ") "
+//        << kappaHdx << std::endl;
+
 
     By(i) = By(i)
       + dt*(
