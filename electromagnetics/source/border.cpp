@@ -29,8 +29,20 @@ bool getBorderExtent(Direction dir,
   Index low  = subdivision.getInnerLo();
   Index high = subdivision.getInnerHi();
 
-  bhigh[0] = std::min(glow[0]+thickness-1+distanceLow, high[0]);
-  blow[0] = std::max(glow[0]+distanceLow, low[0]);
+
+  switch (dir)
+  {
+    case west:
+      bhigh[0] = std::min(glow[0]+thickness-1+distanceLow, high[0]);
+      blow[0] = std::max(glow[0]+distanceLow, low[0]);
+
+      break;
+    case east:
+      blow[0] = std::max(ghigh[0]-thickness+2-distance, low[0]);
+      bhigh[0] = std::min(ghigh[0]-distance+1, high[0]);
+
+      break;
+  }
 
   haveBorder = (blow[0] <= high[0]) && (bhigh[0] >= low[0]);
 

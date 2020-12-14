@@ -185,11 +185,13 @@ void FDTD_Plain::stepD(double dt)
 
     double kappaEdx = rKappaEdx(i)*dx[0];
 
-//    std::cout << "FDTD stepD " << i << " "
-//        << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
-//        << "(" << By(i) << ", " << Bz(i) << ") "
-//        << "(" << jx << ", " << jy << ", " << jz << ")  "
-//        << kappaEdx << std::endl;
+    if (jx != 0.0 || jy != 0.0 || jz != 0.0) {
+      std::cout << "FDTD stepD " << i << " "
+          << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
+          << "(" << By(i) << ", " << Bz(i) << ") "
+          << "(" << jx << ", " << jy << ", " << jz << ")  "
+          << kappaEdx << std::endl;
+    }
 
     Ex(i) = Ex(i) + dt*jx/eps_0;
 
@@ -243,11 +245,12 @@ void FDTD_Plain::stepB(double dt)
 
     double kappaHdx = rKappaHdx(i)*dx[0];
 
-//    std::cout << "FDTD stepB " << i << " "
-//        << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
-//        << "(" << Bx(i) << ", " << By(i) << ", " << Bz(i) << ") "
-//        << kappaHdx << std::endl;
-
+    if (jy != 0.0 || jz != 0.0) {
+      std::cout << "FDTD stepB " << i << " "
+          << "(" << Ex(i) << ", " << Ey(i) << ", " << Ez(i) << ") "
+          << "(" << Bx(i) << ", " << By(i) << ", " << Bz(i) << ") "
+          << kappaHdx << std::endl;
+    }
 
     By(i) = By(i)
       + dt*(
