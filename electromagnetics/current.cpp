@@ -148,8 +148,9 @@ void CurrentContainer::init(SimulationContext &context)
 //==========  CurrentBlock
 //===============================================================
 
-void CurrentBlock::init()
+void CurrentBlock::preInit()
 {
+  schnek::ChildBlock<CurrentBlock>::preInit();
   SimulationEntity::init(this);
 }
 

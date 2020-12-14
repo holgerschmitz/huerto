@@ -57,6 +57,7 @@ void EMFields::preInit() {
 }
 
 void EMFields::init() {
+  schnek::ChildBlock<EMFields>::init();
   SimulationEntity::init(this);
   const schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
   Index lowIn  = subdivision.getInnerLo();

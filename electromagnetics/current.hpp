@@ -111,7 +111,7 @@ class CurrentBlock :
     /**
      * Initialises the current block
      */
-    void init();
+    void preInit();
 };
 
 /**
