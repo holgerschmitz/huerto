@@ -256,7 +256,7 @@ void GenericIncidentSourceESource<FieldFunc>::setGenericParam(
         double eps)
 {
   this->k = k;
-  this->H = H / eps_0;
+  this->H = H / mu_0;
   this->origin = origin;
   dt = context.getDt();
   om = clight*norm(k)/sqrt(eps);
