@@ -55,7 +55,7 @@ class PlaneGaussSource : public IncidentSource
     Vector k;
     Vector3d H;
 
-    double width;
+    double length;
     double eps;
 
     Vector origin;
@@ -73,7 +73,7 @@ class PlaneGaussFieldFunc
   protected:
     double fieldFunc(double pos, double F);
   private:
-    double width;
+    double length;
 };
 
 
