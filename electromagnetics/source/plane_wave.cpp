@@ -86,12 +86,17 @@ void PlaneWaveSource::initParameters(schnek::BlockParameters &blockPars)
 //==========  Plane Gaussian Wave Packet
 //===============================================================
 
-void PlaneGaussFieldFunc::setParam(double width) {
-  this->width = width;
+void PlaneGaussFieldFunc::setParam(double length) {
+  std::cerr << "SETTING LENGTH " << length << std::endl;
+  this->length = length;
 }
 
 inline double PlaneGaussFieldFunc::fieldFunc(double pos, double F) {
-  double r = pos/width;
+//  if (pos>0) return 0.0;
+//  double f = F*sin(pos);
+//  return (pos > -length) ? -pos/length*f : f;
+
+  double r = pos/length;
   return F*exp(-r*r)*sin(pos);
 }
 
@@ -102,7 +107,7 @@ pCurrent PlaneGaussSource::makeECurrent(int distance, Direction dir)
   typedef IncidentSourceECurrent<PlaneGaussSourceEFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
   cur->setGenericParam(k, H, origin, eps);
-  cur->setParam(width);
+  cur->setParam(length*norm(k)/TWO_PI);
   return pCurrent(cur);
 }
 
@@ -119,7 +124,7 @@ pCurrent PlaneGaussSource::makeHCurrent(int distance, Direction dir)
   typedef IncidentSourceHCurrent<PlaneGaussSourceHFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
   cur->setGenericParam(k, E, origin, eps);
-  cur->setParam(width);
+  cur->setParam(length*norm(k)/TWO_PI);
   return pCurrent(cur);
 }
 
@@ -130,7 +135,7 @@ void PlaneGaussSource::initParameters(schnek::BlockParameters &blockPars)
   blockPars.addArrayParameter("k", this->k, 0.0);
   blockPars.addArrayParameter("H", this->H, 0.0);
 
-  blockPars.addParameter("width", &this->width, 10.0);
+  blockPars.addParameter("length", &this->length, 1.0);
 
   blockPars.addParameter("eps", &this->eps, 1.0);
   blockPars.addArrayParameter("origin", this->origin, Vector(0));
