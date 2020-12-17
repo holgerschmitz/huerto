@@ -7,6 +7,9 @@
 //==========  Plane Wave
 //===============================================================
 
+/**
+ * An infinite plane wave source
+ */
 class PlaneWaveSource : public IncidentSource
 {
   public:
