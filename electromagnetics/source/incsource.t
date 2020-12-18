@@ -38,6 +38,10 @@ void IncidentSourceECurrent<SourceFunc>::init() {
   pJy = std::make_shared<Grid>(blow, bhigh);
   pJz = std::make_shared<Grid>(blow, bhigh);
 
+  *(pJx) = 0.0;
+  *(pJy) = 0.0;
+  *(pJz) = 0.0;
+
   pGrid allJ[3];
   allJ[0] = pJx;
   allJ[1] = pJy;
@@ -151,6 +155,10 @@ void IncidentSourceHCurrent<SourceFunc>::init()
   pJx = std::make_shared<Grid>(blow, bhigh);
   pJy = std::make_shared<Grid>(blow, bhigh);
   pJz = std::make_shared<Grid>(blow, bhigh);
+
+  *(pJx) = 0.0;
+  *(pJy) = 0.0;
+  *(pJz) = 0.0;
 
   pGrid allJ[3];
   allJ[0] = pJx;
@@ -281,7 +289,6 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
-  std::cout << "GenericIncidentSourceESource<FieldFunc>::getHField " << i << " "  << time << " "  << hx << " " << hy << " " << hz << std::endl;
   return Vector3d(hx, hy, hz);
 }
 #endif
@@ -303,6 +310,7 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
+//  std::cout << "GenericIncidentSourceESource<FieldFunc>::getHField " << i << " "  << j << " "  << time << " "  << hx << " " << hy << " " << hz << std::endl;
   return Vector3d(hx, hy, hz);
 }
 #endif
@@ -374,7 +382,6 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
-  std::cout << "GenericIncidentSourceHSource<FieldFunc>::getEField " << i << " "  << time << " " << ex << " " << ey << " " << ez << std::endl;
   return Vector3d(ex, ey, ez);
 }
 #endif
@@ -396,6 +403,7 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
+//  std::cout << "GenericIncidentSourceHSource<FieldFunc>::getEField " << i << " "  << j << " "  << time << " " << ex << " " << ey << " " << ez << std::endl;
   return Vector3d(ex, ey, ez);
 }
 #endif
