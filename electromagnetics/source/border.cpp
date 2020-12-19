@@ -16,7 +16,8 @@ bool getBorderExtent(Direction dir,
                      Index &blow,
                      Index &bhigh,
                      bool isH,
-                     SimulationContext &context)
+                     SimulationContext &context,
+                     bool restricted)
 {
   bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
@@ -59,7 +60,8 @@ bool getBorderExtent(Direction dir,
                      Index &blow,
                      Index &bhigh,
                      bool isH,
-                     SimulationContext &context)
+                     SimulationContext &context,
+                     bool restricted)
 {
   bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
@@ -116,7 +118,7 @@ bool getBorderExtent(Direction dir,
 
   haveBorder = (blow[normal] <= high[normal]) && (bhigh[normal] >= low[normal]);
 
-  if (haveBorder) {
+  if (haveBorder && restricted) {
     bhigh[t1] = std::min(ghigh[t1]-distanceHigh, high[t1]);
     blow[t1] = std::max(glow[t1]+distance, low[t1]);
 
@@ -137,7 +139,8 @@ bool getBorderExtent(Direction dir,
                      Index &blow,
                      Index &bhigh,
                      bool isH,
-                     SimulationContext &context)
+                     SimulationContext &context,
+                     bool restricted)
 {
   bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
@@ -203,7 +206,7 @@ bool getBorderExtent(Direction dir,
 
   haveBorder = (blow[normal] <= high[normal]) && (bhigh[normal] >= low[normal]);
 
-  if (haveBorder) {
+  if (haveBorder && restricted) {
     bhigh[t1] = std::min(ghigh[t1]-distanceHigh, high[t1]);
     blow[t1] = std::max(glow[t1]+distance, low[t1]);
 
