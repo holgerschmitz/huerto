@@ -20,7 +20,8 @@ bool getBorderExtent(Direction dir,
                      Index &blow,
                      Index &bhigh,
                      bool isH,
-                     SimulationContext &context);
+                     SimulationContext &context,
+                     bool restricted = true);
 
 
 #endif /* HUERTO_BOUNDARY_BORDER_HPP_ */
