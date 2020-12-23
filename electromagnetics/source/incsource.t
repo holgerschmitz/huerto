@@ -410,8 +410,7 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double
 
 #ifdef HUERTO_THREE_DIM
 template<class FieldFunc>
-Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, double time)
-{
+Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, int l, double time) {
   double realtime = time;
 
   double x = i*dx[0] - origin[0];
