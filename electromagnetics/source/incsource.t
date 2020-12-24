@@ -295,8 +295,7 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, double time)
 
 #ifdef HUERTO_TWO_DIM
 template<class FieldFunc>
-Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double time)
-{
+Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double time) {
   double realtime = time - 0.5*dt;
 
   double x = i*dx[0] - origin[0];
@@ -310,7 +309,11 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
 
-//  std::cout << "GenericIncidentSourceESource<FieldFunc>::getHField " << i << " "  << j << " "  << time << " "  << hx << " " << hy << " " << hz << std::endl;
+  if (j == 1000) {
+    std::cout << "getHField " << i << ": (" << posx << " " << posy << " " << posz << ") (" << H[0] << " " << H[1] << " " << H[2] << ") "
+            << hx << " " << hy << " " << hz << std::endl;
+  }
+
   return Vector3d(hx, hy, hz);
 }
 #endif
@@ -388,8 +391,7 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, double time)
 
 #ifdef HUERTO_TWO_DIM
 template<class FieldFunc>
-Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double time)
-{
+Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double time) {
   double realtime = time;
 
   double x = i*dx[0] - origin[0];
@@ -402,6 +404,11 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double
   double ex = this->fieldFunc(posx, E[0]);
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
+
+  if (j == 1000) {
+    std::cout << "getEField " << i << ": (" << posx << " " << posy << " " << posz << ")  (" << E[0] << " " << E[1] << " " << E[2] << ") "
+            << ex << " " << ey << " " << ez << std::endl;
+  }
 
 //  std::cout << "GenericIncidentSourceHSource<FieldFunc>::getEField " << i << " "  << j << " "  << time << " " << ex << " " << ey << " " << ez << std::endl;
   return Vector3d(ex, ey, ez);

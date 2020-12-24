@@ -30,7 +30,7 @@ class GaussBeamSource : public IncidentSource
     Vector origin;
     Vector3d H;
     double waist;
-    double length;
+    double rise;
     double offset;
     double eps;
 
@@ -50,7 +50,7 @@ class GaussBeamSourceEFunc
                   Vector origin,
                   Vector3d H,
                   double waist,
-                  double length,
+                  double rise,
                   double offset,
                   double eps,
                   double circ,
@@ -86,7 +86,7 @@ class GaussBeamSourceEFunc
     double om;
     double zr;
     double waist;
-    double length;
+    double rise;
     double offset;
     double eps;
     int superGaussian;
@@ -105,7 +105,7 @@ class GaussBeamSourceHFunc
                   Vector origin,
                   Vector3d E,
                   double waist,
-                  double length,
+                  double rise,
                   double offset,
                   double eps,
                   double circ,
@@ -141,7 +141,7 @@ class GaussBeamSourceHFunc
     double om;
     double zr;
     double waist;
-    double length;
+    double rise;
     double offset;
     double eps;
     int superGaussian;
