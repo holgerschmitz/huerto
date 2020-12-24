@@ -30,7 +30,7 @@ pCurrent GaussBeamSource::makeECurrent(int distance, Direction dir) {
 
   typedef IncidentSourceECurrent<GaussBeamSourceEFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
-  cur->setParam(k, origin, H, waist, length, offset, eps, circ, superGaussian);
+  cur->setParam(k, origin, H, waist, rise, offset, eps, circ, superGaussian);
   return pCurrent(cur);
 }
 
@@ -52,7 +52,7 @@ pCurrent GaussBeamSource::makeHCurrent(int distance, Direction dir) {
 
   typedef IncidentSourceHCurrent<GaussBeamSourceHFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
-  cur->setParam(k, origin, E, waist, length, offset, eps, circ, superGaussian);
+  cur->setParam(k, origin, E, waist, rise, offset, eps, circ, superGaussian);
   return pCurrent(cur);
 }
 
@@ -65,7 +65,7 @@ void GaussBeamSource::initParameters(schnek::BlockParameters &blockPars) {
   blockPars.addArrayParameter("H", this->H, 0.0);
 
   blockPars.addParameter("waist", &this->waist, 10.0);
-  blockPars.addParameter("length", &this->length, 10.0);
+  blockPars.addParameter("rise", &this->rise, 10.0);
   blockPars.addParameter("offset", &this->offset, 40.0);
   blockPars.addParameter("eps", &this->eps, 1.0);
   blockPars.addParameter("circ", &this->circ, 0.0);
@@ -81,7 +81,7 @@ void GaussBeamSourceEFunc::setParam(Vector k,
                                     Vector origin,
                                     Vector3d H,
                                     double waist,
-                                    double length,
+                                    double rise,
                                     double offset,
                                     double eps,
                                     double circ,
@@ -105,10 +105,10 @@ void GaussBeamSourceEFunc::setParam(Vector k,
 
   this->origin = origin;
 
-  this->H = H;
+  this->H = H / mu_0;
   Hp = cross(k3, H) * circ/kn;
   this->waist = waist;
-  this->length = kn*length;
+  this->rise = kn*rise;
   this->offset = offset;
   this->eps = eps;
   this->superGaussian = superGaussian;
@@ -138,20 +138,26 @@ Vector3d GaussBeamSourceEFunc::getHField(int i, int j, double time)
               kperp[0]*(x+0.5*dx[0]) + kperp[1]*(y+0.5*dx[1]));
 
   Vector3d h;
-  for (int d=0; d<3; ++d)
-  {
+  for (int d=0; d<3; ++d) {
+    // z is normalised to the wavelength because k is the wavevector in 1/m
     double z = zA[d];
+    // r is NOT normalised because kperp has been normalised to length 1
     double r = pA[d];
     double w = waist*sqrt(1 + z*z/(zr*zr));
-    double R = z/kn * (1 + zr*zr/(z*z));
-    double ph = -kn*r*r/(2.0*R);
+    double Rinv = z/kn / (z*z + zr*zr);
+    double ph = -0.5*kn*r*r*Rinv;
 
-    double zenv = (z-kn*offset)/length;
-    double env = (zenv<0) ? exp(-zenv*zenv) : 1.0;
+    double zenv = (z + kn*offset)/rise;
+    double env = (zenv>0) ? exp(-zenv*zenv) : 1.0;
 
     double amp = sqrt(waist/w)*env*exp( -std::pow( r/w, 2*superGaussian) );
 
     h[d] = amp*(H[d]*sin(z + ph) + Hp[d]*cos(z + ph));
+
+//    if (j == 1000) {
+//      std::cout << "getHField " << i << ":" << d << " " << z << " " << r << " " << w << " | "
+//              << Rinv << " "  << ph << " "  << zenv << " "  << env << " | "  << amp << " " << h[d] << std::endl;
+//    }
   }
 
   return h;
@@ -182,17 +188,19 @@ Vector3d GaussBeamSourceEFunc::getHField(int i, int j, int l, double time)
   Vector3d h;
   for (int d=0; d<3; ++d)
   {
+    // z is normalised to the wavelength because k is the wavevector in 1/m
     double z = zA[d];
+    // r is NOT normalised because kperp has been normalised to length 1
     double rA = pA[d];
     double rB = pB[d];
     double r2 = rA*rA + rB*rB;
     double r = sqrt(r2);
     double w = waist*sqrt(1 + z*z/(zr*zr));
-    double R = z/kn * (1 + zr*zr/(z*z));
-    double ph = -kn*r2/(2.0*R);
+    double Rinv = z/kn / (z*z + zr*zr);
+    double ph = -0.5*kn*r2*Rinv;
 
-    double zenv = (z-kn*offset)/length;
-    double env = (zenv<0) ? exp(-zenv*zenv) : 1.0;
+    double zenv = (z + kn*offset)/rise;
+    double env = (zenv>0) ? exp(-zenv*zenv) : 1.0;
 
     double amp = sqrt(waist/w)*env*exp( -std::pow( r/w, 2*superGaussian) );
 
@@ -212,7 +220,7 @@ void GaussBeamSourceHFunc::setParam(Vector k,
                                     Vector origin,
                                     Vector3d E,
                                     double waist,
-                                    double length,
+                                    double rise,
                                     double offset,
                                     double eps,
                                     double circ,
@@ -240,7 +248,7 @@ void GaussBeamSourceHFunc::setParam(Vector k,
   Ep = cross(k3, E) * circ/kn;
 
   this->waist = waist;
-  this->length = kn*length;
+  this->rise = kn*rise;
   this->offset = offset;
   this->eps = eps;
   this->superGaussian = superGaussian;
@@ -268,21 +276,25 @@ Vector3d GaussBeamSourceHFunc::getEField(int i, int j, double time) {
               kperp[0]*x + kperp[1]*y);
 
   Vector3d e;
-  for (int d=0; d<3; ++d)
-  {
+  for (int d=0; d<3; ++d) {
+    // z is normalised to the wavelength because k is the wavevector in 1/m
     double z = zA[d];
+    // r is NOT normalised because kperp has been normalised to length 1
     double r = pA[d];
     double w = waist*sqrt(1 + z*z/(zr*zr));
-    double R = z/kn * (1 + zr*zr/(z*z));
-    double ph = -kn*r*r/(2.0*R);
+    double Rinv = z/kn / (z*z + zr*zr);
+    double ph = -0.5*kn*r*r*Rinv;
 
-    z += om*realtime;
-
-    double zenv = (z-kn*offset)/length;
-    double env = (zenv<0) ? exp(-zenv*zenv) : 1.0;
+    double zenv = (z + kn*offset)/rise;
+    double env = (zenv>0) ? exp(-zenv*zenv) : 1.0;
 
     double amp = sqrt(waist/w)*env*exp( - std::pow( r/w, 2*superGaussian));
     e[d] = amp*(E[d]*sin(z + ph) + Ep[d]*cos(z + ph));
+
+//    if (j == 1000) {
+//      std::cout << "getEField " << i << ":" << d << " " << z << " " << r << " " << w << " | "
+//              << Rinv << " "  << ph << " "  << zenv << " "  << env << " | "  << amp << " " << e[d] << std::endl;
+//    }
   }
 
   return e;
@@ -310,21 +322,20 @@ Vector3d GaussBeamSourceHFunc::getEField(int i, int j, int l, double time) {
               kperpB[0]*x + kperpB[1]*y + kperpB[2]*(z+0.5*dx[2]));
 
   Vector3d e;
-  for (int d=0; d<3; ++d)
-  {
+  for (int d=0; d<3; ++d) {
+    // z is normalised to the wavelength because k is the wavevector in 1/m
     double z = zA[d];
+    // r is NOT normalised because kperp has been normalised to length 1
     double rA = pA[d];
     double rB = pB[d];
     double r2 = rA*rA + rB*rB;
     double r = sqrt(r2);
     double w = waist*sqrt(1 + z*z/(zr*zr));
-    double R = z/kn * (1 + zr*zr/(z*z));
-    double ph = -kn*r2/(2.0*R);
+    double Rinv = z/kn / (z*z + zr*zr);
+    double ph = -0.5*kn*r2*Rinv;
 
-    z += om*realtime;
-
-    double zenv = (z-kn*offset)/length;
-    double env = (zenv<0) ? exp(-zenv*zenv) : 1.0;
+    double zenv = (z + kn*offset)/rise;
+    double env = (zenv>0) ? exp(-zenv*zenv) : 1.0;
 
     double amp = sqrt(waist/w)*env*exp( - std::pow( r/w, 2*superGaussian));
     e[d] = amp*(E[d]*sin(z + ph) + Ep[d]*cos(z + ph));
