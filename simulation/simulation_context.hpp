@@ -64,6 +64,11 @@ class SimulationContext
     double time;
 
     /**
+     * The current time step
+     */
+    int timeStep;
+
+    /**
      * The position vector that is exposed in the setup file and can be used for initialisation
      */
     Vector x;
