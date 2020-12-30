@@ -9,6 +9,7 @@
 #define HUERTO_DIAGNOSTIC_SLICE_DIAGNOSTIC_HPP_
 
 #include "../../huerto/simulation/simulation_context.hpp"
+#include "../../huerto/simulation/task.hpp"
 
 #include <schnek/diagnostic/diagnostic.hpp>
 #include <schnek/diagnostic/hdfdiagnostic.hpp>
@@ -16,14 +17,14 @@
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
 class GridSliceDiagnostic :
         public schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>,
-        public SimulationEntity
+        public SimulationEntity,
+        public SimulationTask
 {
   protected:
     typedef typename schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::IndexType IndexType;
   private:
     int dim;
     int pos;
-    int length;
 
     bool outside;
     IndexType localMin;
@@ -42,6 +43,9 @@ class GridSliceDiagnostic :
     void initParameters(schnek::BlockParameters &parameters) override;
     void init() override;
     void write() override;
+  public:
+    std::string getPhase() override;
+    void execute() override;
 };
 
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
@@ -69,7 +73,7 @@ template<typename GridType, typename GridPtrType, typename DiagnosticType>
 typename GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::IndexType
   GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::getGlobalMax() {
   IndexType hi = getContext().getSubdivision().getGlobalDomain().getHi();
-  hi[dim] = length - 1;
+  hi[dim] = this->getInterval() - 1;
   return hi;
 }
 
@@ -78,7 +82,6 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::initParameters(
   schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::initParameters(parameters);
   parameters.addParameter("dim", &dim);
   parameters.addParameter("pos", &pos);
-  parameters.addParameter("length", &length);
 }
 
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
@@ -96,9 +99,10 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::init() {
     localMin = gLocalMin;
     localMin[dim] = 0;
     localMax = gLocalMax;
-    localMax[dim] = length - 1;
+    localMax[dim] = this->getInterval() - 1;
 
     field = std::make_shared<GridType>(localMin, localMax);
+    (*field) = 0.0;
 
     this->container.grid = field.get();
     this->container.local_min = localMin;
@@ -119,19 +123,26 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::init() {
 
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
 void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::write() {
+  schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::write();
+  count = 0;
+  (*field) = 0.0;
+}
+
+template<typename GridType, typename GridPtrType, typename DiagnosticType>
+std::string GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::getPhase() {
+  return "pre-diagnostic";
+}
+template<typename GridType, typename GridPtrType, typename DiagnosticType>
+void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::execute() {
   GridType &destField = *field;
   Field &srcField = *sourceField;
-  if (!outside) {
+  if (!outside && count < this->getInterval()) {
     for (Index src: srcRange) {
       Index dest = src;
       dest[dim] = count;
       destField[dest] = srcField[src];
     }
     ++count;
-    if (count >= length) {
-      schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::write();
-      count = 0;
-    }
   }
 }
 
