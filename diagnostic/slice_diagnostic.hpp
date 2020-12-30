@@ -123,6 +123,10 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::init() {
 
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
 void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::write() {
+  if (outside) {
+    return;
+  }
+
   schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::write();
   count = 0;
   (*field) = 0.0;
@@ -134,16 +138,18 @@ std::string GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::getPhase
 }
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
 void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::execute() {
+  if (outside || count >= this->getInterval()) {
+    return;
+  }
+
   GridType &destField = *field;
   Field &srcField = *sourceField;
-  if (!outside && count < this->getInterval()) {
-    for (Index src: srcRange) {
-      Index dest = src;
-      dest[dim] = count;
-      destField[dest] = srcField[src];
-    }
-    ++count;
+  for (Index src: srcRange) {
+    Index dest = src;
+    dest[dim] = count;
+    destField[dest] = srcField[src];
   }
+  ++count;
 }
 
 #endif /* HUERTO_DIAGNOSTIC_SLICE_DIAGNOSTIC_HPP_ */
