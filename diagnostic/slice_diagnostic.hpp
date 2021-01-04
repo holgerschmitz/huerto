@@ -100,16 +100,23 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::init() {
     localMin[dim] = 0;
     localMax = gLocalMax;
     localMax[dim] = this->getInterval() - 1;
+    this->output.setActive(true);
+  } else {
+    localMin = Index(-1);
+    localMax = Index(-1);
+    this->output.setActive(false);
+  }
 
-    field = std::make_shared<GridType>(localMin, localMax);
-    (*field) = 0.0;
+  field = std::make_shared<GridType>(localMin, localMax);
+  (*field) = 0.0;
 
-    this->container.grid = field.get();
-    this->container.local_min = localMin;
-    this->container.local_max = localMax;
-    this->container.global_min = this->getGlobalMin();
-    this->container.global_max = this->getGlobalMax();
+  this->container.grid = field.get();
+  this->container.local_min = localMin;
+  this->container.local_max = localMax;
+  this->container.global_min = this->getGlobalMin();
+  this->container.global_max = this->getGlobalMax();
 
+  if (!outside) {
     gLocalMin[dim] = pos;
     gLocalMax[dim] = pos;
 
@@ -123,10 +130,6 @@ void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::init() {
 
 template<typename GridType, typename GridPtrType, typename DiagnosticType>
 void GridSliceDiagnostic<GridType, GridPtrType, DiagnosticType>::write() {
-  if (outside) {
-    return;
-  }
-
   schnek::HDFGridDiagnostic<GridType, GridPtrType, DiagnosticType>::write();
   count = 0;
   (*field) = 0.0;
