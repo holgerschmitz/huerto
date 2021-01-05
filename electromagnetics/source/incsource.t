@@ -29,11 +29,6 @@ void IncidentSourceECurrent<SourceFunc>::init() {
     return;
   }
 
-  std::cout << "IncidentSourceECurrent<SourceFunc> Border Extent: " <<
-      blow[0] << " " << blow[1] << " " << blow[2] << " " <<
-      bhigh[0] << " " << bhigh[1] << " " << bhigh[2] << std::endl;
-
-
   pJx = std::make_shared<Grid>(blow, bhigh);
   pJy = std::make_shared<Grid>(blow, bhigh);
   pJz = std::make_shared<Grid>(blow, bhigh);
@@ -147,10 +142,6 @@ void IncidentSourceHCurrent<SourceFunc>::init()
   Index blow, bhigh;
 
   if (!getBorderExtent(IncidentSourceCurrent::dir, 1, distance, blow, bhigh, true, context)) return;
-
-  std::cout << "IncidentSourceHCurrent<SourceFunc> Border Extent: " <<
-      blow[0] << " " << blow[1] << " " << blow[2] << " " <<
-      bhigh[0] << " " << bhigh[1] << " " << bhigh[2] << std::endl;
 
   pJx = std::make_shared<Grid>(blow, bhigh);
   pJy = std::make_shared<Grid>(blow, bhigh);
@@ -270,7 +261,6 @@ void GenericIncidentSourceESource<FieldFunc>::setGenericParam(
   om = clight*norm(k)/sqrt(eps);
 
   dx = context.getDx();
-  std::cout << "GenericIncidentSourceESource<FieldFunc>::setGenericParam " << H[0] << " " << H[1] << " " << H[2] << std::endl;
 }
 
 #ifdef HUERTO_ONE_DIM
@@ -308,11 +298,6 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, double
   double hx = this->fieldFunc(posx, H[0]);
   double hy = this->fieldFunc(posy, H[1]);
   double hz = this->fieldFunc(posz, H[2]);
-
-  if (j == 1000) {
-    std::cout << "getHField " << i << ": (" << posx << " " << posy << " " << posz << ") (" << H[0] << " " << H[1] << " " << H[2] << ") "
-            << hx << " " << hy << " " << hz << std::endl;
-  }
 
   return Vector3d(hx, hy, hz);
 }
@@ -365,7 +350,6 @@ void GenericIncidentSourceHSource<FieldFunc>::setGenericParam(
   om = clight*norm(k)/sqrt(eps);
 
   dx = context.getDx();
-  std::cout << "GenericIncidentSourceHSource<FieldFunc>::setGenericParam " << E[0] << " " << E[1] << " " << E[2] << std::endl;
 }
 
 
@@ -405,12 +389,6 @@ Vector3d GenericIncidentSourceHSource<FieldFunc>::getEField(int i, int j, double
   double ey = this->fieldFunc(posy, E[1]);
   double ez = this->fieldFunc(posz, E[2]);
 
-  if (j == 1000) {
-    std::cout << "getEField " << i << ": (" << posx << " " << posy << " " << posz << ")  (" << E[0] << " " << E[1] << " " << E[2] << ") "
-            << ex << " " << ey << " " << ez << std::endl;
-  }
-
-//  std::cout << "GenericIncidentSourceHSource<FieldFunc>::getEField " << i << " "  << j << " "  << time << " " << ex << " " << ey << " " << ez << std::endl;
   return Vector3d(ex, ey, ez);
 }
 #endif
