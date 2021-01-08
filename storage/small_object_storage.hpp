@@ -12,16 +12,19 @@
 #include <memory>
 
 struct DefaultSmallObjectStorageTraits {
-    static const long blockSize = 1000000;
+    static const size_t blockSize = 1000000;
 };
 
 template<typename T, class Traits = DefaultSmallObjectStorageTraits>
 class SmallObjectStorage {
+  public:
+    typedef T value_type;
   private:
     struct DataBlock {
-        std::unique_ptr<T> *data;
-        long count;
-        DataBlock();
+        T *data;
+        size_t count;
+        DataBlock() = delete;
+        DataBlock(T *data);
         DataBlock(const DataBlock &block);
         T &addItem();
     };
@@ -34,24 +37,24 @@ class SmallObjectStorage {
   public:
 
     SmallObjectStorage() {
+//      blocks.push_front(DataBlock(new T[Traits::blockSize]));
       freeBlock = blocks.end();
     }
+
+    ~SmallObjectStorage();
 
     class iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
       private:
         friend class SmallObjectStorage<T, Traits>;
         BlockIterator blockIter;
-        long pos;
+        size_t pos;
 
         iterator(BlockIterator blockIter_, long pos_ = 0) :
           blockIter(blockIter_), pos(pos_) {}
       public:
         iterator() : pos(0) {}
 
-        iterator(const iterator &it) {
-          blockIter = it.blockIter;
-          pos = it.pos;
-        }
+        iterator(const iterator &it) : blockIter(it.blockIter), pos(it.pos) {}
 
         iterator& operator++() {
           if (++pos >= blockIter->count) {
@@ -99,7 +102,11 @@ class SmallObjectStorage {
     };
 
     iterator begin() {
-      return iterator(blocks.begin());
+      BlockIterator b = blocks.begin();
+      while (b->count == 0 && b != blocks.end()) {
+        ++b;
+      }
+      return iterator(b);
     }
 
     iterator end() {
@@ -128,12 +135,14 @@ class SmallObjectStorage {
 };
 
 template<typename T, class Traits>
-SmallObjectStorage<T, Traits>::DataBlock::DataBlock() : count(0) {
-  data = new T[Traits::blockSize];
+SmallObjectStorage<T, Traits>::DataBlock::DataBlock(T *data) : data(data), count(0) {
+    std::cerr << "Created datablock " << data << std::endl;
 }
 
 template<typename T, class Traits>
-SmallObjectStorage<T, Traits>::DataBlock::DataBlock(const DataBlock &block) : data(block.data), count(block.count) {}
+SmallObjectStorage<T, Traits>::DataBlock::DataBlock(const DataBlock &block) : data(block.data), count(block.count) {
+    std::cerr << "Copied datablock " << data << std::endl;
+}
 
 template<typename T, class Traits>
 T &SmallObjectStorage<T, Traits>::DataBlock::addItem() {
@@ -142,21 +151,17 @@ T &SmallObjectStorage<T, Traits>::DataBlock::addItem() {
 
 template<typename T, class Traits>
 T &SmallObjectStorage<T, Traits>::addItem() {
-
   // find a free block or create one
-  if ((Traits::blockSize == freeBlock->count) || (freeBlock == blocks.end())) {
-    bool foundBlock = false;
+  if ((freeBlock == blocks.end()) || (Traits::blockSize == freeBlock->count)) {
     freeBlock = blocks.begin();
 
-    foundBlock = (Traits::blockSize > freeBlock->count);
-
-    while(!foundBlock && (freeBlock != blocks.end())) {
+    while((freeBlock != blocks.end()) && (Traits::blockSize <= freeBlock->count)) {
       ++freeBlock;
-      foundBlock = (Traits::blockSize > freeBlock->count);
     }
 
-    if (!foundBlock) {
-      freeBlock = blocks.insert(blocks.begin(), DataBlock());
+    if (freeBlock == blocks.end()) {
+      std::cerr << "New DataBlock" << std::endl;
+      freeBlock = blocks.insert(blocks.begin(), DataBlock(new T[Traits::blockSize]));
     }
   }
   return freeBlock->addItem();
@@ -174,7 +179,9 @@ typename SmallObjectStorage<T, Traits>::iterator SmallObjectStorage<T, Traits>::
 
   --(dblock.count);
   // if no more rays in the block then delete the block
-  if (0 == dblock.count) {
+  if (0 == dblock.count && blocks.size() > 1) {
+    std::cerr << "Deleting data" << dblock.data << std::endl;
+    delete[] dblock.data;
     it.blockIter = blocks.erase(it.blockIter);
     it.pos = 0;
     freeBlock = blocks.begin();
@@ -203,8 +210,18 @@ long SmallObjectStorage<T, Traits>::getCount() const
 
 template<typename T, class Traits>
 void SmallObjectStorage<T, Traits>::clear() {
+    for (BlockIterator b = blocks.begin(); b!=blocks.end(); ++b) {
+      delete[] b->data;
+    }
     blocks.clear();
     freeBlock = blocks.end();
 }
 
+template<typename T, class Traits>
+SmallObjectStorage<T, Traits>::~SmallObjectStorage() {
+    for (BlockIterator b = blocks.begin(); b!=blocks.end(); ++b) {
+      delete[] b->data;
+    }
+    blocks.clear();
+}
 #endif /* HUERTO_STORAGE_SMALL_OBJECT_STORAGE_HPP_ */
