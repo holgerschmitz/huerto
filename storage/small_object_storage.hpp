@@ -136,12 +136,12 @@ class SmallObjectStorage {
 
 template<typename T, class Traits>
 SmallObjectStorage<T, Traits>::DataBlock::DataBlock(T *data) : data(data), count(0) {
-    std::cerr << "Created datablock " << data << std::endl;
+//    std::cerr << "Created datablock " << data << std::endl;
 }
 
 template<typename T, class Traits>
 SmallObjectStorage<T, Traits>::DataBlock::DataBlock(const DataBlock &block) : data(block.data), count(block.count) {
-    std::cerr << "Copied datablock " << data << std::endl;
+//    std::cerr << "Copied datablock " << data << std::endl;
 }
 
 template<typename T, class Traits>
@@ -160,7 +160,7 @@ T &SmallObjectStorage<T, Traits>::addItem() {
     }
 
     if (freeBlock == blocks.end()) {
-      std::cerr << "New DataBlock" << std::endl;
+//      std::cerr << "New DataBlock" << std::endl;
       freeBlock = blocks.insert(blocks.begin(), DataBlock(new T[Traits::blockSize]));
     }
   }
