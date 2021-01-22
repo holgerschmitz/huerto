@@ -10,6 +10,7 @@
 
 #include <list>
 #include <memory>
+#include <fstream>
 
 struct DefaultSmallObjectStorageTraits {
     static const size_t blockSize = 1000000;
@@ -136,12 +137,10 @@ class SmallObjectStorage {
 
 template<typename T, class Traits>
 SmallObjectStorage<T, Traits>::DataBlock::DataBlock(T *data) : data(data), count(0) {
-//    std::cerr << "Created datablock " << data << std::endl;
 }
 
 template<typename T, class Traits>
 SmallObjectStorage<T, Traits>::DataBlock::DataBlock(const DataBlock &block) : data(block.data), count(block.count) {
-//    std::cerr << "Copied datablock " << data << std::endl;
 }
 
 template<typename T, class Traits>
@@ -160,7 +159,6 @@ T &SmallObjectStorage<T, Traits>::addItem() {
     }
 
     if (freeBlock == blocks.end()) {
-//      std::cerr << "New DataBlock" << std::endl;
       freeBlock = blocks.insert(blocks.begin(), DataBlock(new T[Traits::blockSize]));
     }
   }
@@ -180,7 +178,7 @@ typename SmallObjectStorage<T, Traits>::iterator SmallObjectStorage<T, Traits>::
   --(dblock.count);
   // if no more rays in the block then delete the block
   if (0 == dblock.count && blocks.size() > 1) {
-    std::cerr << "Deleting data" << dblock.data << std::endl;
+    std::cerr << "SmallObjectStorage deleting data" << dblock.data << std::endl;
     delete[] dblock.data;
     it.blockIter = blocks.erase(it.blockIter);
     it.pos = 0;
