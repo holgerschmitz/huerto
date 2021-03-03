@@ -15,6 +15,7 @@
 pCurrent GaussBeamSource::makeECurrent(int distance, Direction dir) {
   typedef IncidentSourceECurrent<GaussBeamSourceEFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
+  std::cout << "GaussBeamSource::makeECurrent " << dir << " (" << H << ")" << std::endl;
   cur->setParam(k, origin, H, waist, rise, offset, eps, circ, superGaussian);
   return pCurrent(cur);
 }
@@ -34,6 +35,8 @@ pCurrent GaussBeamSource::makeHCurrent(int distance, Direction dir) {
   double factor = -clight*bmag/norm(E);
 
   E *= factor/sqrt(eps);
+
+  std::cout << "GaussBeamSource::makeHCurrent " << dir << " (" << H << ") (" << k3 << ") (" << E << ")" << std::endl;
 
   typedef IncidentSourceHCurrent<GaussBeamSourceHFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
@@ -91,7 +94,11 @@ void GaussBeamSourceEFunc::setParam(Vector k,
   this->origin = origin;
 
   this->H = H / mu_0;
-  Hp = cross(k3, H) * circ/kn;
+  Vector3d kxH = cross(k3, H);
+  this->Hp =  circ * norm(this->H) * kxH / norm(kxH);
+
+  std::cout << "GaussBeamSourceEFunc::setParam " << dir << " (" << this->H << ") (" << kxH << ") " << circ << " (" << this->Hp << ")" << std::endl;
+
   this->waist = waist;
   this->rise = kn*rise;
   this->offset = offset;
@@ -234,7 +241,10 @@ void GaussBeamSourceHFunc::setParam(Vector k,
   this->origin = origin;
 
   this->E = E;
-  Ep = cross(k3, E) * circ/kn;
+  Vector3d kxE = cross(k3, E);
+  this->Ep =  circ * norm(E) * kxE/norm(kxE);
+
+  std::cout << "GaussBeamSourceHFunc::setParam " << dir << " (" << this->E << ") (" << kxE << ") (" << this->Ep << ")" << std::endl;
 
   this->waist = waist;
   this->rise = kn*rise;
