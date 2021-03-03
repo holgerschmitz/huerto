@@ -17,8 +17,8 @@
 //===============================================================
 
 void IncidentSource::initCurrents(CurrentContainer &container) {
-  container.addCurrent(makeECurrent(distance, east));
-  container.addMagCurrent(makeHCurrent(distance, east));
+//  container.addCurrent(makeECurrent(distance, east));
+//  container.addMagCurrent(makeHCurrent(distance, east));
 
   container.addCurrent(makeECurrent(distance, west));
   container.addMagCurrent(makeHCurrent(distance, west));
