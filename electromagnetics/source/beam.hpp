@@ -21,10 +21,12 @@ class GaussBeamSource : public IncidentSource
   public:
     ~GaussBeamSource() {}
   protected:
-    pCurrent makeECurrent(int distance, Direction dir);
-    pCurrent makeHCurrent(int distance, Direction dir);
+    pCurrent makeECurrent(int distance, Direction dir) override;
+    pCurrent makeHCurrent(int distance, Direction dir) override;
 
-    void initParameters(schnek::BlockParameters &blockPars);
+    void initParameters(schnek::BlockParameters &blockPars) override;
+
+    bool needsCurrent(Direction dir) override;
 
     /// The wavevector in 1/m
     Vector k;
