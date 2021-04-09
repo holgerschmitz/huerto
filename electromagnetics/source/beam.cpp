@@ -60,6 +60,10 @@ void GaussBeamSource::initParameters(schnek::BlockParameters &blockPars) {
   blockPars.addParameter("superGaussian", &this->superGaussian, 1);
 }
 
+bool GaussBeamSource::needsCurrent(Direction dir) {
+  int d = dir/2;
+  return (dir % 2) ? k[d] < 0.0 : k[d] > 0.0;
+}
 
 GaussBeamSourceEFunc::GaussBeamSourceEFunc(Direction dir, SimulationContext &context)
   : dir(dir), context(context)
