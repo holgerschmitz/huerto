@@ -155,7 +155,7 @@ class GaussBeamSourceEFunc
     Vector dx;
 
     Direction dir;
-    SimulationContext context;
+    SimulationContext &context;
 };
 
 class GaussBeamSourceHFunc
@@ -235,7 +235,128 @@ class GaussBeamSourceHFunc
     Vector dx;
 
     Direction dir;
-    SimulationContext context;
+    SimulationContext &context;
+};
+
+
+//===============================================================
+//==========  Gaussian Pulse Source
+//===============================================================
+
+class GaussPulseSource : public IncidentSource
+{
+  public:
+    ~GaussPulseSource() {}
+  protected:
+    pCurrent makeECurrent(int distance, Direction dir) override;
+    pCurrent makeHCurrent(int distance, Direction dir) override;
+
+    bool needsCurrent(Direction dir) override;
+    void initParameters(schnek::BlockParameters &blockPars) override;
+
+    Vector k;
+    Vector origin;
+    Vector3d H;
+    double waist;
+    double length;
+    double offset;
+    double eps;
+
+};
+
+class GaussPulseSourceEFunc
+{
+  public:
+    GaussPulseSourceEFunc(Direction dir, SimulationContext &context);
+    void setParam(Vector k, Vector center, Vector3d H, double waist, double length, double offset, double eps);
+
+#ifdef HUERTO_TWO_DIM
+    Vector3d getHField(int i, int j, double time);
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    Vector3d getHField(int i, int j, int k, double time);
+#endif
+
+    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void setTime(double) {}
+
+  private:
+    Vector k;
+#ifdef HUERTO_TWO_DIM
+    /// A unit vector perpendicular to the wavevector
+    Vector kperp;
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    /// A unit vector perpendicular to the wavevector and H
+    Vector kperpA;
+    /// A unit vector perpendicular to the wavevector and kperpA
+    Vector kperpB;
+#endif
+    double kn;
+    Vector origin;
+    Vector3d H;
+
+    double dt;
+    double om;
+    double zr;
+    double waist;
+    double length;
+    double offset;
+    double eps;
+
+    Vector dx;
+
+    Direction dir;
+    SimulationContext &context;
+};
+
+class GaussPulseSourceHFunc
+{
+  public:
+    GaussPulseSourceHFunc(Direction dir, SimulationContext &context);
+    void setParam(Vector k, Vector center, Vector3d E, double waist, double length, double offset, double eps);
+
+#ifdef HUERTO_TWO_DIM
+    Vector3d getEField(int i, int j, double time);
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    Vector3d getEField(int i, int j, int k, double time);
+#endif
+
+    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void setTime(double) {}
+
+  private:
+    Vector k;
+#ifdef HUERTO_TWO_DIM
+    /// A unit vector perpendicular to the wavevector
+    Vector kperp;
+#endif
+
+#ifdef HUERTO_THREE_DIM
+    /// A unit vector perpendicular to the wavevector and H
+    Vector kperpA;
+    /// A unit vector perpendicular to the wavevector and kperpA
+    Vector kperpB;
+#endif
+    double kn;
+    Vector origin;
+    Vector3d E;
+
+    double om;
+    double zr;
+    double waist;
+    double length;
+    double offset;
+    double eps;
+
+    Vector dx;
+
+    Direction dir;
+    SimulationContext &context;
 };
 
 #endif // not HUERTO_ONE_DIM
