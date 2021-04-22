@@ -30,7 +30,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   // First step
   for(auto p: range)
   {
-    rhs(p, dudt);
+    rhs(p, dudt, 0.0);
 
     for (int d=0; d<dim; ++d)
     {
@@ -55,7 +55,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   // Second step
   for(auto p: range)
   {
-    rhs(p, dudt);
+    rhs(p, dudt, dt);
 
     for (int d=0; d<dim; ++d)
     {
