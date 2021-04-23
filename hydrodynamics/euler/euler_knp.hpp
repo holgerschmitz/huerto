@@ -5,8 +5,8 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
-#ifndef HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_
-#define HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_
+#ifndef HUERTO_HYDRODYNAMICS_EULER_KNP_HPP_
+#define HUERTO_HYDRODYNAMICS_EULER_KNP_HPP_
 
 #include "../hydro_solver.hpp"
 
@@ -47,7 +47,12 @@ class EulerKnpModel
 
 
 template<int rank>
-class EulerKnp : public HydroSolver<typename EulerKnpModel<rank>::Field, EulerKnpModel<rank>::dim>
+class EulerKnp : 
+        public HydroSolver,
+        public schnek::BlockContainer<BoundaryCondition<
+          typename EulerKnpModel<rank>::Field, 
+          EulerKnpModel<rank>::dim
+        >>
 {
   public:
     static const int dim = EulerKnpModel<rank>::dim;
@@ -56,7 +61,7 @@ class EulerKnp : public HydroSolver<typename EulerKnpModel<rank>::Field, EulerKn
     typedef typename EulerKnpModel<rank>::FluidValues FluidValues;
     typedef typename EulerKnpModel<rank>::InternalVars InternalVars;
   private:
-    typedef HydroSolver<typename EulerKnpModel<rank>::Field, EulerKnpModel<rank>::dim> Super;
+    typedef HydroSolver Super;
 
     KurganovNoellePetrova<rank, EulerKnpModel> scheme;
     FieldRungeKutta4<rank, dim> integrator;
@@ -82,4 +87,4 @@ class EulerKnp : public HydroSolver<typename EulerKnpModel<rank>::Field, EulerKn
 
 #include "euler_knp.t"
 
-#endif /* HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_ */
+#endif /* HUERTO_HYDRODYNAMICS_EULER_KNP_HPP_ */

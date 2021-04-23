@@ -5,8 +5,8 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
-#ifndef HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_
-#define HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_
+#ifndef HUERTO_HYDRODYNAMICS_ADIABATIC_KNP_HPP_
+#define HUERTO_HYDRODYNAMICS_ADIABATIC_KNP_HPP_
 
 #include "../hydro_solver.hpp"
 
@@ -32,7 +32,14 @@ class AdiabaticKnpModel
     static const int C_M[];
   private:
     double adiabaticGamma;
-    double rho0;
+
+    /**
+     * The proportionality factor in the adiabatic equation.
+     * 
+     * This is really
+     * \f$\frac{p_0}{\rho_0^\gamma}\f$
+     */
+    double p0;
     schnek::Array<double, rank> dx;
   protected:
     double flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const;
@@ -42,12 +49,17 @@ class AdiabaticKnpModel
   public:
     double sound_speed(const FluidValues &u, const InternalVars &p) const;
     void calc_internal_vars(const FluidValues &u, InternalVars &p) const;
-    void setParameters(double adiabaticGamma, double rho0, const schnek::Array<double, rank> &dx);
+    void setParameters(double adiabaticGamma, double p0, const schnek::Array<double, rank> &dx);
 };
 
 
-template<int rank, class Scheme>
-class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim>
+template<int rank>
+class AdiabaticKnp : 
+        public HydroSolver,
+        public schnek::BlockContainer<BoundaryCondition<
+          typename AdiabaticKnpModel<rank>::Field, 
+          AdiabaticKnpModel<rank>::dim
+        >>
 {
   public:
     static const int dim = AdiabaticKnpModel<rank>::dim;
@@ -56,14 +68,14 @@ class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field,
     typedef typename AdiabaticKnpModel<rank>::FluidValues FluidValues;
     typedef typename AdiabaticKnpModel<rank>::InternalVars InternalVars;
   private:
-    typedef HydroSolver<typename AdiabaticKnpModel<rank>::Field, AdiabaticKnpModel<rank>::dim> Super;
+    typedef HydroSolver Super;
 
     KurganovNoellePetrova<rank, AdiabaticKnpModel> scheme;
     FieldRungeKutta4<rank, dim> integrator;
     BoundaryApplicator<Field, dim> boundary;
 
     double adiabaticGamma;
-    double rho0;
+    double p0;
 
     pField Rho;
     schnek::Array<pField, rank> M;
@@ -82,4 +94,4 @@ class AdiabaticKnp : public HydroSolver<typename AdiabaticKnpModel<rank>::Field,
 
 #include "adiabatic_knp.t"
 
-#endif /* HUERTO_HYDRODYNAMICS_EULER_ADIABATIC_KNP_HPP_ */
+#endif /* HUERTO_HYDRODYNAMICS_ADIABATIC_KNP_HPP_ */
