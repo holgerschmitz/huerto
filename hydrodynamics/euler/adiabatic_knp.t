@@ -26,7 +26,7 @@ inline double AdiabaticKnpModel<rank>::sound_speed(const FluidValues &u, const I
 template<int rank>
 inline void AdiabaticKnpModel<rank>::calc_internal_vars(const FluidValues &u, InternalVars &p) const
 {
-  p[0] = p0*pow(u[C_RHO] / rho0, adiabaticGamma);
+  p[0] = p0*pow(u[C_RHO], adiabaticGamma);
 }
 
 template<int rank>
@@ -48,10 +48,10 @@ void AdiabaticKnpModel<rank>::flux_function(size_t direction,
 }
 
 template<int rank>
-void AdiabaticKnpModel<rank>::setParameters(double adiabaticGamma, double rho0, const schnek::Array<double, rank> &dx)
+void AdiabaticKnpModel<rank>::setParameters(double adiabaticGamma, double p0, const schnek::Array<double, rank> &dx)
 {
   this->adiabaticGamma = adiabaticGamma;
-  this->rho0 = rho0;
+  this->p0 = p0;
   this->dx = dx;
 }
 
@@ -59,7 +59,7 @@ template<int rank>
 void AdiabaticKnp<rank>::initParameters(schnek::BlockParameters &parameters)
 {
   parameters.addParameter("gamma", &adiabaticGamma, 1.4);
-  parameters.addParameter("rho0", &rho0, 1);
+  parameters.addParameter("p0", &p0, 1.0);
 }
 
 
@@ -87,7 +87,7 @@ void AdiabaticKnp<rank>::init()
   boundary.addBoundaries(boundaries.begin(), boundaries.end());
 
   dx = this->getContext().getDx();
-  scheme.setParameters(adiabaticGamma, rho0, dx);
+  scheme.setParameters(adiabaticGamma, p0, dx);
 
   schnek::LiteratureArticle Kurganov2001("Kurganov2001", "A. Kurganov and S. Noelle and G. Petrova",
       "Semidiscrete central-upwind schemes for hyperbolic conservation laws and Hamilton--Jacobi equations",

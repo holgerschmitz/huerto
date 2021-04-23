@@ -67,7 +67,7 @@ class KurganovNoellePetrova : public Model<rank>
     double van_leer(double u, double up, double um) const;
     void reconstruct(size_t direction, const Index &pos, int dir, FluidValues &u) const;
     void flux(size_t direction, const Index &pos, FluidValues& flux) const;
-    void rhs(Index p, FluidValues &dudt) const;
+    void rhs(Index p, FluidValues &dudt, double subDt) const;
     void minmax_local_speed(size_t direction,
                             const FluidValues &uW,
                             const FluidValues &uE,
@@ -76,7 +76,7 @@ class KurganovNoellePetrova : public Model<rank>
                             double &ap,
                             double &am) const;
 
-    void operator()(Index p, FluidValues &dudt) const { rhs(p, dudt); }
+    void operator()(Index p, FluidValues &dudt, double subDt) const { rhs(p, dudt, subDt); }
 };
 
 #include "knp_scheme.t"
