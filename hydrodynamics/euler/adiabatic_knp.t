@@ -26,7 +26,7 @@ inline double AdiabaticKnpModel<rank>::sound_speed(const FluidValues &u, const I
 template<int rank>
 inline void AdiabaticKnpModel<rank>::calc_internal_vars(const FluidValues &u, InternalVars &p) const
 {
-  p[0] = pow(u[C_RHO] / rho0, adiabaticGamma);
+  p[0] = p0*pow(u[C_RHO] / rho0, adiabaticGamma);
 }
 
 template<int rank>
