@@ -16,10 +16,8 @@
 /**
  * Base class for hydro solvers
  */
-template<class Field, int dimension>
 class HydroSolver :
-        public schnek::ChildBlock<HydroSolver<Field, dimension> >,
-        public schnek::BlockContainer<BoundaryCondition<Field, dimension> >,
+        public schnek::ChildBlock<HydroSolver>,
         public SimulationEntity
 {
   public:
@@ -32,5 +30,6 @@ class HydroSolver :
     virtual void timeStep(double dt) = 0;
 };
 
+typedef boost::shared_ptr<HydroSolver> pHydroSolver;
 
 #endif /* HUERTO_HYDRODYNAMICS_HYDRO_SOLVER_HPP_ */

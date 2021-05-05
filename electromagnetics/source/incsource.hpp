@@ -50,6 +50,11 @@ class IncidentSource : public CurrentBlock {
     virtual pCurrent makeHCurrent(int distance, Direction dir) = 0;
 
     /**
+     * This can be implemented to indicate that some boundaries do not need currents
+     */
+    virtual bool needsCurrent(Direction dir) { return true; }
+
+    /**
      * Initialise the setup parameters
      */
     void initParameters(schnek::BlockParameters &blockPars);
