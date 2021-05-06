@@ -5,6 +5,8 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
+#include "knp_scheme.hpp"
+
 template<int rank, template<int> class Model>
 void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 {

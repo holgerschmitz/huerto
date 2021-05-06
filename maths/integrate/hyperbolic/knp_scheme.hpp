@@ -50,6 +50,8 @@ class KurganovNoellePetrova : public Model<rank>
 {
   public:
     typedef KurganovNoellePetrovaTypes<rank, Model<rank>::dim, Model<rank>::internalDim> KNP;
+    typedef Model<rank> ModelType;
+
     static const int dim = KNP::dim;
     static const int internalDim = KNP::internalDim;
     typedef typename KNP::Field Field;

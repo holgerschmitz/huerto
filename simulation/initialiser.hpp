@@ -1,3 +1,7 @@
+
+#ifndef HUERTO_SIMULATION_INITIALISER_CONTEXT_HPP_
+#define HUERTO_SIMULATION_INITIALISER_CONTEXT_HPP_
+
 #include "../types.hpp"
 
 #include <schnek/variables/block.hpp>
@@ -32,3 +36,5 @@ template<typename T, typename P>
 void DataReference<T, P>::init(schnek::Block &block) {
     block.retrieveData(refName, data);
 }
+
+#endif // HUERTO_SIMULATION_INITIALISER_CONTEXT_HPP_
