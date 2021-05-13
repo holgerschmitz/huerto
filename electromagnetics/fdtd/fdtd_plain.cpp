@@ -290,15 +290,6 @@ void FDTD_Plain::stepD(double dt)
     double kappaEdx = rKappaEdx(i)*dx[0];
     double kappaEdy = rKappaEdy(j)*dx[1];
 
-//    if (jx != 0.0 || jy != 0.0 || jz != 0.0) {
-//      std::cout << "FDTD stepD " << i << " " << j << " "
-//          << "(" << Ex(i, j) << ", " << Ey(i, j) << ", " << Ez(i, j) << ") "
-//          << "(" << Bx(i, j) << ", " << By(i, j) << ", " << Bz(i, j) << ") "
-//          << "(" << jx << ", " << jy << ", " << jz << ")  "
-//          << kappaEdx << std::endl;
-//    }
-
-
     Ex(i,j) = Ex(i,j)
       + dt*(
           clight2*(
@@ -323,6 +314,7 @@ void FDTD_Plain::stepD(double dt)
           )
         - jz/eps_0
       );
+
   }
 
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
@@ -363,15 +355,6 @@ void FDTD_Plain::stepB(double dt)
     double kappaHdx = rKappaHdx(i)*dx[0];
     double kappaHdy = rKappaHdy(j)*dx[1];
 
-//    if (jx != 0.0 || jy != 0.0 || jz != 0.0) {
-//      std::cout << "FDTD stepB " << i << " " << j << " "
-//          << "(" << Ex(i, j) << ", " << Ey(i, j) << ", " << Ez(i, j) << ") "
-//          << "(" << Bx(i, j) << ", " << By(i, j) << ", " << Bz(i, j) << ") "
-//          << "(" << jx << ", " << jy << ", " << jz << ")  "
-//          << kappaHdx << std::endl;
-//    }
-
-
     Bx(i,j) = Bx(i,j)
       + dt*(
         - (Ez(i,j+1) - Ez(i,j))/kappaHdy
@@ -390,6 +373,7 @@ void FDTD_Plain::stepB(double dt)
         - (Ey(i+1,j) - Ey(i,j))/kappaHdx
         + jz
       );
+
   }
 
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
