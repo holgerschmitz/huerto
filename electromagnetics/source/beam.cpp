@@ -362,7 +362,6 @@ Vector3d GaussBeamSourceHFunc::getEField(int i, int j, int l, double time) {
 #endif
 
 
-#endif // not HUERTO_ONE_DIM
 
 
 //===============================================================
@@ -546,7 +545,7 @@ Vector3d GaussPulseSourceEFunc::getHField(int i, int j, int l, double time)
 
     z -= om*realtime;
 
-    double zenv = (z + offset)/rise;
+    double zenv = (z + offset)/length;
 
     double amp = H[d]*sqrt(waist/w)*exp(-zenv*zenv - r*r/(w*w));
     h[d] = amp*sin(z + ph);
@@ -684,7 +683,7 @@ Vector3d GaussPulseSourceHFunc::getEField(int i, int j, int l, double time) {
 
     z -= om*realtime;
 
-    double zenv = (z + offset)/rise;
+    double zenv = (z + offset)/length;
 
     double amp = E[d]*sqrt(waist/w)*exp(-zenv*zenv - r*r/(w*w));
     e[d] = amp*sin(z + ph);
@@ -693,3 +692,5 @@ Vector3d GaussPulseSourceHFunc::getEField(int i, int j, int l, double time) {
   return e;
 }
 #endif
+
+#endif // not HUERTO_ONE_DIM
