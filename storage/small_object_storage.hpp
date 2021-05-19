@@ -41,6 +41,8 @@ class SmallObjectStorage {
 //      blocks.push_front(DataBlock(new T[Traits::blockSize]));
       freeBlock = blocks.end();
     }
+    
+    SmallObjectStorage(const SmallObjectStorage&) = delete;
 
     ~SmallObjectStorage();
 

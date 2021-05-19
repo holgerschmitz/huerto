@@ -5,6 +5,8 @@
  *  Author: Holger Schmitz (holger@notjustphysics.com)
  */
 
+#include "knp_scheme.hpp"
+
 template<int rank, template<int> class Model>
 void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 {
@@ -89,7 +91,7 @@ inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Ind
 }
 
 template<int rank, template<int> class Model>
-inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt) const
+inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt, double) const
 {
 
   FluidValues sum = 0;
