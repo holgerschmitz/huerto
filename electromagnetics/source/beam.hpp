@@ -27,8 +27,6 @@ class GaussBeamSource : public IncidentSource
 
     void initParameters(schnek::BlockParameters &blockPars) override;
 
-    bool needsCurrent(Direction dir) override;
-
     /// The wavevector in 1/m
     Vector k;
 
@@ -252,7 +250,7 @@ class GaussPulseSource : public IncidentSource
     pCurrent makeECurrent(int distance, Direction dir) override;
     pCurrent makeHCurrent(int distance, Direction dir) override;
 
-    bool needsCurrent(Direction dir) override;
+    bool needCurrent(Direction dir) override;
     void initParameters(schnek::BlockParameters &blockPars) override;
 
     Vector k;

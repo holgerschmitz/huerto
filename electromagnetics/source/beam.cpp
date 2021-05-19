@@ -69,11 +69,6 @@ void GaussBeamSource::initParameters(schnek::BlockParameters &blockPars) {
   blockPars.addParameter("superGaussian", &this->superGaussian, 1);
 }
 
-bool GaussBeamSource::needsCurrent(Direction dir) {
-  int d = dir/2;
-  return (dir % 2) ? k[d] < 0.0 : k[d] > 0.0;
-}
-
 GaussBeamSourceEFunc::GaussBeamSourceEFunc(Direction dir, SimulationContext &context)
   : dir(dir), context(context)
 {}
@@ -374,10 +369,11 @@ Vector3d GaussBeamSourceHFunc::getEField(int i, int j, int l, double time) {
 //==========  Focused Gaussian Wave Packet
 //===============================================================
 
-bool GaussPulseSource::needsCurrent(Direction dir)
+bool GaussPulseSource::needCurrent(Direction dir)
 {
-  int d = dir/2;
-  return (dir % 2) ? k[d] < 0.0 : k[d] > 0.0;
+  int dim = static_cast<int>(dir)/2;
+  bool pos = (static_cast<int>(dir) % 2) == 1;
+  return pos ? k[dim] <= 0.0 : k[dim] >= 0.0;
 }
 
 pCurrent GaussPulseSource::makeECurrent(int distance, Direction dir)
