@@ -21,8 +21,9 @@ class GaussBeamSource : public IncidentSource
   public:
     ~GaussBeamSource() {}
   protected:
-    pCurrent makeECurrent(int distance, Direction dir);
-    pCurrent makeHCurrent(int distance, Direction dir);
+    pCurrent makeECurrent(int distance, Direction dir) override;
+    pCurrent makeHCurrent(int distance, Direction dir) override;
+    bool needCurrent(Direction dir) override;
 
     void initParameters(schnek::BlockParameters &blockPars);
 

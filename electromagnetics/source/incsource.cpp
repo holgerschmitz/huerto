@@ -17,26 +17,38 @@
 //===============================================================
 
 void IncidentSource::initCurrents(CurrentContainer &container) {
-//  container.addCurrent(makeECurrent(distance, east));
-//  container.addMagCurrent(makeHCurrent(distance, east));
+  if (needCurrent(east)) {
+    container.addCurrent(makeECurrent(distance, east));
+    container.addMagCurrent(makeHCurrent(distance, east));
+  }
 
-  container.addCurrent(makeECurrent(distance, west));
-  container.addMagCurrent(makeHCurrent(distance, west));
+  if (needCurrent(west)) {
+    container.addCurrent(makeECurrent(distance, west));
+    container.addMagCurrent(makeHCurrent(distance, west));
+  }
 
 #ifndef HUERTO_ONE_DIM
-  container.addCurrent(makeECurrent(distance, north));
-  container.addMagCurrent(makeHCurrent(distance, north));
+  if (needCurrent(north)) {
+    container.addCurrent(makeECurrent(distance, north));
+    container.addMagCurrent(makeHCurrent(distance, north));
+  }
 
-  container.addCurrent(makeECurrent(distance, south));
-  container.addMagCurrent(makeHCurrent(distance, south));
+  if (needCurrent(south)) {
+    container.addCurrent(makeECurrent(distance, south));
+    container.addMagCurrent(makeHCurrent(distance, south));
+  }
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  container.addCurrent(makeECurrent(distance, up));
-  container.addMagCurrent(makeHCurrent(distance, up));
+  if (needCurrent(up)) {
+    container.addCurrent(makeECurrent(distance, up));
+    container.addMagCurrent(makeHCurrent(distance, up));
+  }
 
-  container.addCurrent(makeECurrent(distance, down));
-  container.addMagCurrent(makeHCurrent(distance, down));
+  if (needCurrent(down)) {
+    container.addCurrent(makeECurrent(distance, down));
+    container.addMagCurrent(makeHCurrent(distance, down));
+  }
 #endif
 }
 

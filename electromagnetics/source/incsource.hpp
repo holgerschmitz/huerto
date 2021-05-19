@@ -50,6 +50,11 @@ class IncidentSource : public CurrentBlock {
     virtual pCurrent makeHCurrent(int distance, Direction dir) = 0;
 
     /**
+     * This can be overridden to limit the current sheets to only some directions
+     */
+    virtual bool needCurrent(Direction dir) { return true; }
+
+    /**
      * Initialise the setup parameters
      */
     void initParameters(schnek::BlockParameters &blockPars);

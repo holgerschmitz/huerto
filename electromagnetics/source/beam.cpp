@@ -12,6 +12,12 @@
 
 #ifndef HUERTO_ONE_DIM
 
+bool GaussBeamSource::needCurrent(Direction dir) {
+  int dim = static_cast<int>(dir)/2;
+  bool pos = (static_cast<int>(dir) % 2) == 1;
+  return pos ? k[dim] <= 0.0 : k[dim] >= 0.0;
+}
+
 pCurrent GaussBeamSource::makeECurrent(int distance, Direction dir) {
   typedef IncidentSourceECurrent<GaussBeamSourceEFunc> CurrentType;
   CurrentType *cur = new CurrentType(distance, dir, getContext());
