@@ -18,6 +18,11 @@ double stepi(double x, double x0)
   return (x>=x0)?0.0:1.0;
 }
 
+double sign(double x, double x0)
+{
+  return (x>=x0)?1.0:-1.0;
+}
+
 double box(double x, double xmin, double xmax)
 {
   return ((x>=xmin)&&(x<xmax))?1.0:0.0;
@@ -32,6 +37,7 @@ double diagf(std::string name, double value)
 void registerCoreFunctions(schnek::FunctionRegistry & registry) {
   registry.registerFunction("step", step);
   registry.registerFunction("stepi", stepi);
+  registry.registerFunction("sign", sign);
   registry.registerFunction("box", box);
   registry.registerFunction("diagf", diagf);
 }
