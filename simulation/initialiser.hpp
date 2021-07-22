@@ -23,18 +23,21 @@ class DataReference {
   public:
     void initParameter(schnek::BlockParameters &blockPars, std::string name);
     void init(schnek::Block &block);
+    bool isSet() { return refName != ""; }
     T& operator*() { return *data; }
     P operator->() { return data; }
 };
 
 template<typename T, typename P>
 void DataReference<T, P>::initParameter(schnek::BlockParameters &blockPars, std::string name) {
-    blockPars.addParameter(name, &refName);
+    blockPars.addParameter(name, &refName, std::string(""));
 }
 
 template<typename T, typename P>
 void DataReference<T, P>::init(schnek::Block &block) {
-    block.retrieveData(refName, data);
+    if (isSet()) {
+      block.retrieveData(refName, data);
+    }
 }
 
 #endif // HUERTO_SIMULATION_INITIALISER_CONTEXT_HPP_
