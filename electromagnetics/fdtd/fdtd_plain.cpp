@@ -185,14 +185,14 @@ void FDTD_Plain::stepD(double dt)
 
     double kappaEdx = rKappaEdx(i)*dx[0];
 
-    Ex(i) = Ex(i) + dt*jx/eps_0;
+    Ex(i) = Ex(i) -E dt*jx/eps_0;
 
     Ey(i) = Ey(i)
       + dt*(
           clight2*(
           - (Bz(i) - Bz(i-1))/kappaEdx
           )
-        + jy/eps_0
+        - jy/eps_0
       );
 
     Ez(i) = Ez(i)
@@ -200,7 +200,7 @@ void FDTD_Plain::stepD(double dt)
           clight2*(
             (By(i) - By(i-1))/kappaEdx
           )
-        + jz/eps_0
+        - jz/eps_0
       );
   }
 
@@ -425,7 +425,7 @@ void FDTD_Plain::stepD(double dt)
             (Bz(i,j,k) - Bz(i,j-1,k))/kappaEdy
           - (By(i,j,k) - By(i,j,k-1))/kappaEdz
           )
-        + jx/eps_0
+        - jx/eps_0
       );
 
     Ey(i,j,k) = Ey(i,j,k)
@@ -434,7 +434,7 @@ void FDTD_Plain::stepD(double dt)
             (Bx(i,j,k) - Bx(i,j,k-1))/kappaEdz
           - (Bz(i,j,k) - Bz(i-1,j,k))/kappaEdx
           )
-        + jy/eps_0
+        - jy/eps_0
       );
 
     Ez(i,j,k) = Ez(i,j,k)
@@ -443,7 +443,7 @@ void FDTD_Plain::stepD(double dt)
             (By(i,j,k) - By(i-1,j,k))/kappaEdx
           - (Bx(i,j,k) - Bx(i,j-1,k))/kappaEdy
           )
-        + jz/eps_0
+        - jz/eps_0
       );
   }
 
