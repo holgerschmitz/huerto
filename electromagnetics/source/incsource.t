@@ -87,8 +87,8 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
   {
     int x = ind[0]+off[0];
     Vector3d H = this->getHField(x, Time);
-    J0(ind[0]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
-    J1(ind[0]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
+    J0(ind[0]) = -factor*H[IncidentSourceCurrent::transverse2]/dN;
+    J1(ind[0]) = factor*H[IncidentSourceCurrent::transverse1]/dN;
   }
 #endif
 
@@ -100,8 +100,8 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
     {
       int y = ind[1]+off[1];
       Vector3d H = this->getHField(x, y, Time);
-      J0(ind[0], ind[1]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
-      J1(ind[0], ind[1]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
+      J0(ind[0], ind[1]) = -factor*H[IncidentSourceCurrent::transverse2]/dN;
+      J1(ind[0], ind[1]) = factor*H[IncidentSourceCurrent::transverse1]/dN;
     }
   }
 #endif
@@ -117,8 +117,8 @@ void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
       {
         int z = ind[2]+off[2];
         Vector3d H = this->getHField(x, y, z, Time);
-        J0(ind[0], ind[1], ind[2]) = factor*H[IncidentSourceCurrent::transverse2]/dN;
-        J1(ind[0], ind[1], ind[2]) = -factor*H[IncidentSourceCurrent::transverse1]/dN;
+        J0(ind[0], ind[1], ind[2]) = -factor*H[IncidentSourceCurrent::transverse2]/dN;
+        J1(ind[0], ind[1], ind[2]) = factor*H[IncidentSourceCurrent::transverse1]/dN;
       }
     }
   }

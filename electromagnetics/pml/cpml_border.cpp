@@ -446,10 +446,10 @@ void CPMLBorderECurrent::stepScheme(double dt)
 
         Psi0[ind]
           = bCoeff(j)*Psi0[ind]
-            - cCoeff(j)*(B1[ind]-B1[indm])/(mu_0*dx);
+            + cCoeff(j)*(B1[ind]-B1[indm])/(mu_0*dx);
         Psi1[ind]
           = bCoeff(j)*Psi1[ind]
-            + cCoeff(j)*(B0[ind]-B0[indm])/(mu_0*dx);
+            - cCoeff(j)*(B0[ind]-B0[indm])/(mu_0*dx);
 #ifdef HUERTO_THREE_DIM
       }
 #endif
