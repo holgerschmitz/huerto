@@ -185,7 +185,7 @@ void FDTD_Plain::stepD(double dt)
 
     double kappaEdx = rKappaEdx(i)*dx[0];
 
-    Ex(i) = Ex(i) -E dt*jx/eps_0;
+    Ex(i) = Ex(i) - dt*jx/eps_0;
 
     Ey(i) = Ey(i)
       + dt*(
