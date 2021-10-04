@@ -44,6 +44,18 @@ double randomUnit(double seed)
   return random_unit_interval(rng);
 }
 
+int iFloor(double val) {
+  return int(floor(val));
+}
+
+int iCeil(double val) {
+  return int(ceil(val));
+}
+
+int iRound(double val) {
+  return int(round(val));
+}
+
 void registerCoreFunctions(schnek::FunctionRegistry & registry) {
   registry.registerFunction("step", step);
   registry.registerFunction("stepi", stepi);
@@ -55,6 +67,9 @@ void registerCoreFunctions(schnek::FunctionRegistry & registry) {
   registry.registerFunction("erf", static_cast<double (*)(double)>(boost::math::erf));
   registry.registerFunction("erfc", static_cast<double (*)(double)>(boost::math::erfc));
   
+  registry.registerFunction("iFloor", iFloor);
+  registry.registerFunction("iCeil", iCeil);
+  registry.registerFunction("iRound", iRound);
 }
 
 void registerConstants(schnek::BlockParameters &parameters) {
