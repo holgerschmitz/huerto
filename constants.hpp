@@ -27,6 +27,7 @@ static const double planck_hbar = planck_h/TWO_PI;
 
 
 static const std::string indexToCoordMapping[] = {"x", "y", "z", "u", "v", "w"};
+
 inline const std::string indexToCoord(int index, std::string prefix = "", std::string postfix = "") {
   return prefix+indexToCoordMapping[index] + postfix;
 }

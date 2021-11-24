@@ -63,6 +63,8 @@ class KurganovNoellePetrova : public Model<rank>
 
   private:
     schnek::Array<Field*, dim> fields;
+    void rhs_record_flux(std::true_type, Index p, FluidValues &dudt, double subDt) const;
+    void rhs_record_flux(std::false_type, Index p, FluidValues &dudt, double subDt) const;
   public:
     void setField(int d, Field &field);
 

@@ -7,6 +7,8 @@
 
 #include "knp_scheme.hpp"
 
+#include <type_traits>
+
 template<int rank, template<int> class Model>
 void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 {
@@ -90,8 +92,43 @@ inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Ind
   flux = (ap*fE - am*fW + ap*am*(uW-uE))/(ap-am);
 }
 
+namespace huerto_detail {
+
+  // Template checking for existence of flux_record function on the KNP Model
+  // adapted from Stackoverflow anwser https://stackoverflow.com/a/16824239
+  template<typename, typename T>
+  struct knp_scheme_has_flux_record {
+      static_assert(
+          std::integral_constant<T, false>::value,
+          "Second template parameter needs to be of function type.");
+  };
+
+  // specialization that does the checking
+
+  template<typename C, typename Ret, typename... Args>
+  struct knp_scheme_has_flux_record<C, Ret(Args...)> {
+    private:
+      template<typename T>
+      static constexpr auto check(T*)
+      -> typename
+          std::is_same<
+              decltype( std::declval<T>().flux_record( std::declval<Args>()... ) ),
+              Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          >::type;   // attempt to call it and see if the return type is correct
+
+      template<typename>
+      static constexpr std::false_type check(...);
+
+
+    public:
+      typedef decltype(check<C>(0)) type;
+      static constexpr bool value = type::value;
+  };
+
+}
+
 template<int rank, template<int> class Model>
-inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt, double) const
+inline void KurganovNoellePetrova<rank, Model>::rhs_record_flux(std::false_type, Index pos, FluidValues& dudt, double) const
 {
 
   FluidValues sum = 0;
@@ -108,4 +145,33 @@ inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt
   }
 
   dudt = sum;
+}
+
+template<int rank, template<int> class Model>
+inline void KurganovNoellePetrova<rank, Model>::rhs_record_flux(std::true_type, Index pos, FluidValues& dudt, double subDt) const
+{
+  FluidValues sum = 0;
+  for (size_t i=0; i<rank; ++i)
+  {
+    Index posm = pos;
+    --posm[i];
+
+    FluidValues fm, fp;
+    flux(i, posm, fm);
+    flux(i, pos,  fp);
+    this->flux_record(i, posm, fm, subDt);
+    this->flux_record(i, pos, fp, subDt);
+
+    sum += (fm - fp) / this->getDx()[i];
+  }
+
+  dudt = sum;
+}
+
+template<int rank, template<int> class Model>
+inline void KurganovNoellePetrova<rank, Model>::rhs(Index pos, FluidValues& dudt, double subDt) const
+{
+  typedef typename huerto_detail::knp_scheme_has_flux_record<Model<rank>, void(int, Index, FluidValues, double)>::type record_flux;
+
+  rhs_record_flux(record_flux(), pos, dudt, subDt);
 }
