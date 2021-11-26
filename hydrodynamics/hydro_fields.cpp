@@ -73,7 +73,7 @@ void HydroFields::init()
   schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
   schnek::Array<bool, DIMENSION> stagger;
-  stagger = true;
+  stagger = false;
 
   Rho.field->resize(lowIn, highIn, domainSize, stagger, 2);
   for (size_t i=0; i<DIMENSION; ++i)
