@@ -27,6 +27,9 @@ class FieldRungeKutta4
 
     template<typename RHS, typename BC>
     void integrateStep(double dt, const RHS &rhs, BC boundary);
+
+    template<typename RHS, typename BC, typename STEPPER>
+    void integrateStep(double dt, const RHS &rhs, BC boundary, STEPPER &stepper);
 };
 
 #include "runge_kutta.t"

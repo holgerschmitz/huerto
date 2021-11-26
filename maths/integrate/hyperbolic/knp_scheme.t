@@ -98,9 +98,9 @@ namespace huerto_detail {
   // adapted from Stackoverflow anwser https://stackoverflow.com/a/16824239
   template<typename, typename T>
   struct knp_scheme_has_flux_record {
-      static_assert(
-          std::integral_constant<T, false>::value,
-          "Second template parameter needs to be of function type.");
+    static_assert(
+      std::integral_constant<T, false>::value,
+      "Second template parameter needs to be of function type.");
   };
 
   // specialization that does the checking
@@ -109,12 +109,11 @@ namespace huerto_detail {
   struct knp_scheme_has_flux_record<C, Ret(Args...)> {
     private:
       template<typename T>
-      static constexpr auto check(T*)
-      -> typename
-          std::is_same<
-              decltype( std::declval<T>().flux_record( std::declval<Args>()... ) ),
-              Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-          >::type;   // attempt to call it and see if the return type is correct
+      static constexpr auto check(T*) 
+        -> typename std::is_same<
+            decltype( std::declval<T>().flux_record( std::declval<Args>()... ) ),
+            Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        >::type;   // attempt to call it and see if the return type is correct
 
       template<typename>
       static constexpr std::false_type check(...);
