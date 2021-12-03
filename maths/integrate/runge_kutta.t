@@ -89,7 +89,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   schnek::Array<double, dim> dudt;
 
   // First step
-  stepper(0);
+  stepper.step(0);
   for(auto p: range)
   {
     rhs(p, dudt, 0.0);
@@ -114,7 +114,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   boundary();
 
   // Second step
-  stepper(1);
+  stepper.step(1);
   for(auto p: range)
   {
     rhs(p, dudt, dt);

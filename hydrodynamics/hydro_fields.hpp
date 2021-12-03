@@ -1,5 +1,5 @@
 /*
- * em_fields.hpp
+ * hydro_fields.hpp
  *
  *  Created on: 20 Apr 2018
  *      Author: Holger Schmitz
