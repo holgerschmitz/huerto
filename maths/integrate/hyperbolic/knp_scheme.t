@@ -9,6 +9,13 @@
 
 #include <type_traits>
 
+#include <schnek/datastream.hpp>
+#include <schnek/util/logger.hpp>
+
+#ifndef HUERTO_MATHS_INTEGRATE_HYPERBOLIC_KNP_SCHEME_HPP_ // doing this for intellisense
+#include "knp_scheme.hpp"
+#endif
+
 template<int rank, template<int> class Model>
 void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 {
@@ -60,6 +67,8 @@ void KurganovNoellePetrova<rank, Model>::minmax_local_speed(
 
   ap = std::max( (vW+cfW), std::max( (vE+cfE), 0.0 ));
   am = std::min( (vW-cfW), std::min( (vE-cfE), 0.0 ));
+
+  SCHNEK_TRACE_LOG(5, vW << " " << vE << " | " << cfW << " " << cfE << " | " << ap << " " << am);
 }
 
 template<int rank, template<int> class Model>
