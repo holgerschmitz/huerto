@@ -22,18 +22,23 @@ typedef std::shared_ptr<Current> pCurrent;
 
 /**
  * A container for currents that distinguishes between electric and magnetic
- * currents.
+ * currents. The currents are added up from all the Current references added
+ * to the container.
  *
  * The magnetic currents are current-like fields that enter the Faraday equation
  * much like the electric current enters the Ampere equation. These can be used
  * to provide absorbing boundary layers. They are not real physical currents but
  * mathematical constructs.
+ * 
+ * Typically an implementation of an electromagnetic FieldSolver will also inherit 
+ * from CurrentContainer. This allows the field solver to access the summed up 
+ * currents and include them in the field equations.
  */
 class CurrentContainer
 {
   protected:
     /**
-     * A list of currents
+     * A list of pointers to currents
      */
     typedef std::list<pCurrent> CurrentList;
 
@@ -93,6 +98,9 @@ class CurrentContainer
 
 /**
  * An abstract block type that calculates currents
+ * 
+ * The current block typically will be a child block of a CurrentContainer instance. 
+ * The parent block will call #initCurrents function to add currents to the container.
  */
 class CurrentBlock :
         public schnek::ChildBlock<CurrentBlock>,
