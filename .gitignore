@@ -37,3 +37,6 @@
 .cproject
 
 /bin
+
+/docs/doxygen
+/docs/sphinx

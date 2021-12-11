@@ -33,7 +33,7 @@ LOADLIBS = -lschnek -lm
 
 FULLTARGET = $(BIN_DIR)/$(TARGET)
 
-.PHONY: $(TARGET)
+.PHONY: $(TARGET) docs
 $(TARGET): $(BIN_DIR)/$(TARGET)
 
 # Create parallel directory tree to hold the build files
@@ -68,4 +68,5 @@ $(FULLTARGET): $(OBJECTS)
 clean:
 	-rm -f $(OBJECTS) core $(FULLTARGET)
 
-
+docs:
+	doxygen
