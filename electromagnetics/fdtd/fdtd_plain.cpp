@@ -16,6 +16,9 @@
 
 void FDTD_Plain::registerData()
 {
+  self = this;
+  addData("FDTD_Plain", self);
+
 #ifdef HUERTO_ONE_DIM
   pKappaEdx = std::make_shared<Grid1d>();
   pKappaHdx = std::make_shared<Grid1d>();
@@ -147,7 +150,7 @@ void FDTD_Plain::stepScheme(double dt)
     current->stepScheme(dt);
   }
 
-  stepD(dt);
+  stepE(dt);
 
 
   BOOST_FOREACH(pCurrent current, this->magCurrents)
@@ -159,16 +162,24 @@ void FDTD_Plain::stepScheme(double dt)
 }
 
 #ifdef HUERTO_ONE_DIM
-void FDTD_Plain::stepD(double dt)
+void FDTD_Plain::stepE(double dt, 
+                       Field *Ex_, 
+                       Field *Ey_, 
+                       Field *Ez_, 
+                       Field *Bx_, 
+                       Field *By_,
+                       Field *Bz_, 
+                       Grid1d *KappaEdx_)
 {
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
+  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
+  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
+  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
 
-  Field &By = *pBy;
-  Field &Bz = *pBz;
+  Field &By = By_ != NULL ? *By_ : *pBy;
+  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
 
-  Grid1d &rKappaEdx= *pKappaEdx;
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
+
 
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
@@ -259,19 +270,25 @@ void FDTD_Plain::stepB(double dt)
 #endif
 
 #ifdef HUERTO_TWO_DIM
-void FDTD_Plain::stepD(double dt)
-{
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
+void FDTD_Plain::stepE(double dt, 
+                       Field *Ex_, 
+                       Field *Ey_, 
+                       Field *Ez_, 
+                       Field *Bx_, 
+                       Field *By_,
+                       Field *Bz_, 
+                       Grid1d *KappaEdx_, 
+                       Grid1d *KappaEdy_) {
+  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
+  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
+  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
 
-  Field &Bx = *pBx;
-  Field &By = *pBy;
-  Field &Bz = *pBz;
+  Field &Bx = Bx_ != NULL ? *Bx_ : *pBx;
+  Field &By = By_ != NULL ? *By_ : *pBy;
+  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
 
-  Grid1d &rKappaEdx= *pKappaEdx;
-  Grid1d &rKappaEdy= *pKappaEdy;
-
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
+  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : *pKappaEdy;
 
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
@@ -385,19 +402,29 @@ void FDTD_Plain::stepB(double dt)
 #endif
 
 #ifdef HUERTO_THREE_DIM
-void FDTD_Plain::stepD(double dt)
+void FDTD_Plain::stepE(double dt, 
+                       Field *Ex_, 
+                       Field *Ey_, 
+                       Field *Ez_, 
+                       Field *Bx_, 
+                       Field *By_,
+                       Field *Bz_, 
+                       Grid1d *KappaEdx_, 
+                       Grid1d *KappaEdy_, 
+                       Grid1d *KappaEdy_)
 {
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
+  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
+  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
+  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
 
-  Field &Bx = *pBx;
-  Field &By = *pBy;
-  Field &Bz = *pBz;
+  Field &Bx = Bx_ != NULL ? *Bx_ : *pBx;
+  Field &By = By_ != NULL ? *By_ : *pBy;
+  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
 
-  Grid1d &rKappaEdx= *pKappaEdx;
-  Grid1d &rKappaEdy= *pKappaEdy;
-  Grid1d &rKappaEdz= *pKappaEdz;
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
+  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : *pKappaEdy;
+  Grid1d &rKappaEdz= KappaEdz_ != NULL ? *KappaEdz_ : *pKappaEdz;
+
 
 
   Index low = Ex.getInnerLo();
