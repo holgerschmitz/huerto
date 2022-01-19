@@ -23,6 +23,15 @@ void KurganovNoellePetrova<rank, Model>::setField(int d, Field &field)
 }
 
 template<int rank, template<int> class Model>
+void KurganovNoellePetrova<rank, Model>::fluidValuesAt(Index p, FluidValues &u) const
+{
+  for (size_t d=0; d<dim; ++d)
+  {
+    u[d] = (*fields[d])[p];
+  }
+}
+
+template<int rank, template<int> class Model>
 inline double KurganovNoellePetrova<rank, Model>::van_leer(double u, double up, double um) const
 {
   double du = (up-u)*(u-um);
@@ -120,9 +129,10 @@ namespace huerto_detail {
       template<typename T>
       static constexpr auto check(T*) 
         -> typename std::is_same<
-            decltype( std::declval<T>().flux_record( std::declval<Args>()... ) ),
-            Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        >::type;   // attempt to call it and see if the return type is correct
+            // attempt to call it and see if the return type is correct
+            decltype( std::declval<T>().flux_record( std::declval<Args>()... ) ), 
+            Ret  
+        >::type;   
 
       template<typename>
       static constexpr std::false_type check(...);

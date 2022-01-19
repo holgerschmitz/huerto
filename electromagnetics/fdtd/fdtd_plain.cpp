@@ -411,7 +411,7 @@ void FDTD_Plain::stepE(double dt,
                        Field *Bz_, 
                        Grid1d *KappaEdx_, 
                        Grid1d *KappaEdy_, 
-                       Grid1d *KappaEdy_)
+                       Grid1d *KappaEdz_)
 {
   Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
   Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;

@@ -67,6 +67,7 @@ class KurganovNoellePetrova : public Model<rank>
     void rhs_record_flux(std::false_type, Index p, FluidValues &dudt, double subDt) const;
   public:
     void setField(int d, Field &field);
+    void fluidValuesAt(Index p, FluidValues &u) const;
 
     double van_leer(double u, double up, double um) const;
     void reconstruct(size_t direction, const Index &pos, int dir, FluidValues &u) const;
