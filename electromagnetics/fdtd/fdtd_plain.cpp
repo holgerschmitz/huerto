@@ -130,14 +130,14 @@ void FDTD_Plain::init()
 
 void FDTD_Plain::stepSchemeInit(double dt)
 {
-  stepB(0.5*dt);
-
-  BOOST_FOREACH(pCurrent current, this->currents)
+  BOOST_FOREACH(pCurrent current, this->magCurrents)
   {
     current->stepSchemeInit(dt);
   }
 
-  BOOST_FOREACH(pCurrent current, this->magCurrents)
+  stepB(0.5*dt);
+
+  BOOST_FOREACH(pCurrent current, this->currents)
   {
     current->stepSchemeInit(dt);
   }
