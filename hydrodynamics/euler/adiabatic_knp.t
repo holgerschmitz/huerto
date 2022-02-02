@@ -20,7 +20,7 @@ inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidV
 template<int rank>
 inline double AdiabaticKnpModel<rank>::sound_speed(const FluidValues &u, const InternalVars &p) const
 {
-  return (p[0]>0.0)?(0.5*sqrt(4.0*adiabaticGamma*p[0]/u[C_RHO])):0.0;
+  return (p[0]>0.0)?(sqrt(adiabaticGamma*p[0]/u[C_RHO])):0.0;
 }
 
 template<int rank>
