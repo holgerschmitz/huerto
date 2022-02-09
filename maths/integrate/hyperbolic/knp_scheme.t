@@ -80,9 +80,15 @@ void KurganovNoellePetrova<rank, Model>::minmax_local_speed(
   SCHNEK_TRACE_LOG(5, vW << " " << vE << " | " << cfW << " " << cfE << " | " << ap << " " << am);
 }
 
+extern int huerto_debug_flag;
+
 template<int rank, template<int> class Model>
 inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Index &pos, FluidValues& flux) const
 {
+  if (pos[0] == 50) {
+    huerto_debug_flag |= (int)1;
+  }
+
   FluidValues uW, uE;
   double ap, am;
   FluidValues fE, fW;
@@ -106,8 +112,20 @@ inline void KurganovNoellePetrova<rank, Model>::flux(size_t direction, const Ind
   this->flux_function(direction, uW, pW, fW);
   this->flux_function(direction, uE, pE, fE);
 
+  if (pos[0] == 50) {
+    std::cout << "Hydro " << uW[0] << " " << uW[1] << " " << uW[2] << " " << uW[3] 
+      << " | "  << uE[0] << " " << uE[1] << " " << uE[2] << " " << uE[3] << std::endl;
+    std::cout << "Flux " << fW[0] << " " << fW[1] << " " << fW[2] << " " << fW[3] 
+      << " | "  << fE[0] << " " << fE[1] << " " << fE[2] << " " << fE[3] << std::endl;
+  }
+
   // assemble everything to calculate the flux
   flux = (ap*fE - am*fW + ap*am*(uW-uE))/(ap-am);
+
+  if (pos[0] == 50) {
+    huerto_debug_flag &= ~(int)1;
+  }
+
 }
 
 namespace huerto_detail {
@@ -148,7 +166,6 @@ namespace huerto_detail {
 template<int rank, template<int> class Model>
 inline void KurganovNoellePetrova<rank, Model>::rhs_record_flux(std::false_type, Index pos, FluidValues& dudt, double) const
 {
-
   FluidValues sum = 0;
   for (size_t i=0; i<rank; ++i)
   {
