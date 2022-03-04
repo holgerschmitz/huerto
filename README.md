@@ -1,3 +1,5 @@
+[![Support Ukraine Badge](https://bit.ly/support-ukraine-now)](https://github.com/support-ukraine/support-ukraine)
+
 # Huerto: A repository of algorithms for Schnek
 
 A repository of numerical algorithms and ready to use simulation blocks. Pick and mix modules to create your individual simulation code.
