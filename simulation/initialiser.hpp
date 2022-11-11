@@ -8,13 +8,25 @@
 
 #include <memory>
 
-template<typename T>
+/**
+ * @brief A named field that can be initialised through the setup file
+ * 
+ * @tparam T The value type in the field, e.g `double`
+ * @tparam D The dimension of the field (default DIMENSION)
+ */
+template<typename T, int D = DIMENSION>
 struct InitialsedField {
-    std::shared_ptr<schnek::Field<T, DIMENSION, HuertoGridChecker>> field;
+    std::shared_ptr<schnek::Field<T, D, HuertoGridChecker>> field;
     schnek::pParameter parameter;
     T value;
 };
 
+/**
+ * @brief A data reference to named data in a different block
+ * 
+ * @tparam T The value type of the data, e.g. `Field`
+ * @tparam P The pointer type of the data (default T*)
+ */
 template<typename T, typename P = T*>
 class DataReference {
   protected:
