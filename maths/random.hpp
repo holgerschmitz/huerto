@@ -10,10 +10,12 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
+#include <boost/random/normal_distribution.hpp>
 #include <boost/random/uniform_on_sphere.hpp>
 
 extern boost::random::mt19937 rng;
 extern boost::random::uniform_real_distribution<> random_unit_interval;
+extern boost::random::normal_distribution<> random_normal;
 extern boost::random::uniform_on_sphere<> random_sphere;
 
 #endif /* HUERTO_MATHS_RANDOM_HPP_ */
