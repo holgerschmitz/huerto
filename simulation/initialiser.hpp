@@ -15,7 +15,7 @@
  * @tparam D The dimension of the field (default DIMENSION)
  */
 template<typename T, int D = DIMENSION>
-struct InitialsedField {
+struct InitialisedField {
     std::shared_ptr<schnek::Field<T, D, HuertoGridChecker>> field;
     schnek::pParameter parameter;
     T value;

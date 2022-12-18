@@ -28,11 +28,11 @@ class HydroFields :
   private:
     friend class Vellamo;
     /// The fluid mass density
-    InitialsedField<double> Rho;
+    InitialisedField<double> Rho;
     /// The fluid momentum
-    schnek::Array<InitialsedField<double>, DIMENSION> M;
+    schnek::Array<InitialisedField<double>, DIMENSION> M;
     /// The internal energy of the fluid
-    InitialsedField<double> E;
+    InitialisedField<double> E;
 
     /**
      * Fill the field values from the expressions provided in the setup file
