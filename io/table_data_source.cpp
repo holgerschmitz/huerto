@@ -9,9 +9,9 @@
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <memory>
 #include <fstream>
 
 void FileTableDataReader::initParameters(schnek::BlockParameters &parameters)

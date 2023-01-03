@@ -75,7 +75,7 @@ class BoundaryApplicator
     typedef Field* pField;
   private:
     schnek::Array<pField, dimension> fields;
-    std::list<boost::shared_ptr<BoundaryCondition<Field, dimension>>> boundaryConditions;
+    std::list<std::shared_ptr<BoundaryCondition<Field, dimension>>> boundaryConditions;
     schnek::DomainSubdivision<Field> *subdivision;
   public:
     BoundaryApplicator() : subdivision(NULL) {}

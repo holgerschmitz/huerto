@@ -10,9 +10,9 @@
 #include <schnek/grid.hpp>
 #include <schnek/tools/literature.hpp>
 
-#include <boost/make_shared.hpp>
-
 #include "fdtd_plain.hpp"
+
+#include <memory>
 
 void FDTD_Plain::registerData()
 {

@@ -30,6 +30,6 @@ class HydroSolver :
     virtual void timeStep(double dt) = 0;
 };
 
-typedef boost::shared_ptr<HydroSolver> pHydroSolver;
+typedef std::shared_ptr<HydroSolver> pHydroSolver;
 
 #endif /* HUERTO_HYDRODYNAMICS_HYDRO_SOLVER_HPP_ */

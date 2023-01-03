@@ -125,7 +125,7 @@ class CurrentBlock :
 /**
  * A shared pointer to a current block
  */
-typedef boost::shared_ptr<CurrentBlock> pCurrentBlock;
+typedef std::shared_ptr<CurrentBlock> pCurrentBlock;
 
 /**
  * An abstract base class for currents

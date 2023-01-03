@@ -9,7 +9,7 @@
 #include "../../maths/vector/vector.hpp"
 #include "../../constants.hpp"
 
-#include <boost/make_shared.hpp>
+#include <memory>
 
 //===============================================================
 //==========  IncidentSourceECurrent

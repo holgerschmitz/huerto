@@ -10,8 +10,7 @@
 #include "../maths/interpolate/interpolate2d.hpp"
 #include "../maths/random.hpp"
 
-#include <boost/make_shared.hpp>
-
+#include <memory>
 #include <exception>
 
 /******************************************************************************/

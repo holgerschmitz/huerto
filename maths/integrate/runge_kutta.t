@@ -6,7 +6,7 @@
  */
 
 
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <cmath>
 
 template<int rank, int dim>

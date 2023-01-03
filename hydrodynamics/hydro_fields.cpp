@@ -11,8 +11,8 @@
 #include <schnek/tools/fieldtools.hpp>
 
 #include <boost/foreach.hpp>
-#include <boost/shared_ptr.hpp>
 
+#include <memory>
 #include <string>
 #include <iostream>
 
