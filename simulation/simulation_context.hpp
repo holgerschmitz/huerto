@@ -85,6 +85,11 @@ class SimulationContext
 
   public:
     /**
+     * A virtual destructor to allow dynamic casts to the inherited type
+     */
+    virtual ~SimulationContext() {}
+
+    /**
      * Get the global maximum grid index, #globalMax
      */
     Index getGridSize() { return gridSize; }
