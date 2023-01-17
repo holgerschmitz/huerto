@@ -33,7 +33,7 @@ void CurrentContainer::sumCurrents()
   jyT = 0;
   jzT = 0;
 
-  BOOST_FOREACH(pCurrent current, this->currents)
+  for (pCurrent current: this->currents)
   {
     Grid &jx = *current->getJx();
     Grid &jy = *current->getJy();
@@ -85,7 +85,7 @@ void CurrentContainer::sumMagCurrents()
   jyT = 0;
   jzT = 0;
 
-  BOOST_FOREACH(pCurrent current, this->magCurrents)
+  for (pCurrent current: this->magCurrents)
   {
     Grid &jx = *current->getJx();
     Grid &jy = *current->getJy();

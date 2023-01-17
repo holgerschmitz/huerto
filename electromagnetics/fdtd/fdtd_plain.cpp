@@ -112,7 +112,7 @@ void FDTD_Plain::init()
   retrieveData("By", pBy);
   retrieveData("Bz", pBz);
 
-  BOOST_FOREACH(pCurrentBlock current, schnek::BlockContainer<CurrentBlock>::childBlocks())
+  for (pCurrentBlock current: schnek::BlockContainer<CurrentBlock>::childBlocks())
   {
     current->initCurrents(*this);
   }
@@ -130,14 +130,14 @@ void FDTD_Plain::init()
 
 void FDTD_Plain::stepSchemeInit(double dt)
 {
-  BOOST_FOREACH(pCurrent current, this->magCurrents)
+  for (pCurrent current: this->magCurrents)
   {
     current->stepSchemeInit(dt);
   }
 
   stepB(0.5*dt);
 
-  BOOST_FOREACH(pCurrent current, this->currents)
+  for (pCurrent current: this->currents)
   {
     current->stepSchemeInit(dt);
   }
@@ -145,7 +145,7 @@ void FDTD_Plain::stepSchemeInit(double dt)
 
 void FDTD_Plain::stepScheme(double dt)
 {
-  BOOST_FOREACH(pCurrent current, this->currents)
+  for (pCurrent current: this->currents)
   {
     current->stepScheme(dt);
   }
@@ -153,7 +153,7 @@ void FDTD_Plain::stepScheme(double dt)
   stepE(dt);
 
 
-  BOOST_FOREACH(pCurrent current, this->magCurrents)
+  for (pCurrent current: this->magCurrents)
   {
     current->stepScheme(dt);
   }
