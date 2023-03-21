@@ -13,8 +13,8 @@
 #include <schnek/grid/array.hpp>
 #include <schnek/grid/domainsubdivision.hpp>
 
-template<int rank, int dim>
-class FieldRungeKutta4
+template<size_t rank, size_t dim>
+class FieldRungeKuttaHeun
 {
   public:
     typedef schnek::Field<double, rank, HuertoGridChecker> Field;
@@ -23,7 +23,7 @@ class FieldRungeKutta4
     schnek::Array<Field*, dim> fields;
     schnek::Array<std::unique_ptr<Field>, dim> fields_tmp;
   public:
-    void setField(int d, Field &field);
+    void setField(size_t d, Field &field);
 
     template<typename RHS, typename BC>
     void integrateStep(double dt, const RHS &rhs, BC boundary);

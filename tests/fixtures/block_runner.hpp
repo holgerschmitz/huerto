@@ -41,7 +41,7 @@ class SingleBlockRunner
           schnek::pBlock application = P.parse(in);
           application->initAll();
 
-          block = boost::dynamic_pointer_cast<BlockType>(application);
+          block = std::dynamic_pointer_cast<BlockType>(application);
           BOOST_REQUIRE(!!block);
         }
         catch (schnek::ParserError &e)

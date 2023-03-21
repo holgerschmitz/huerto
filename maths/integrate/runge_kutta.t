@@ -9,17 +9,17 @@
 #include <memory>
 #include <cmath>
 
-template<int rank, int dim>
-void FieldRungeKutta4<rank, dim>::setField(int d, Field &field)
+template<size_t rank, size_t dim>
+void FieldRungeKuttaHeun<rank, dim>::setField(size_t d, Field &field)
 {
   fields[d] = &field;
   fields_tmp[d] = std::unique_ptr<Field>(new Field(field));
 }
 
 
-template<int rank, int dim>
+template<size_t rank, size_t dim>
 template<typename RHS, typename BC>
-void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC boundary)
+void FieldRungeKuttaHeun<rank, dim>::integrateStep(double dt, const RHS &rhs, BC boundary)
 {
   typename Field::IndexType lo = fields[0]->getInnerLo();
   typename Field::IndexType hi = fields[0]->getInnerHi();
@@ -32,14 +32,14 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   {
     rhs(p, dudt, 0.0);
 
-    for (int d=0; d<dim; ++d)
+    for (size_t d=0; d<dim; ++d)
     {
       (*fields_tmp[d])[p] = (*fields[d])[p] + dt*dudt[d];
     }
   }
 
   // Swap starred fields and the unstarred fields
-  for (int d=0; d<dim; ++d)
+  for (size_t d=0; d<dim; ++d)
   {
     Field &f = *fields[d];
     Field &f_tmp = *fields_tmp[d];
@@ -56,7 +56,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   {
     rhs(p, dudt, dt);
 
-    for (int d=0; d<dim; ++d)
+    for (size_t d=0; d<dim; ++d)
     {
       (*fields_tmp[d])[p] =
               0.5*((*fields[d])[p] + (*fields_tmp[d])[p]
@@ -65,7 +65,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   }
 
   // Copy starred fields back into the unstarred fields
-  for (int d=0; d<dim; ++d)
+  for (size_t d=0; d<dim; ++d)
   {
     Field &f = *fields[d];
     Field &f_tmp = *fields_tmp[d];
@@ -78,9 +78,9 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   boundary();
 }
 
-template<int rank, int dim>
+template<size_t rank, size_t dim>
 template<typename RHS, typename BC, typename STEPPER>
-void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC boundary, STEPPER &stepper)
+void FieldRungeKuttaHeun<rank, dim>::integrateStep(double dt, const RHS &rhs, BC boundary, STEPPER &stepper)
 {
   typename Field::IndexType lo = fields[0]->getInnerLo();
   typename Field::IndexType hi = fields[0]->getInnerHi();
@@ -94,14 +94,14 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   {
     rhs(p, dudt, 0.0);
 
-    for (int d=0; d<dim; ++d)
+    for (size_t d=0; d<dim; ++d)
     {
       (*fields_tmp[d])[p] = (*fields[d])[p] + dt*dudt[d];
     }
   }
 
   // Swap starred fields and the unstarred fields
-  for (int d=0; d<dim; ++d)
+  for (size_t d=0; d<dim; ++d)
   {
     Field &f = *fields[d];
     Field &f_tmp = *fields_tmp[d];
@@ -119,7 +119,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   {
     rhs(p, dudt, dt);
 
-    for (int d=0; d<dim; ++d)
+    for (size_t d=0; d<dim; ++d)
     {
       (*fields_tmp[d])[p] =
               0.5*((*fields[d])[p] + (*fields_tmp[d])[p]
@@ -128,7 +128,7 @@ void FieldRungeKutta4<rank, dim>::integrateStep(double dt, const RHS &rhs, BC bo
   }
 
   // Copy starred fields back into the unstarred fields
-  for (int d=0; d<dim; ++d)
+  for (size_t d=0; d<dim; ++d)
   {
     Field &f = *fields[d];
     Field &f_tmp = *fields_tmp[d];

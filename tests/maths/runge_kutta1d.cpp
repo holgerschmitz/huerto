@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( oscillator ){
       Field1d &om, &x, &v;
       Oscillator(Field1d &om_, Field1d &x_, Field1d &v_): om(om_), x(x_), v(v_) {}
 
-      void operator()(Index1d p, Vector2d &dudt) const {
+      void operator()(Index1d p, Vector2d &dudt, double) const {
         double w = om[p];
         dudt[0] = v[p];
         dudt[1] = -w*w*x[p];
@@ -46,17 +46,18 @@ BOOST_AUTO_TEST_CASE( oscillator ){
     v(i) = 0.0;
   }
 
-  FieldRungeKutta4<1,2> rk4;
-  rk4.setField(0, x);
-  rk4.setField(1, v);
+  FieldRungeKuttaHeun<1, 2> rkHeun;
+  rkHeun.setField(0, x);
+  rkHeun.setField(1, v);
 
   Oscillator osc(om, x, v);
 
   for (int i=0; i<=100; i++)
   {
-    rk4.integrateStep(PI, osc, noopBoundary);
-    double err = fabs(1.0 + x(i));
-    BOOST_CHECK(err <= 12.5*pow(1.0/(i+1.0), 3));
+    rkHeun.integrateStep(PI, osc, noopBoundary);
+    double err = fabs(x(i));
+    // total error is only second order after integrating over i steps
+    BOOST_CHECK(err <= 30*pow(1.0/(i+1.0), 2));
   }
 }
 

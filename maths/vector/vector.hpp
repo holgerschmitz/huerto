@@ -13,17 +13,17 @@
 
 #include "../../util/generic_defs.hpp"
 
-template<int Rank, template<int> class CheckingPolicy>
+template<size_t Rank, template<size_t> class CheckingPolicy>
 inline double norm(const schnek::Array<double, Rank, CheckingPolicy> &v)
 {
     return sqrt(v.sqr());
 }
 
-template<typename T, int Rank, template<int> class CheckingPolicy>
+template<typename T, size_t Rank, template<size_t> class CheckingPolicy>
 inline double min(const schnek::Array<T, Rank, CheckingPolicy> &v)
 {
     T m = v[0];
-    for (int d=0; d<Rank; ++d)
+    for (size_t d=0; d<Rank; ++d)
     {
       m = std::min(m, v[d]);
     }
@@ -31,15 +31,15 @@ inline double min(const schnek::Array<T, Rank, CheckingPolicy> &v)
 }
 
 template<
-  int Rank,
-  template<int> class CheckingPolicyA,
-  template<int> class CheckingPolicyB
+  size_t Rank,
+  template<size_t> class CheckingPolicyA,
+  template<size_t> class CheckingPolicyB
 >
 inline double dot(const schnek::Array<double, Rank, CheckingPolicyA> &a,
                   const schnek::Array<double, Rank, CheckingPolicyB> &b)
 {
     double sum = 0;
-    for (int d=0; d<Rank; ++d)
+    for (size_t d=0; d<Rank; ++d)
     {
       sum += a[d]*b[d];
     }
@@ -51,8 +51,8 @@ HUERTO_FUNC_EXPR_ARR(double, dot)
 HUERTO_FUNC_EXPR_EXPR(double, dot)
 
 template<
-  template<int> class CheckingPolicyA,
-  template<int> class CheckingPolicyB
+  template<size_t> class CheckingPolicyA,
+  template<size_t> class CheckingPolicyB
 >
 inline schnek::Array<double, 3, CheckingPolicyA>
     cross(const schnek::Array<double, 3, CheckingPolicyA> &a,
@@ -65,12 +65,12 @@ inline schnek::Array<double, 3, CheckingPolicyA>
     );
 }
 
-template<int Rank, template<int> class CheckingPolicy>
+template<size_t Rank, template<size_t> class CheckingPolicy>
 inline int absMaxIndex(const schnek::Array<double, Rank, CheckingPolicy> &x)
 {
   int m = 0;
   double M = fabs(x[0]);
-  for (int i=1; i<Rank; ++i)
+  for (size_t i=1; i<Rank; ++i)
     if (fabs(x[i])>M)
     {
       m = i;
@@ -81,7 +81,7 @@ inline int absMaxIndex(const schnek::Array<double, Rank, CheckingPolicy> &x)
 }
 
 
-template<template<int> class CheckingPolicy>
+template<template<size_t> class CheckingPolicy>
 inline schnek::Array<double, 2, CheckingPolicy>
     perpendicular(const schnek::Array<double, 2, CheckingPolicy> &v)
 {
@@ -89,7 +89,7 @@ inline schnek::Array<double, 2, CheckingPolicy>
 }
 
 
-template<template<int> class CheckingPolicy>
+template<template<size_t> class CheckingPolicy>
 inline schnek::Array<double, 3, CheckingPolicy>
     perpendicular(const schnek::Array<double, 3, CheckingPolicy> &v)
 {

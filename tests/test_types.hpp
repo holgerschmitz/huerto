@@ -12,10 +12,10 @@
 
 bool is_equal(double a, double b);
 
-template<int Rank>
+template<size_t Rank>
 bool is_equal(const schnek::Array<double, Rank> &a, const schnek::Array<double, Rank> &b)
 {
-  for (int d=0; d<Rank; ++d)
+  for (size_t d=0; d<Rank; ++d)
   {
     if (!is_equal(a[d], b[d])) return false;
   }

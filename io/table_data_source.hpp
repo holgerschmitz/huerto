@@ -32,7 +32,7 @@ class TableDataSource
     /**
      * Init any parameters to be read from the setup file
      */
-    virtual void initParameters(schnek::BlockParameters &parameters) {};
+    virtual void initParameters(schnek::BlockParameters &) {};
 
     /**
      * This is where data should be initialised
