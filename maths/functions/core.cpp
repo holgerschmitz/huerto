@@ -10,6 +10,8 @@
 
 #include "../random.hpp"
 
+#include <boost/math/special_functions/erf.hpp>
+
 double step(double x, double x0)
 {
   return (x>=x0)?1.0:0.0;
@@ -49,6 +51,10 @@ void registerCoreFunctions(schnek::FunctionRegistry & registry) {
   registry.registerFunction("box", box);
   registry.registerFunction("diagf", diagf);
   registry.registerFunction("random", randomUnit);
+
+  registry.registerFunction("erf", static_cast<double (*)(double)>(boost::math::erf));
+  registry.registerFunction("erfc", static_cast<double (*)(double)>(boost::math::erfc));
+  
 }
 
 void registerConstants(schnek::BlockParameters &parameters) {
