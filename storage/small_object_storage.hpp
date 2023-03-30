@@ -210,9 +210,11 @@ class SmallObjectStorage {
          * @return The iterator
          */
         iterator& operator--() {
-          if (--pos < 0) {
+          if (pos == 0) {
             --chunkIter;
             pos = chunkIter->count - 1;
+          } else {
+            --pos;
           }
           return *this;
         }
