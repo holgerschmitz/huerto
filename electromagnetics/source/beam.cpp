@@ -428,7 +428,15 @@ GaussPulseSourceEFunc::GaussPulseSourceEFunc(Direction dir, SimulationContext &c
   : dir(dir), context(context)
 {}
 
-void GaussPulseSourceEFunc::setParam(Vector k, Vector origin, Vector3d H, double waist, double length, double offset, double eps_)
+void GaussPulseSourceEFunc::setParam(
+  Vector k, 
+  Vector origin, 
+  Vector3d H, 
+  double waist, 
+  double length, 
+  double offset, 
+  double /* eps */
+)
 {
   this->k = k;
   kn = norm(k);

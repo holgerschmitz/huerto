@@ -52,7 +52,7 @@ class IncidentSource : public CurrentBlock {
     /**
      * This can be overridden to limit the current sheets to only some directions
      */
-    virtual bool needCurrent(Direction dir) { return true; }
+    virtual bool needCurrent(Direction /* dir */) { return true; }
 
     /**
      * Initialise the setup parameters

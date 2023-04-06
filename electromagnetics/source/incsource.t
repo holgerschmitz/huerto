@@ -56,7 +56,7 @@ void IncidentSourceECurrent<SourceFunc>::stepSchemeInit(double dt)
 }
 
 template<class SourceFunc>
-void IncidentSourceECurrent<SourceFunc>::stepScheme(double dt)
+void IncidentSourceECurrent<SourceFunc>::stepScheme(double /* dt */)
 {
   Grid &J0 = *pJ[0];
   Grid &J1 = *pJ[1];
@@ -169,7 +169,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepSchemeInit(double dt)
 }
 
 template<class SourceFunc>
-void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
+void IncidentSourceHCurrent<SourceFunc>::stepScheme(double /* dt */)
 {
   Grid &J0 = *pJ[0];
   Grid &J1 = *pJ[1];
@@ -243,7 +243,7 @@ void IncidentSourceHCurrent<SourceFunc>::stepScheme(double dt)
 //===============================================================
 
 template<class FieldFunc>
-GenericIncidentSourceESource<FieldFunc>::GenericIncidentSourceESource(Direction dir, SimulationContext &context)
+GenericIncidentSourceESource<FieldFunc>::GenericIncidentSourceESource(Direction /* dir */, SimulationContext &context)
 : dt(0), om(0), context(context)
 {}
 
@@ -331,7 +331,7 @@ Vector3d GenericIncidentSourceESource<FieldFunc>::getHField(int i, int j, int l,
 //===============================================================
 
 template<class FieldFunc>
-GenericIncidentSourceHSource<FieldFunc>::GenericIncidentSourceHSource(Direction dir, SimulationContext &context)
+GenericIncidentSourceHSource<FieldFunc>::GenericIncidentSourceHSource(Direction /* dir */, SimulationContext &context)
   : dt(0), om(0), context(context)
 {}
 

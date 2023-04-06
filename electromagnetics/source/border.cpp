@@ -17,7 +17,7 @@ bool getBorderExtent(Direction dir,
                      Index &bhigh,
                      bool isH,
                      SimulationContext &context,
-                     bool restricted)
+                     bool /* restricted */)
 {
   bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);

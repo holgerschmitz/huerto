@@ -417,10 +417,10 @@ void CPMLBorderECurrent::init()
   makeCoeff();
 }
 
-void CPMLBorderECurrent::stepSchemeInit(double dt)
+void CPMLBorderECurrent::stepSchemeInit(double /* dt */)
 {}
 
-void CPMLBorderECurrent::stepScheme(double dt)
+void CPMLBorderECurrent::stepScheme(double /* dt */)
 {
   Index low  = pPsi[0]->getLo();
   Index high = pPsi[0]->getHi();
@@ -536,7 +536,7 @@ void CPMLBorderHCurrent::stepSchemeInit(double dt)
   stepScheme(0.5*dt);
 }
 
-void CPMLBorderHCurrent::stepScheme(double dt)
+void CPMLBorderHCurrent::stepScheme(double /* dt */)
 {
   Index low  = pPsi[0]->getLo();
   Index high = pPsi[0]->getHi();

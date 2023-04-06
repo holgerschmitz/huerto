@@ -163,13 +163,13 @@ void FDTD_Plain::stepScheme(double dt)
 
 #ifdef HUERTO_ONE_DIM
 void FDTD_Plain::stepE(double dt, 
-                       Field *Ex_, 
-                       Field *Ey_, 
-                       Field *Ez_, 
-                       Field *Bx_, 
-                       Field *By_,
-                       Field *Bz_, 
-                       Grid1d *KappaEdx_)
+                       Field* Ex_, 
+                       Field* Ey_, 
+                       Field* Ez_, 
+                       Field* /* Bx_ */, 
+                       Field* By_,
+                       Field* Bz_, 
+                       Grid1d* KappaEdx_)
 {
   Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
   Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
