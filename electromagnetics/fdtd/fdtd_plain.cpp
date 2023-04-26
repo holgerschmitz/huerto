@@ -20,43 +20,26 @@ void FDTD_Plain::registerData()
   addData("FDTD_Plain", self);
 
 #ifdef HUERTO_ONE_DIM
-  pKappaEdx = std::make_shared<Grid1d>();
-  pKappaHdx = std::make_shared<Grid1d>();
-
-  addData("KappaEdx", pKappaEdx);
-  addData("KappaHdx", pKappaHdx);
+  addData("KappaEdx", KappaEdx);
+  addData("KappaHdx", KappaHdx);
 #endif
 
 #ifdef HUERTO_TWO_DIM
-  pKappaEdx = std::make_shared<Grid1d>();
-  pKappaEdy = std::make_shared<Grid1d>();
+  addData("KappaEdx", KappaEdx);
+  addData("KappaEdy", KappaEdy);
 
-  pKappaHdx = std::make_shared<Grid1d>();
-  pKappaHdy = std::make_shared<Grid1d>();
-
-  addData("KappaEdx", pKappaEdx);
-  addData("KappaEdy", pKappaEdy);
-
-  addData("KappaHdx", pKappaHdx);
-  addData("KappaHdy", pKappaHdy);
+  addData("KappaHdx", KappaHdx);
+  addData("KappaHdy", KappaHdy);
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  pKappaEdx = std::make_shared<Grid1d>();
-  pKappaEdy = std::make_shared<Grid1d>();
-  pKappaEdz = std::make_shared<Grid1d>();
+  addData("KappaEdx", KappaEdx);
+  addData("KappaEdy", KappaEdy);
+  addData("KappaEdz", KappaEdz);
 
-  pKappaHdx = std::make_shared<Grid1d>();
-  pKappaHdy = std::make_shared<Grid1d>();
-  pKappaHdz = std::make_shared<Grid1d>();
-
-  addData("KappaEdx", pKappaEdx);
-  addData("KappaEdy", pKappaEdy);
-  addData("KappaEdz", pKappaEdz);
-
-  addData("KappaHdx", pKappaHdx);
-  addData("KappaHdy", pKappaHdy);
-  addData("KappaHdz", pKappaHdz);
+  addData("KappaHdx", KappaHdx);
+  addData("KappaHdy", KappaHdy);
+  addData("KappaHdz", KappaHdz);
 #endif
 }
 
@@ -69,48 +52,47 @@ void FDTD_Plain::init()
   Index high = subdivision.getHi();
 
 #ifdef HUERTO_ONE_DIM
-  pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  (*pKappaEdx) = 1.0;
-  (*pKappaHdx) = 1.0;
+  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaEdx = 1.0;
+  KappaHdx = 1.0;
 #endif
 
 #ifdef HUERTO_TWO_DIM
-  pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  pKappaEdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  (*pKappaEdx) = 1.0;
-  (*pKappaEdy) = 1.0;
+  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaEdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaEdx = 1.0;
+  KappaEdy = 1.0;
 
-  pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  pKappaHdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  (*pKappaHdx) = 1.0;
-  (*pKappaHdy) = 1.0;
+  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaHdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaHdx = 1.0;
+  KappaHdy = 1.0;
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  pKappaEdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  pKappaEdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  pKappaEdz->resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
-  (*pKappaEdx) = 1.0;
-  (*pKappaEdy) = 1.0;
-  (*pKappaEdz) = 1.0;
+  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaEdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaEdz.resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  KappaEdx = 1.0;
+  KappaEdy = 1.0;
+  KappaEdz = 1.0;
 
-  pKappaHdx->resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  pKappaHdy->resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  pKappaHdz->resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
-  (*pKappaHdx) = 1.0;
-  (*pKappaHdy) = 1.0;
-  (*pKappaHdz) = 1.0;
+  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaHdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaHdz.resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  KappaHdx = 1.0;
+  KappaHdy = 1.0;
+  KappaHdz = 1.0;
 #endif
 
+  retrieveData("Ex", Ex);
+  retrieveData("Ey", Ey);
+  retrieveData("Ez", Ez);
 
-  retrieveData("Ex", pEx);
-  retrieveData("Ey", pEy);
-  retrieveData("Ez", pEz);
-
-  retrieveData("Bx", pBx);
-  retrieveData("By", pBy);
-  retrieveData("Bz", pBz);
+  retrieveData("Bx", Bx);
+  retrieveData("By", By);
+  retrieveData("Bz", Bz);
 
   for (pCurrentBlock current: schnek::BlockContainer<CurrentBlock>::childBlocks())
   {
@@ -171,14 +153,14 @@ void FDTD_Plain::stepE(double dt,
                        Field* Bz_, 
                        Grid1d* KappaEdx_)
 {
-  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
-  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
-  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
+  Field &Ex = Ex_ != NULL ? *Ex_ : this->Ex;
+  Field &Ey = Ey_ != NULL ? *Ey_ : this->Ey;
+  Field &Ez = Ez_ != NULL ? *Ez_ : this->Ez;
 
-  Field &By = By_ != NULL ? *By_ : *pBy;
-  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
+  Field &By = By_ != NULL ? *By_ : this->By;
+  Field &Bz = Bz_ != NULL ? *Bz_ : this->Bz;
 
-  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
 
 
   Index low = Ex.getInnerLo();
@@ -225,16 +207,6 @@ void FDTD_Plain::stepE(double dt,
 
 void FDTD_Plain::stepB(double dt)
 {
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
-
-  Field &Bx = *pBx;
-  Field &By = *pBy;
-  Field &Bz = *pBz;
-
-  Grid1d &rKappaHdx= *pKappaHdx;
-
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
 
@@ -246,7 +218,7 @@ void FDTD_Plain::stepB(double dt)
     double jy = (*this->pMy)(i);
     double jz = (*this->pMz)(i);
 
-    double kappaHdx = rKappaHdx(i)*dx[0];
+    double kappaHdx = KappaHdx(i)*dx[0];
 
     By(i) = By(i)
       + dt*(
@@ -279,16 +251,19 @@ void FDTD_Plain::stepE(double dt,
                        Field *Bz_, 
                        Grid1d *KappaEdx_, 
                        Grid1d *KappaEdy_) {
-  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
-  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
-  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
+  Field &Ex = Ex_ != NULL ? *Ex_ : this->Ex;
+  Field &Ey = Ey_ != NULL ? *Ey_ : this->Ey;
+  Field &Ez = Ez_ != NULL ? *Ez_ : this->Ez;
 
-  Field &Bx = Bx_ != NULL ? *Bx_ : *pBx;
-  Field &By = By_ != NULL ? *By_ : *pBy;
-  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
+  Field &Bx = Bx_ != NULL ? *Bx_ : this->Bx;
+  Field &By = By_ != NULL ? *By_ : this->By;
+  Field &Bz = Bz_ != NULL ? *Bz_ : this->Bz;
 
-  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
-  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : *pKappaEdy;
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
+  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : this->KappaEdy;
+
+
+  std::cerr << "FDTD Ey " << Ey(10, 10) << std::endl;
 
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
@@ -334,6 +309,8 @@ void FDTD_Plain::stepE(double dt,
 
   }
 
+  std::cerr << "     Ey " << Ey(10, 10) << std::endl;
+
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
 
   sub.exchange(Ex);
@@ -344,17 +321,6 @@ void FDTD_Plain::stepE(double dt,
 
 void FDTD_Plain::stepB(double dt)
 {
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
-
-  Field &Bx = *pBx;
-  Field &By = *pBy;
-  Field &Bz = *pBz;
-
-  Grid1d &rKappaHdx= *pKappaHdx;
-  Grid1d &rKappaHdy= *pKappaHdy;
-
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
 
@@ -369,8 +335,8 @@ void FDTD_Plain::stepB(double dt)
     double jy = (*this->pMy)(i,j);
     double jz = (*this->pMz)(i,j);
 
-    double kappaHdx = rKappaHdx(i)*dx[0];
-    double kappaHdy = rKappaHdy(j)*dx[1];
+    double kappaHdx = KappaHdx(i)*dx[0];
+    double kappaHdy = KappaHdy(j)*dx[1];
 
     Bx(i,j) = Bx(i,j)
       + dt*(
@@ -413,17 +379,17 @@ void FDTD_Plain::stepE(double dt,
                        Grid1d *KappaEdy_, 
                        Grid1d *KappaEdz_)
 {
-  Field &Ex = Ex_ != NULL ? *Ex_ : *pEx;
-  Field &Ey = Ey_ != NULL ? *Ey_ : *pEy;
-  Field &Ez = Ez_ != NULL ? *Ez_ : *pEz;
+  Field &Ex = Ex_ != NULL ? *Ex_ : this->Ex;
+  Field &Ey = Ey_ != NULL ? *Ey_ : this->Ey;
+  Field &Ez = Ez_ != NULL ? *Ez_ : this->Ez;
 
-  Field &Bx = Bx_ != NULL ? *Bx_ : *pBx;
-  Field &By = By_ != NULL ? *By_ : *pBy;
-  Field &Bz = Bz_ != NULL ? *Bz_ : *pBz;
+  Field &Bx = Bx_ != NULL ? *Bx_ : this->Bx;
+  Field &By = By_ != NULL ? *By_ : this->By;
+  Field &Bz = Bz_ != NULL ? *Bz_ : this->Bz;
 
-  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : *pKappaEdx;
-  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : *pKappaEdy;
-  Grid1d &rKappaEdz= KappaEdz_ != NULL ? *KappaEdz_ : *pKappaEdz;
+  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
+  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : this->KappaEdy;
+  Grid1d &rKappaEdz= KappaEdz_ != NULL ? *KappaEdz_ : this->KappaEdz;
 
 
 
@@ -484,18 +450,6 @@ void FDTD_Plain::stepE(double dt,
 
 void FDTD_Plain::stepB(double dt)
 {
-  Field &Ex = *pEx;
-  Field &Ey = *pEy;
-  Field &Ez = *pEz;
-
-  Field &Bx = *pBx;
-  Field &By = *pBy;
-  Field &Bz = *pBz;
-
-  Grid1d &rKappaHdx= *pKappaHdx;
-  Grid1d &rKappaHdy= *pKappaHdy;
-  Grid1d &rKappaHdz= *pKappaHdz;
-
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
 
@@ -511,9 +465,9 @@ void FDTD_Plain::stepB(double dt)
     double jy = (*this->pMy)(i,j,k);
     double jz = (*this->pMz)(i,j,k);
 
-    double kappaHdx = rKappaHdx(i)*dx[0];
-    double kappaHdy = rKappaHdy(j)*dx[1];
-    double kappaHdz = rKappaHdz(k)*dx[2];
+    double kappaHdx = KappaHdx(i)*dx[0];
+    double kappaHdy = KappaHdy(j)*dx[1];
+    double kappaHdz = KappaHdz(k)*dx[2];
 
     Bx(i,j,k) = Bx(i,j,k)
       + dt*(

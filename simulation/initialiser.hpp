@@ -16,7 +16,7 @@
  */
 template<typename T, int D = DIMENSION>
 struct InitialisedField {
-    std::shared_ptr<schnek::Field<T, D, HuertoGridChecker>> field;
+    schnek::Field<T, D, HuertoGridChecker> field;
     schnek::pParameter parameter;
     T value;
 };

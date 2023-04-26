@@ -28,8 +28,6 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
 
 void EMFields::registerData() {
   for (size_t i=0; i<3; ++i) {
-    E[i].field = std::make_shared<Field>();
-    B[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "E"), E[i].field);
     addData(indexToCoord(i, "B"), B[i].field);
   }
@@ -47,8 +45,8 @@ void EMFields::fillValues() {
   updater.addIndependentArray(x_parameters);
 
   for (size_t i=0; i<3; ++i) {
-    schnek::fill_field(*E[i].field, x, E[i].value, updater, E[i].parameter);
-    schnek::fill_field(*B[i].field, x, B[i].value, updater, B[i].parameter);
+    schnek::fill_field(E[i].field, x, E[i].value, updater, E[i].parameter);
+    schnek::fill_field(B[i].field, x, B[i].value, updater, B[i].parameter);
   }
 }
 
@@ -65,13 +63,16 @@ void EMFields::init() {
 
   schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
 
-  E[0].field->resize(lowIn, highIn, domainSize, exStaggerYee, 2);
-  E[1].field->resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  E[2].field->resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
+  E[0].field.resize(lowIn, highIn, domainSize, exStaggerYee, 2);
+  E[1].field.resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
+  E[2].field.resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
 
-  B[0].field->resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  B[1].field->resize(lowIn, highIn, domainSize, byStaggerYee, 2);
-  B[2].field->resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
+  B[0].field.resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
+  B[1].field.resize(lowIn, highIn, domainSize, byStaggerYee, 2);
+  B[2].field.resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
+
+  std::cerr << "EM_FIELDS Ey " << &(E[1].field[Index{0}]) << std::endl;
+
   fillValues();
 }
 // end of main

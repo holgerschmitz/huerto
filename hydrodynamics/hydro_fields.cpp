@@ -29,16 +29,13 @@ void HydroFields::initParameters(schnek::BlockParameters &parameters)
 
 void HydroFields::registerData()
 {
-  Rho.field = std::make_shared<Field>();
   addData("Rho", Rho.field);
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    M[i].field = std::make_shared<Field>();
     addData(indexToCoord(i, "M"), M[i].field);
   }
 
-  E.field = std::make_shared<Field>();
   addData("E", E.field);
 }
 
@@ -53,14 +50,14 @@ void HydroFields::fillValues()
   schnek::Array<schnek::pParameter, DIMENSION> x_parameters = getContext().getXParameter();
   updater.addIndependentArray(x_parameters);
 
-  schnek::fill_field(*Rho.field, x, Rho.value, updater, Rho.parameter);
+  schnek::fill_field(Rho.field, x, Rho.value, updater, Rho.parameter);
 
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    schnek::fill_field(*M[i].field, x, M[i].value, updater, M[i].parameter);
+    schnek::fill_field(M[i].field, x, M[i].value, updater, M[i].parameter);
   }
 
-  schnek::fill_field(*E.field, x, E.value, updater, E.parameter);
+  schnek::fill_field(E.field, x, E.value, updater, E.parameter);
 }
 
 void HydroFields::init()
@@ -75,11 +72,11 @@ void HydroFields::init()
   schnek::Array<bool, DIMENSION> stagger;
   stagger = false;
 
-  Rho.field->resize(lowIn, highIn, domainSize, stagger, 2);
+  Rho.field.resize(lowIn, highIn, domainSize, stagger, 2);
   for (size_t i=0; i<DIMENSION; ++i)
   {
-    M[i].field->resize(lowIn, highIn, domainSize, stagger, 2);
+    M[i].field.resize(lowIn, highIn, domainSize, stagger, 2);
   }
-  E.field->resize(lowIn, highIn, domainSize, stagger, 2);
+  E.field.resize(lowIn, highIn, domainSize, stagger, 2);
   fillValues();
 }

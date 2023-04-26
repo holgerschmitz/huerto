@@ -3,6 +3,8 @@
  *
  *  Created on: 5 Feb 2008
  *      Author: Holger Schmitz
+ * 
+ * This file was initially created as part of the MPulse project before being added to Huerto
  */
 
 
@@ -30,29 +32,29 @@ class FDTD_Plain : public FieldSolver,
     FDTD_Plain *self;
     
     /**
-     * References to the local grid of the electric field components,
+     * The local grid of the electric field components,
      * \f$\mathbf{E}\f$
      */
-    pField pEx, pEy, pEz;
+    Field Ex, Ey, Ez;
 
     /**
-     * References to the local grid of the magnetic field components,
+     * The local grid of the magnetic field components,
      * \f$\mathbf{E}\f$
      */
-    pField pBx, pBy, pBz;
+    Field Bx, By, Bz;
 
 #ifdef HUERTO_ONE_DIM
     /**
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaEdx;
+    Grid1d KappaEdx;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaHdx;
+    Grid1d KappaHdx;
 #endif
 
 #ifdef HUERTO_TWO_DIM
@@ -60,13 +62,13 @@ class FDTD_Plain : public FieldSolver,
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaEdx, pKappaEdy;
+    Grid1d KappaEdx, KappaEdy;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaHdx, pKappaHdy;
+    Grid1d KappaHdx, KappaHdy;
 #endif
 
 #ifdef HUERTO_THREE_DIM
@@ -74,13 +76,13 @@ class FDTD_Plain : public FieldSolver,
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaEdx, pKappaEdy, pKappaEdz;
+    Grid1d KappaEdx, KappaEdy, KappaEdz;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    pGrid1d pKappaHdx, pKappaHdy, pKappaHdz;
+    Grid1d KappaHdx, KappaHdy, KappaHdz;
 #endif
 
   public:
