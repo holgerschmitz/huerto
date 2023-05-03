@@ -233,7 +233,6 @@ class GaussBeamSourceHFunc
     /// The grid spacing in m
     Vector dx;
 
-    Direction dir;
     SimulationContext &context;
 };
 
@@ -307,7 +306,6 @@ class GaussPulseSourceEFunc
 
     Vector dx;
 
-    Direction dir;
     SimulationContext &context;
 };
 
@@ -354,7 +352,6 @@ class GaussPulseSourceHFunc
 
     Vector dx;
 
-    Direction dir;
     SimulationContext &context;
 };
 

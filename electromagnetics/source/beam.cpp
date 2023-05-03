@@ -224,8 +224,8 @@ Vector3d GaussBeamSourceEFunc::getHField(int i, int j, int l, double time)
 #endif
 
 
-GaussBeamSourceHFunc::GaussBeamSourceHFunc(Direction dir, SimulationContext &context)
-  : dir(dir), context(context)
+GaussBeamSourceHFunc::GaussBeamSourceHFunc(Direction /* dir */, SimulationContext &context)
+  : context(context)
 {}
 
 void GaussBeamSourceHFunc::setParam(Vector k,
@@ -424,8 +424,8 @@ void GaussPulseSource::initParameters(schnek::BlockParameters &blockPars)
 }
 
 
-GaussPulseSourceEFunc::GaussPulseSourceEFunc(Direction dir, SimulationContext &context)
-  : dir(dir), context(context)
+GaussPulseSourceEFunc::GaussPulseSourceEFunc(Direction /* dir */, SimulationContext &context)
+  : context(context)
 {}
 
 void GaussPulseSourceEFunc::setParam(
@@ -435,7 +435,7 @@ void GaussPulseSourceEFunc::setParam(
   double waist, 
   double length, 
   double offset, 
-  double /* eps */
+  double eps
 )
 {
   this->k = k;
@@ -565,8 +565,8 @@ Vector3d GaussPulseSourceEFunc::getHField(int i, int j, int l, double time)
 }
 #endif
 
-GaussPulseSourceHFunc::GaussPulseSourceHFunc(Direction dir, SimulationContext &context)
-  : dir(dir), context(context)
+GaussPulseSourceHFunc::GaussPulseSourceHFunc(Direction /* dir */, SimulationContext &context)
+  : context(context)
 {}
 
 void GaussPulseSourceHFunc::setParam(Vector k, Vector origin, Vector3d E, double waist, double length, double offset, double eps)

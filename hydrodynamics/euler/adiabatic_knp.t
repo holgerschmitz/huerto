@@ -11,6 +11,16 @@
 
 #include <schnek/tools/literature.hpp>
 
+template<>
+const int AdiabaticKnpModel<1>::C_M[];
+
+template<>
+const int AdiabaticKnpModel<2>::C_M[];
+
+template<>
+const int AdiabaticKnpModel<3>::C_M[];
+
+
 template<int rank>
 inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars& /* p */) const
 {

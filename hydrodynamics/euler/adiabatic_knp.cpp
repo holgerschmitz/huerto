@@ -7,13 +7,13 @@
 
 #include "adiabatic_knp.hpp"
 
-// template<>
-// const int AdiabaticKnpModel<1>::C_M[]  = {1, 2, 3};
+template<>
+const int AdiabaticKnpModel<1>::C_M[]  = {1, 2, 3};
 
-// template<>
-// const int AdiabaticKnpModel<2>::C_M[]  = {1, 2, 3};
+template<>
+const int AdiabaticKnpModel<2>::C_M[]  = {1, 2, 3};
 
-// template<>
-// const int AdiabaticKnpModel<3>::C_M[]  = {1, 2, 3};
+template<>
+const int AdiabaticKnpModel<3>::C_M[]  = {1, 2, 3};
 
 

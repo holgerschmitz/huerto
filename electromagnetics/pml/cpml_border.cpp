@@ -20,6 +20,7 @@ void CPMLBorder::initParameters(schnek::BlockParameters &blockPars) {
   blockPars.addParameter("kappaMax", &kappaMax, 15.0);
   blockPars.addParameter("aMax", &aMax, 0.0);
   blockPars.addParameter("sigmaMax", &sigmaMax, 1.0);
+  blockPars.addParameter("eps", &eps, 1.0);
 }
 
 
@@ -37,48 +38,48 @@ void CPMLBorder::init() {
 void CPMLBorder::initCurrents(CurrentContainer &container)
 {
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, east, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, east, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, west, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, west, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #ifndef HUERTO_ONE_DIM
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, north, this->kappaMax, this->aMax, this->sigmaMax, 1.0, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, north, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, south, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, south, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #endif
 #ifdef HUERTO_THREE_DIM
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, up, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, up, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addCurrent(
-    std::make_shared<CPMLBorderECurrent>(thickness, down, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderECurrent>(thickness, down, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #endif
 
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, east, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, east, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, west, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, west, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #ifndef HUERTO_ONE_DIM
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, north, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, north, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, south, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, south, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #endif
 #ifdef HUERTO_THREE_DIM
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, up, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, up, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
   container.addMagCurrent(
-    std::make_shared<CPMLBorderHCurrent>(thickness, down, this->kappaMax, this->aMax, this->sigmaMax, 1, boost::ref(*this))
+    std::make_shared<CPMLBorderHCurrent>(thickness, down, this->kappaMax, this->aMax, this->sigmaMax, eps, boost::ref(*this))
   );
 #endif
 

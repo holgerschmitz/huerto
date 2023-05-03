@@ -9,6 +9,16 @@
 
 #include <schnek/tools/literature.hpp>
 
+template<>
+const int EulerKnpModel<1>::C_M[];
+
+template<>
+const int EulerKnpModel<2>::C_M[];
+
+template<>
+const int EulerKnpModel<3>::C_M[];
+
+
 template<int rank>
 inline double EulerKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const
 {
