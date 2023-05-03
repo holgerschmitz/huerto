@@ -12,7 +12,7 @@
 #include <schnek/tools/literature.hpp>
 
 template<int rank>
-inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const
+inline double AdiabaticKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars& /* p */) const
 {
   return u[C_M[direction]] / u[C_RHO];
 }
@@ -70,17 +70,17 @@ void AdiabaticKnp<rank>::init()
   boundary.setSubdivision(this->getContext().getSubdivision());
 
   this->retrieveData("Rho", Rho);
-  scheme.setField(AdiabaticKnpModel<rank>::C_RHO, *Rho);
-  integrator.setField(AdiabaticKnpModel<rank>::C_RHO, *Rho);
-  boundary.setField(AdiabaticKnpModel<rank>::C_RHO, &(*Rho));
+  scheme.setField(AdiabaticKnpModel<rank>::C_RHO, Rho);
+  integrator.setField(AdiabaticKnpModel<rank>::C_RHO, Rho);
+  boundary.setField(AdiabaticKnpModel<rank>::C_RHO, &Rho);
 
 
   for (size_t i=0; i<rank; ++i)
   {
     this->retrieveData(indexToCoord(i, "M"), M[i]);
-    scheme.setField(AdiabaticKnpModel<rank>::C_M[i], *M[i]);
-    integrator.setField(AdiabaticKnpModel<rank>::C_M[i], *M[i]);
-    boundary.setField(AdiabaticKnpModel<rank>::C_M[i], &(*M[i]));
+    scheme.setField(AdiabaticKnpModel<rank>::C_M[i], M[i]);
+    integrator.setField(AdiabaticKnpModel<rank>::C_M[i], M[i]);
+    boundary.setField(AdiabaticKnpModel<rank>::C_M[i], &M[i]);
   }
 
   auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, dim> >::childBlocks();
@@ -101,13 +101,6 @@ template<int rank>
 double AdiabaticKnp<rank>::maxDt()
 {
   schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
-
-  Field &Rho = *(this->Rho);
-  schnek::Array<Field*, rank> M;
-  for (size_t i=0; i<rank; ++i)
-  {
-    M[i] = &(*this->M[i]);
-  }
 
   Index lo = Rho.getInnerLo();
   Index hi = Rho.getInnerHi();

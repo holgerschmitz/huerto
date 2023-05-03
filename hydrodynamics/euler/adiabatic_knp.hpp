@@ -64,21 +64,20 @@ class AdiabaticKnp :
   public:
     static const int dim = AdiabaticKnpModel<rank>::dim;
     typedef typename AdiabaticKnpModel<rank>::Field Field;
-    typedef std::shared_ptr<Field> pField;
     typedef typename AdiabaticKnpModel<rank>::FluidValues FluidValues;
     typedef typename AdiabaticKnpModel<rank>::InternalVars InternalVars;
   private:
     typedef HydroSolver Super;
 
     KurganovNoellePetrova<rank, AdiabaticKnpModel> scheme;
-    FieldRungeKutta4<rank, dim> integrator;
+    FieldRungeKuttaHeun<rank, dim> integrator;
     BoundaryApplicator<Field, dim> boundary;
 
     double adiabaticGamma;
     double p0;
 
-    pField Rho;
-    schnek::Array<pField, rank> M;
+    Field Rho;
+    schnek::Array<Field, rank> M;
 
     schnek::Array<double, rank> dx;
   public:

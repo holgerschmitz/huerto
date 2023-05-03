@@ -76,22 +76,22 @@ void EulerKnp<rank>::init()
   boundary.setSubdivision(this->getContext().getSubdivision());
 
   this->retrieveData("Rho", Rho);
-  scheme.setField(EulerKnpModel<rank>::C_RHO, *Rho);
-  integrator.setField(EulerKnpModel<rank>::C_RHO, *Rho);
-  boundary.setField(EulerKnpModel<rank>::C_RHO, &(*Rho));
+  scheme.setField(EulerKnpModel<rank>::C_RHO, Rho);
+  integrator.setField(EulerKnpModel<rank>::C_RHO, Rho);
+  boundary.setField(EulerKnpModel<rank>::C_RHO, &Rho);
 
   this->retrieveData("E", E);
-  scheme.setField(EulerKnpModel<rank>::C_E, *E);
-  integrator.setField(EulerKnpModel<rank>::C_E, *E);
-  boundary.setField(EulerKnpModel<rank>::C_E, &(*E));
+  scheme.setField(EulerKnpModel<rank>::C_E, E);
+  integrator.setField(EulerKnpModel<rank>::C_E, E);
+  boundary.setField(EulerKnpModel<rank>::C_E, &E);
 
 
   for (size_t i=0; i<rank; ++i)
   {
     this->retrieveData(indexToCoord(i, "M"), M[i]);
-    scheme.setField(EulerKnpModel<rank>::C_M[i], *M[i]);
-    integrator.setField(EulerKnpModel<rank>::C_M[i], *M[i]);
-    boundary.setField(EulerKnpModel<rank>::C_M[i], &(*M[i]));
+    scheme.setField(EulerKnpModel<rank>::C_M[i], M[i]);
+    integrator.setField(EulerKnpModel<rank>::C_M[i], M[i]);
+    boundary.setField(EulerKnpModel<rank>::C_M[i], &M[i]);
   }
 
   auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, dim> >::childBlocks();
@@ -113,14 +113,6 @@ double EulerKnp<rank>::maxDt()
 {
   schnek::DomainSubdivision<Field> &subdivision = this->getContext().getSubdivision();
 
-  Field &Rho = *(this->Rho);
-  Field &E = *(this->E);
-  schnek::Array<Field*, rank> M;
-  for (size_t i=0; i<rank; ++i)
-  {
-    M[i] = &(*this->M[i]);
-  }
-
   Index lo = Rho.getInnerLo();
   Index hi = Rho.getInnerHi();
   Range range(lo, hi);
@@ -141,7 +133,7 @@ double EulerKnp<rank>::maxDt()
        ++it)
   {
     const Index &p = *it;
-    u[EulerKnpModel<rank>::C_RHO]    = Rho[p];
+    u[EulerKnpModel<rank>::C_RHO] = Rho[p];
 
     double maxU = 0.0;
     for (size_t i=0; i<rank; ++i)

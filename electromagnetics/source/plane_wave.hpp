@@ -32,7 +32,7 @@ class PlaneWaveFieldFunc
   public:
     PlaneWaveFieldFunc() {}
     void setParam(double ramp);
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(int) {}
 
   protected:
@@ -70,7 +70,7 @@ class PlaneGaussFieldFunc
   public:
     PlaneGaussFieldFunc() {}
     void setParam(double width);
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(int) {}
 
   protected:

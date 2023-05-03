@@ -133,10 +133,10 @@ class IncidentSourceCurrent : public Current {
     double dt;
 
     /**
-     * References to the transverse components of the current from #Current.pJx,
-     * #Current.pJy, and #Current.pJz
+     * References to the transverse components of the current from #Current.Jx,
+     * #Current.Jy, and #Current.Jz
      */
-    pGrid pJ[2];
+    Grid JT[2];
 
     /**
      * The grid spacing in the direction normal to the injection plane

@@ -110,7 +110,7 @@ void GridSliceDiagnostic<GridType, DiagnosticType>::init() {
   field.resize(localMin, localMax);
   field = 0.0;
 
-  this->container.grid = field.get();
+  this->container.grid = field;
   this->container.local_min = localMin;
   this->container.local_max = localMax;
   this->container.global_min = this->getGlobalMin();

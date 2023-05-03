@@ -283,8 +283,8 @@ CPMLBorderCurrent::CPMLBorderCurrent(int thickness, Direction dir, bool isH,
 
 void CPMLBorderCurrent::makeCoeff()
 {
-  Index low  = pJx->getLo();
-  Index high = pJx->getHi();
+  Index low  = Jx.getLo();
+  Index high = Jx.getHi();
 
   switch (dir)
   {
@@ -368,34 +368,34 @@ void CPMLBorderECurrent::init()
 
   if (!getBorderExtent(dir, thickness, 1, blow, bhigh, false, borderBlock.getContext(), false)) return;
 
-  pJx = std::make_shared<Grid>(blow, bhigh);
-  pJy = std::make_shared<Grid>(blow, bhigh);
-  pJz = std::make_shared<Grid>(blow, bhigh);
+  Jx.resize(blow, bhigh);
+  Jy.resize(blow, bhigh);
+  Jz.resize(blow, bhigh);
 
-  (*pJx) = 0.0;
-  (*pJy) = 0.0;
-  (*pJz) = 0.0;
+  Jx = 0.0;
+  Jy = 0.0;
+  Jz = 0.0;
 
   switch (dir)
   {
     case east:
     case west:
-      pPsi[0] = pJy;
-      pPsi[1] = pJz;
-      borderBlock.retrieveData("By", pB[0]);
-      borderBlock.retrieveData("Bz", pB[1]);
-      borderBlock.retrieveData("Bx", pB[2]);
+      Psi[0] = Jy;
+      Psi[1] = Jz;
+      borderBlock.retrieveData("By", B[0]);
+      borderBlock.retrieveData("Bz", B[1]);
+      borderBlock.retrieveData("Bx", B[2]);
 
       dx = borderBlock.getContext().getDx()[0];
       break;
 #ifndef HUERTO_ONE_DIM
     case north:
     case south:
-      pPsi[0] = pJz;
-      pPsi[1] = pJx;
-      borderBlock.retrieveData("Bz", pB[0]);
-      borderBlock.retrieveData("Bx", pB[1]);
-      borderBlock.retrieveData("By", pB[2]);
+      Psi[0] = Jz;
+      Psi[1] = Jx;
+      borderBlock.retrieveData("Bz", B[0]);
+      borderBlock.retrieveData("Bx", B[1]);
+      borderBlock.retrieveData("By", B[2]);
 
       dx = borderBlock.getContext().getDx()[1];
       break;
@@ -403,11 +403,11 @@ void CPMLBorderECurrent::init()
 #ifdef HUERTO_THREE_DIM
     case up:
     case down:
-      pPsi[0] = pJx;
-      pPsi[1] = pJy;
-      borderBlock.retrieveData("Bx", pB[0]);
-      borderBlock.retrieveData("By", pB[1]);
-      borderBlock.retrieveData("Bz", pB[2]);
+      Psi[0] = Jx;
+      Psi[1] = Jy;
+      borderBlock.retrieveData("Bx", B[0]);
+      borderBlock.retrieveData("By", B[1]);
+      borderBlock.retrieveData("Bz", B[2]);
 
       dx = borderBlock.getContext().getDx()[2];
       break;
@@ -422,13 +422,13 @@ void CPMLBorderECurrent::stepSchemeInit(double /* dt */)
 
 void CPMLBorderECurrent::stepScheme(double /* dt */)
 {
-  Index low  = pPsi[0]->getLo();
-  Index high = pPsi[0]->getHi();
+  Index low  = Psi[0].getLo();
+  Index high = Psi[0].getHi();
 
-  Grid &Psi0 = *pPsi[0];
-  Grid &Psi1 = *pPsi[1];
-  Field &B0 = *pB[0];
-  Field &B1 = *pB[1];
+  Grid &Psi0 = Psi[0];
+  Grid &Psi1 = Psi[1];
+  Field &B0 = B[0];
+  Field &B1 = B[1];
 
   Index ind, indn;
 
@@ -481,34 +481,34 @@ void CPMLBorderHCurrent::init()
 
   if (!getBorderExtent(dir, thickness, 1, blow, bhigh, true, borderBlock.getContext(), false)) return;
 
-  pJx = std::make_shared<Grid>(blow, bhigh);
-  pJy = std::make_shared<Grid>(blow, bhigh);
-  pJz = std::make_shared<Grid>(blow, bhigh);
+  Jx.resize(blow, bhigh);
+  Jy.resize(blow, bhigh);
+  Jz.resize(blow, bhigh);
 
-  (*pJx) = 0.0;
-  (*pJy) = 0.0;
-  (*pJz) = 0.0;
+  Jx = 0.0;
+  Jy = 0.0;
+  Jz = 0.0;
 
   switch (dir)
   {
     case east:
     case west:
-      pPsi[0] = pJy;
-      pPsi[1] = pJz;
-      borderBlock.retrieveData("Ey", pE[0]);
-      borderBlock.retrieveData("Ez", pE[1]);
-      borderBlock.retrieveData("Ex", pE[2]);
+      Psi[0] = Jy;
+      Psi[1] = Jz;
+      borderBlock.retrieveData("Ey", E[0]);
+      borderBlock.retrieveData("Ez", E[1]);
+      borderBlock.retrieveData("Ex", E[2]);
 
       dx = borderBlock.getContext().getDx()[0];
       break;
 #ifndef HUERTO_ONE_DIM
     case north:
     case south:
-      pPsi[0] = pJz;
-      pPsi[1] = pJx;
-      borderBlock.retrieveData("Ez", pE[0]);
-      borderBlock.retrieveData("Ex", pE[1]);
-      borderBlock.retrieveData("Ey", pE[2]);
+      Psi[0] = Jz;
+      Psi[1] = Jx;
+      borderBlock.retrieveData("Ez", E[0]);
+      borderBlock.retrieveData("Ex", E[1]);
+      borderBlock.retrieveData("Ey", E[2]);
 
       dx = borderBlock.getContext().getDx()[1];
       break;
@@ -516,11 +516,11 @@ void CPMLBorderHCurrent::init()
 #ifdef HUERTO_THREE_DIM
     case up:
     case down:
-      pPsi[0] = pJx;
-      pPsi[1] = pJy;
-      borderBlock.retrieveData("Ex", pE[0]);
-      borderBlock.retrieveData("Ey", pE[1]);
-      borderBlock.retrieveData("Ez", pE[2]);
+      Psi[0] = Jx;
+      Psi[1] = Jy;
+      borderBlock.retrieveData("Ex", E[0]);
+      borderBlock.retrieveData("Ey", E[1]);
+      borderBlock.retrieveData("Ez", E[2]);
 
       dx = borderBlock.getContext().getDx()[2];
       break;
@@ -538,13 +538,13 @@ void CPMLBorderHCurrent::stepSchemeInit(double dt)
 
 void CPMLBorderHCurrent::stepScheme(double /* dt */)
 {
-  Index low  = pPsi[0]->getLo();
-  Index high = pPsi[0]->getHi();
+  Index low  = Psi[0].getLo();
+  Index high = Psi[0].getHi();
 
-  Grid &Psi0 = *pPsi[0];
-  Grid &Psi1 = *pPsi[1];
-  Field &E0 = *pE[0];
-  Field &E1 = *pE[1];
+  Grid &Psi0 = Psi[0];
+  Grid &Psi1 = Psi[1];
+  Field &E0 = E[0];
+  Field &E1 = E[1];
 
   Index ind, indn;
 

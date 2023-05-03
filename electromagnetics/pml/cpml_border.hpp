@@ -77,8 +77,8 @@ class CPMLBorderECurrent : public CPMLBorderCurrent
     void stepScheme(double dt);
   protected:
 
-    pField pB[3];
-    pGrid pPsi[2];
+    Field B[3];
+    Grid Psi[2];
     double dx;
 };
 
@@ -98,8 +98,8 @@ class CPMLBorderHCurrent : public CPMLBorderCurrent
     void stepSchemeInit(double dt);
     void stepScheme(double dt);
   protected:
-    pField pE[3];
-    pGrid pPsi[2];
+    Field E[3];
+    Grid Psi[2];
     double dx;
 };
 

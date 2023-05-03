@@ -77,8 +77,8 @@ IncidentSourceCurrent::IncidentSourceCurrent(int distance, Direction dir, bool i
     case west:  dim = 0;
                 transverse1 = 1;
                 transverse2 = 2;
-                pJ[0] = pJy;
-                pJ[1] = pJz;
+                JT[0] = Jy;
+                JT[1] = Jz;
                 dN = dx[0];
                 break;
 #ifndef HUERTO_ONE_DIM
@@ -86,8 +86,8 @@ IncidentSourceCurrent::IncidentSourceCurrent(int distance, Direction dir, bool i
     case south: dim = 1;
                 transverse1 = 2;
                 transverse2 = 0;
-                pJ[0] = pJz;
-                pJ[1] = pJx;
+                JT[0] = Jz;
+                JT[1] = Jx;
                 dN = dx[1];
                 break;
 #endif
@@ -96,8 +96,8 @@ IncidentSourceCurrent::IncidentSourceCurrent(int distance, Direction dir, bool i
     case down:  dim = 2;
                 transverse1 = 0;
                 transverse2 = 1;
-                pJ[0] = pJx;
-                pJ[1] = pJy;
+                JT[0] = Jx;
+                JT[1] = Jy;
                 dN = dx[2];
                 break;
 #endif

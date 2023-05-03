@@ -55,12 +55,12 @@ class CurrentContainer
     /**
      * Sum of all electric currents
      */
-    pField pJx, pJy, pJz;
+    Field Jx, Jy, Jz;
 
     /**
      * Sum of all magnetic currents
      */
-    pField pMx, pMy, pMz;
+    Field Mx, My, Mz;
 
     /**
      * Add all electric currents and store the result in #pJx, #pJy, #pJz
@@ -136,7 +136,7 @@ class Current
     /**
      * The grids containing the components of the current
      */
-    pGrid pJx, pJy, pJz;
+    Grid Jx, Jy, Jz;
   public:
     /**
      * Virtual destructor
@@ -171,22 +171,22 @@ class Current
      * The current is valid if all the components of the current have been
      * initialised
      */
-    bool isValid() const { return (pJx) && (pJy) && (pJz); }
+    bool isValid() const { return (Jx.getSize() > 0) && (Jy.getSize() > 0) && (Jz.getSize() > 0); }
 
     /**
      * Get the x-component of the current
      */
-    const pGrid getJx() { return pJx; }
+    const Grid &getJx() { return Jx; }
 
     /**
      * Get the y-component of the current
      */
-    const pGrid getJy() { return pJy; }
+    const Grid &getJy() { return Jy; }
 
     /**
      * Get the z-component of the current
      */
-    const pGrid getJz() { return pJz; }
+    const Grid &getJz() { return Jz; }
 };
 
 

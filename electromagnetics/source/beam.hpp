@@ -85,7 +85,7 @@ class GaussBeamSourceEFunc
     Vector3d getHField(int i, int j, int k, double time);
 #endif
 
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(double) {}
 
   private:
@@ -179,7 +179,7 @@ class GaussBeamSourceHFunc
     Vector3d getEField(int i, int j, int k, double time);
 #endif
 
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(double) {}
 
   private:
@@ -277,7 +277,7 @@ class GaussPulseSourceEFunc
     Vector3d getHField(int i, int j, int k, double time);
 #endif
 
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(double) {}
 
   private:
@@ -325,7 +325,7 @@ class GaussPulseSourceHFunc
     Vector3d getEField(int i, int j, int k, double time);
 #endif
 
-    void initSourceFunc(pGrid, pGrid, pGrid) {}
+    void initSourceFunc(Grid&, Grid&, Grid&) {}
     void setTime(double) {}
 
   private:

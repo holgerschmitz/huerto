@@ -29,24 +29,24 @@ void IncidentSourceECurrent<SourceFunc>::init() {
     return;
   }
 
-  pJx = std::make_shared<Grid>(blow, bhigh);
-  pJy = std::make_shared<Grid>(blow, bhigh);
-  pJz = std::make_shared<Grid>(blow, bhigh);
+  Jx.resize(blow, bhigh);
+  Jy.resize(blow, bhigh);
+  Jz.resize(blow, bhigh);
 
-  *(pJx) = 0.0;
-  *(pJy) = 0.0;
-  *(pJz) = 0.0;
+  Jx = 0.0;
+  Jy = 0.0;
+  Jz = 0.0;
 
-  pGrid allJ[3];
-  allJ[0] = pJx;
-  allJ[1] = pJy;
-  allJ[2] = pJz;
+  Grid allJ[3];
+  allJ[0] = Jx;
+  allJ[1] = Jy;
+  allJ[2] = Jz;
 
-  pJ[0] = allJ[IncidentSourceCurrent::transverse1];
-  pJ[1] = allJ[IncidentSourceCurrent::transverse2];
+  JT[0] = allJ[IncidentSourceCurrent::transverse1];
+  JT[1] = allJ[IncidentSourceCurrent::transverse2];
 
-  if ((pJx!=0) && (pJy!=0) && (pJz!=0))
-     this->initSourceFunc(pJx, pJy, pJz);
+  if ((Jx.getSize() > 0) && (Jy.getSize() > 0) && (Jz.getSize() > 0))
+     this->initSourceFunc(Jx, Jy, Jz);
 }
 
 template<class SourceFunc>
@@ -58,8 +58,8 @@ void IncidentSourceECurrent<SourceFunc>::stepSchemeInit(double dt)
 template<class SourceFunc>
 void IncidentSourceECurrent<SourceFunc>::stepScheme(double /* dt */)
 {
-  Grid &J0 = *pJ[0];
-  Grid &J1 = *pJ[1];
+  Grid &J0 = JT[0];
+  Grid &J1 = JT[1];
 
   Index low  = J0.getLo();
   Index high = J0.getHi();
@@ -143,23 +143,23 @@ void IncidentSourceHCurrent<SourceFunc>::init()
 
   if (!getBorderExtent(IncidentSourceCurrent::dir, 1, distance, blow, bhigh, true, context)) return;
 
-  pJx = std::make_shared<Grid>(blow, bhigh);
-  pJy = std::make_shared<Grid>(blow, bhigh);
-  pJz = std::make_shared<Grid>(blow, bhigh);
+  Jx.resize(blow, bhigh);
+  Jy.resize(blow, bhigh);
+  Jz.resize(blow, bhigh);
 
-  *(pJx) = 0.0;
-  *(pJy) = 0.0;
-  *(pJz) = 0.0;
+  Jx = 0.0;
+  Jy = 0.0;
+  Jz = 0.0;
 
-  pGrid allJ[3];
-  allJ[0] = pJx;
-  allJ[1] = pJy;
-  allJ[2] = pJz;
+  Grid allJ[3];
+  allJ[0] = Jx;
+  allJ[1] = Jy;
+  allJ[2] = Jz;
 
-  pJ[0] = allJ[IncidentSourceCurrent::transverse1];
-  pJ[1] = allJ[IncidentSourceCurrent::transverse2];
+  JT[0] = allJ[IncidentSourceCurrent::transverse1];
+  JT[1] = allJ[IncidentSourceCurrent::transverse2];
 
-  this->initSourceFunc(pJx, pJy, pJz);
+  this->initSourceFunc(Jx, Jy, Jz);
 }
 
 template<class SourceFunc>
@@ -171,8 +171,8 @@ void IncidentSourceHCurrent<SourceFunc>::stepSchemeInit(double dt)
 template<class SourceFunc>
 void IncidentSourceHCurrent<SourceFunc>::stepScheme(double /* dt */)
 {
-  Grid &J0 = *pJ[0];
-  Grid &J1 = *pJ[1];
+  Grid &J0 = JT[0];
+  Grid &J1 = JT[1];
 
   Index low  = J0.getLo();
   Index high = J0.getHi();

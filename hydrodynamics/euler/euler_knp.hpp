@@ -57,7 +57,6 @@ class EulerKnp :
   public:
     static const int dim = EulerKnpModel<rank>::dim;
     typedef typename EulerKnpModel<rank>::Field Field;
-    typedef std::shared_ptr<Field> pField;
     typedef typename EulerKnpModel<rank>::FluidValues FluidValues;
     typedef typename EulerKnpModel<rank>::InternalVars InternalVars;
   private:
@@ -69,9 +68,9 @@ class EulerKnp :
 
     double adiabaticGamma;
 
-    pField Rho;
-    schnek::Array<pField, rank> M;
-    pField E;
+    Field Rho;
+    schnek::Array<Field, rank> M;
+    Field E;
 
     schnek::Array<double, rank> dx;
   public:

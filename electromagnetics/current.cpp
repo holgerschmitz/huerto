@@ -25,19 +25,15 @@ void CurrentContainer::addMagCurrent(pCurrent current)
 
 void CurrentContainer::sumCurrents()
 {
-  Field &jxT = *this->pJx;
-  Field &jyT = *this->pJy;
-  Field &jzT = *this->pJz;
-
-  jxT = 0;
-  jyT = 0;
-  jzT = 0;
+  Jx = 0;
+  Jy = 0;
+  Jz = 0;
 
   for (pCurrent current: this->currents)
   {
-    Grid &jx = *current->getJx();
-    Grid &jy = *current->getJy();
-    Grid &jz = *current->getJz();
+    Grid jx = current->getJx();
+    Grid jy = current->getJy();
+    Grid jz = current->getJz();
 
     Index low = jx.getLo();
     Index high = jx.getHi();
@@ -53,9 +49,9 @@ void CurrentContainer::sumCurrents()
 #ifdef HUERTO_TWO_DIM
     for (int i=low[0]; i<=high[0]; ++i) {
       for (int j=low[1]; j<=high[1]; ++j) {
-        jxT(i,j) += jx(i,j);
-        jyT(i,j) += jy(i,j);
-        jzT(i,j) += jz(i,j);
+        Jx(i,j) += jx(i,j);
+        Jy(i,j) += jy(i,j);
+        Jz(i,j) += jz(i,j);
       }
     }
 #endif
@@ -64,9 +60,9 @@ void CurrentContainer::sumCurrents()
     for (int i=low[0]; i<=high[0]; ++i) {
       for (int j=low[1]; j<=high[1]; ++j) {
         for (int k=low[2]; k<=high[2]; ++k) {
-          jxT(i,j,k) += jx(i,j,k);
-          jyT(i,j,k) += jy(i,j,k);
-          jzT(i,j,k) += jz(i,j,k);
+          Jx(i,j,k) += jx(i,j,k);
+          Jy(i,j,k) += jy(i,j,k);
+          Jz(i,j,k) += jz(i,j,k);
         }
       }
     }
@@ -77,37 +73,33 @@ void CurrentContainer::sumCurrents()
 
 void CurrentContainer::sumMagCurrents()
 {
-  Field &jxT = *this->pMx;
-  Field &jyT = *this->pMy;
-  Field &jzT = *this->pMz;
-
-  jxT = 0;
-  jyT = 0;
-  jzT = 0;
+  Mx = 0;
+  My = 0;
+  Mz = 0;
 
   for (pCurrent current: this->magCurrents)
   {
-    Grid &jx = *current->getJx();
-    Grid &jy = *current->getJy();
-    Grid &jz = *current->getJz();
+    Grid jx = current->getJx();
+    Grid jy = current->getJy();
+    Grid jz = current->getJz();
 
     Index low = jx.getLo();
     Index high = jx.getHi();
 
 #ifdef HUERTO_ONE_DIM
     for (int i=low[0]; i<=high[0]; ++i){
-      jxT(i) += jx(i);
-      jyT(i) += jy(i);
-      jzT(i) += jz(i);
+      Mx(i) += jx(i);
+      My(i) += jy(i);
+      Mz(i) += jz(i);
     }
 #endif
 
 #ifdef HUERTO_TWO_DIM
     for (int i=low[0]; i<=high[0]; ++i) {
       for (int j=low[1]; j<=high[1]; ++j) {
-        jxT(i,j) += jx(i,j);
-        jyT(i,j) += jy(i,j);
-        jzT(i,j) += jz(i,j);
+        Mx(i,j) += jx(i,j);
+        My(i,j) += jy(i,j);
+        Mz(i,j) += jz(i,j);
       }
     }
 #endif
@@ -116,9 +108,9 @@ void CurrentContainer::sumMagCurrents()
     for (int i=low[0]; i<=high[0]; ++i) {
       for (int j=low[1]; j<=high[1]; ++j) {
         for (int k=low[2]; k<=high[2]; ++k) {
-          jxT(i,j,k) += jx(i,j,k);
-          jyT(i,j,k) += jy(i,j,k);
-          jzT(i,j,k) += jz(i,j,k);
+          Mx(i,j,k) += jx(i,j,k);
+          My(i,j,k) += jy(i,j,k);
+          Mz(i,j,k) += jz(i,j,k);
         }
       }
     }
@@ -134,13 +126,13 @@ void CurrentContainer::init(SimulationContext &context)
   Index highIn = subdivision.getInnerHi();
 
   Domain domainSize = subdivision.getInnerExtent(context.getSize());
-  pJx = std::make_shared<Field>(lowIn, highIn, domainSize, exStaggerYee, 2);
-  pJy = std::make_shared<Field>(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  pJz = std::make_shared<Field>(lowIn, highIn, domainSize, ezStaggerYee, 2);
+  Jx.resize(lowIn, highIn, domainSize, exStaggerYee, 2);
+  Jy.resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
+  Jz.resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
 
-  pMx = std::make_shared<Field>(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  pMy = std::make_shared<Field>(lowIn, highIn, domainSize, byStaggerYee, 2);
-  pMz = std::make_shared<Field>(lowIn, highIn, domainSize, bzStaggerYee, 2);
+  Mx.resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
+  My.resize(lowIn, highIn, domainSize, byStaggerYee, 2);
+  Mz.resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
 }
 
 
