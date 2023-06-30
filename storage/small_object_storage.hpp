@@ -178,7 +178,7 @@ class SmallObjectStorage {
          * 
          * @param it Another iterator
          */
-        iterator(const iterator &it) : chunkIter(it.chunkIter), pos(it.pos) {}
+        iterator(const iterator &it) = default;
 
         /**
          * @brief Prefix increment
@@ -267,6 +267,11 @@ class SmallObjectStorage {
         T* operator->() {
           return &(chunkIter->data[pos]);
         }
+
+        /**
+         * Assignment operator
+         */
+        iterator& operator=(const iterator& rhs) = default;
     };
 
     /**
