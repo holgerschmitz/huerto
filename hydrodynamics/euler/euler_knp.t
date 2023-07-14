@@ -20,7 +20,7 @@ const int EulerKnpModel<3>::C_M[];
 
 
 template<int rank>
-inline double EulerKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars &p) const
+inline double EulerKnpModel<rank>::flow_speed(size_t direction, const FluidValues &u, const InternalVars & /* p */) const
 {
   return u[C_M[direction]] / u[C_RHO];
 }
@@ -88,12 +88,12 @@ void EulerKnp<rank>::init()
   this->retrieveData("Rho", Rho);
   scheme.setField(EulerKnpModel<rank>::C_RHO, Rho);
   integrator.setField(EulerKnpModel<rank>::C_RHO, Rho);
-  boundary.setField(EulerKnpModel<rank>::C_RHO, &Rho);
+  boundary.setField(EulerKnpModel<rank>::C_RHO, Rho);
 
   this->retrieveData("E", E);
   scheme.setField(EulerKnpModel<rank>::C_E, E);
   integrator.setField(EulerKnpModel<rank>::C_E, E);
-  boundary.setField(EulerKnpModel<rank>::C_E, &E);
+  boundary.setField(EulerKnpModel<rank>::C_E, E);
 
 
   for (size_t i=0; i<rank; ++i)
@@ -101,7 +101,7 @@ void EulerKnp<rank>::init()
     this->retrieveData(indexToCoord(i, "M"), M[i]);
     scheme.setField(EulerKnpModel<rank>::C_M[i], M[i]);
     integrator.setField(EulerKnpModel<rank>::C_M[i], M[i]);
-    boundary.setField(EulerKnpModel<rank>::C_M[i], &M[i]);
+    boundary.setField(EulerKnpModel<rank>::C_M[i], M[i]);
   }
 
   auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, dim> >::childBlocks();
@@ -148,7 +148,7 @@ double EulerKnp<rank>::maxDt()
     double maxU = 0.0;
     for (size_t i=0; i<rank; ++i)
     {
-      u[EulerKnpModel<rank>::C_M[i]]    = (*M[i])[p];
+      u[EulerKnpModel<rank>::C_M[i]]    = M[i][p];
       maxU = std::max(maxU, fabs(u[EulerKnpModel<rank>::C_M[i]]));
     }
     u[EulerKnpModel<rank>::C_E] = E[p];

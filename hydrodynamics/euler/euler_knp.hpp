@@ -63,7 +63,7 @@ class EulerKnp :
     typedef HydroSolver Super;
 
     KurganovNoellePetrova<rank, EulerKnpModel> scheme;
-    FieldRungeKutta4<rank, dim> integrator;
+    FieldRungeKuttaHeun<rank, dim> integrator;
     BoundaryApplicator<Field, dim> boundary;
 
     double adiabaticGamma;

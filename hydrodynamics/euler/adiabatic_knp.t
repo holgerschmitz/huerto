@@ -82,7 +82,7 @@ void AdiabaticKnp<rank>::init()
   this->retrieveData("Rho", Rho);
   scheme.setField(AdiabaticKnpModel<rank>::C_RHO, Rho);
   integrator.setField(AdiabaticKnpModel<rank>::C_RHO, Rho);
-  boundary.setField(AdiabaticKnpModel<rank>::C_RHO, &Rho);
+  boundary.setField(AdiabaticKnpModel<rank>::C_RHO, Rho);
 
 
   for (size_t i=0; i<rank; ++i)
@@ -90,7 +90,7 @@ void AdiabaticKnp<rank>::init()
     this->retrieveData(indexToCoord(i, "M"), M[i]);
     scheme.setField(AdiabaticKnpModel<rank>::C_M[i], M[i]);
     integrator.setField(AdiabaticKnpModel<rank>::C_M[i], M[i]);
-    boundary.setField(AdiabaticKnpModel<rank>::C_M[i], &M[i]);
+    boundary.setField(AdiabaticKnpModel<rank>::C_M[i], M[i]);
   }
 
   auto boundaries = schnek::BlockContainer<BoundaryCondition<Field, dim> >::childBlocks();
@@ -137,7 +137,7 @@ double AdiabaticKnp<rank>::maxDt()
     double maxU = 0.0;
     for (size_t i=0; i<rank; ++i)
     {
-      u[AdiabaticKnpModel<rank>::C_M[i]]    = (*M[i])[p];
+      u[AdiabaticKnpModel<rank>::C_M[i]]    = M[i][p];
       maxU = std::max(maxU, fabs(u[AdiabaticKnpModel<rank>::C_M[i]]));
     }
 
