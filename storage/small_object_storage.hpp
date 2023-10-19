@@ -262,9 +262,27 @@ class SmallObjectStorage {
         /**
          * @brief Dereference operator
          * 
+         * @return Reference to the current element
+         */
+        const T& operator*() const {
+          return chunkIter->data[pos];
+        }
+
+        /**
+         * @brief Dereference operator
+         * 
          * @return Pointer to the current element
          */
         T* operator->() {
+          return &(chunkIter->data[pos]);
+        }
+
+        /**
+         * @brief Dereference operator
+         * 
+         * @return Pointer to the current element
+         */
+        const T* operator->() const {
           return &(chunkIter->data[pos]);
         }
 
