@@ -7,6 +7,8 @@
 
 #include "table_data_source.hpp"
 
+#include <schnek/util/logger.hpp>
+
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
@@ -46,7 +48,17 @@ void FileTableDataReader::preInit()
 
     for (size_t i=0; i<splitVec.size(); ++i)
     {
-      readValues[i]->push_back(boost::lexical_cast<double>(splitVec[i]));
+      try 
+      {
+        readValues[i]->push_back(boost::lexical_cast<double>(splitVec[i]));
+      }
+      catch (std::exception &err) 
+      {
+        SCHNEK_TRACE_LOG(0, "Bad cast when reading table data from " << fileName );
+        SCHNEK_TRACE_LOG(0, "  row: " << count+1 << "  col: " << i+1 << "  value: '" << splitVec[i] << "'" );
+        throw err;
+      }
+ 
     }
 
     for (size_t i=splitVec.size(); i<readValues.size(); ++i)
