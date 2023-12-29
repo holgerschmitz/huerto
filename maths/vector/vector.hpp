@@ -65,6 +65,30 @@ inline schnek::Array<double, 3, CheckingPolicyA>
     );
 }
 
+template<class exp1, class exp2>
+inline schnek::Array<double, 3> cross (
+  const schnek::ArrayExpression<exp1, 3> &A,
+  const schnek::ArrayExpression<exp2, 3> &B)
+{
+  return cross(schnek::Array<double, 3>(A), schnek::Array<double, 3>(B));
+}
+
+template<class exp, template<size_t> class CheckPolicy>
+inline schnek::Array<double, 3, CheckPolicy> cross (
+  const schnek::ArrayExpression<exp, 3> &A,
+  const schnek::Array<double, 3, CheckPolicy> &B)
+{
+  return cross(schnek::Array<double, 3, CheckPolicy>(A), B);
+}
+
+template<class exp, template<size_t> class CheckPolicy>
+inline schnek::Array<double, 3, CheckPolicy> cross (
+  const schnek::Array<double, 3, CheckPolicy> &A,
+  const schnek::ArrayExpression<exp, 3> &B)
+{
+  return cross(A, schnek::Array<double, 3, CheckPolicy>(B));
+}
+
 template<size_t Rank, template<size_t> class CheckingPolicy>
 inline int absMaxIndex(const schnek::Array<double, Rank, CheckingPolicy> &x)
 {
