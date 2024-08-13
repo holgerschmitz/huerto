@@ -40,9 +40,9 @@ void CurrentContainer::sumCurrents()
 
 #ifdef HUERTO_ONE_DIM
     for (int i=low[0]; i<=high[0]; ++i) {
-      jxT(i) += jx(i);
-      jyT(i) += jy(i);
-      jzT(i) += jz(i);
+      Jx(i) += jx(i);
+      Jx(i) += jy(i);
+      Jx(i) += jz(i);
     }
 #endif
 
