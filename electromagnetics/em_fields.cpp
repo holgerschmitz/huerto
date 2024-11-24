@@ -71,8 +71,6 @@ void EMFields::init() {
   B[1].field.resize(lowIn, highIn, domainSize, byStaggerYee, 2);
   B[2].field.resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
 
-  std::cerr << "EM_FIELDS Ey " << &(E[1].field[Index{0}]) << std::endl;
-
   fillValues();
 }
 // end of main

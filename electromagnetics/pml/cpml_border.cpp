@@ -99,34 +99,34 @@ void CPMLBorder::initCoefficients()
   Index low  = subdivision.getInnerLo();
   Index high = subdivision.getInnerHi();
 
-  std::vector<pGrid1d> pKappaEdk(DIMENSION);
-  std::vector<pGrid1d> pKappaHdk(DIMENSION);
+  std::vector<Grid1d> KappaEdk(DIMENSION);
+  std::vector<Grid1d> KappaHdk(DIMENSION);
 
-  std::vector<pGrid1d> pCpmlSigmaE(DIMENSION);
-  std::vector<pGrid1d> pCpmlSigmaH(DIMENSION);
+  std::vector<Grid1d> CpmlSigmaE(DIMENSION);
+  std::vector<Grid1d> CpmlSigmaH(DIMENSION);
 
-  retrieveData("KappaEdx", pKappaEdk[0]);
+  retrieveData("KappaEdx", KappaEdk[0]);
 #ifndef HUERTO_ONE_DIM
-  retrieveData("KappaEdy", pKappaEdk[1]);
+  retrieveData("KappaEdy", KappaEdk[1]);
 #endif
 #ifdef HUERTO_THREE_DIM
-  retrieveData("KappaEdz", pKappaEdk[2]);
+  retrieveData("KappaEdz", KappaEdk[2]);
 #endif
 
-  retrieveData("KappaHdx", pKappaHdk[0]);
+  retrieveData("KappaHdx", KappaHdk[0]);
 #ifndef HUERTO_ONE_DIM
-  retrieveData("KappaHdy", pKappaHdk[1]);
+  retrieveData("KappaHdy", KappaHdk[1]);
 #endif
 #ifdef HUERTO_THREE_DIM
-  retrieveData("KappaHdz", pKappaHdk[2]);
+  retrieveData("KappaHdz", KappaHdk[2]);
 #endif
 
   for (size_t dim = 0; dim<DIMENSION; ++dim)
   {
     std::cerr << "Dim " << dim << std::endl;
 
-    (*pKappaEdk[dim]) = 1.0;
-    (*pKappaHdk[dim]) = 1.0;
+    KappaEdk[dim] = 1.0;
+    KappaHdk[dim] = 1.0;
 
 
     Index blow, bhigh;
@@ -152,7 +152,7 @@ void CPMLBorder::initCoefficients()
         double x = 1 - double(k)/double(thickness);
         double x3 = x*x*x;
 
-        (*pKappaEdk[dim])(lowk+k) = 1 + (this->kappaMax - 1)*x3;
+        KappaEdk[dim](lowk+k) = 1 + (this->kappaMax - 1)*x3;
       }
     }
 
@@ -165,7 +165,7 @@ void CPMLBorder::initCoefficients()
         double x = 1 - (double(k) - 0.5)/double(thickness);
         double x3 = x*x*x;
 
-        (*pKappaHdk[dim])(lowk+k) = 1 + (this->kappaMax - 1)*x3;
+        KappaHdk[dim](lowk+k) = 1 + (this->kappaMax - 1)*x3;
       }
     }
 
@@ -189,7 +189,7 @@ void CPMLBorder::initCoefficients()
         double x = 1 - double(k)/double(thickness);
         double x3 = x*x*x;
 
-        (*pKappaEdk[dim])(highk-k) = 1 + (this->kappaMax - 1)*x3;
+        KappaEdk[dim](highk-k) = 1 + (this->kappaMax - 1)*x3;
       }
     }
 
@@ -202,7 +202,7 @@ void CPMLBorder::initCoefficients()
         double x = 1 - (double(k) - 0.5)/double(thickness);
         double x3 = x*x*x;
 
-        (*pKappaHdk[dim])(highk-k) = 1 + (this->kappaMax - 1)*x3;
+        KappaHdk[dim](highk-k) = 1 + (this->kappaMax - 1)*x3;
       }
     }
 

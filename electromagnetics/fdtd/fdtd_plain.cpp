@@ -262,9 +262,6 @@ void FDTD_Plain::stepE(double dt,
   Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
   Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : this->KappaEdy;
 
-
-  std::cerr << "FDTD Ey " << Ey(10, 10) << std::endl;
-
   Index low = Ex.getInnerLo();
   Index high = Ex.getInnerHi();
 
@@ -308,8 +305,6 @@ void FDTD_Plain::stepE(double dt,
       );
 
   }
-
-  std::cerr << "     Ey " << Ey(10, 10) << std::endl;
 
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
 
