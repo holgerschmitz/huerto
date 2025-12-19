@@ -78,7 +78,7 @@ void FDTD_Plain::init()
   KappaEdy = 1.0;
   KappaEdz = 1.0;
 
-  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<inptrdiff_tt, 1>(high[0]));
+  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
   KappaHdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
   KappaHdz.resize(schnek::Array<ptrdiff_t, 1>(low[2]), schnek::Array<ptrdiff_t, 1>(high[2]));
   KappaHdx = 1.0;
