@@ -52,35 +52,35 @@ void FDTD_Plain::init()
   Index high = subdivision.getHi();
 
 #ifdef HUERTO_ONE_DIM
-  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
+  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
+  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
   KappaEdx = 1.0;
   KappaHdx = 1.0;
 #endif
 
 #ifdef HUERTO_TWO_DIM
-  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  KappaEdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
+  KappaEdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
   KappaEdx = 1.0;
   KappaEdy = 1.0;
 
-  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  KappaHdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
+  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
+  KappaHdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
   KappaHdx = 1.0;
   KappaHdy = 1.0;
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  KappaEdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  KappaEdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  KappaEdz.resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
+  KappaEdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
+  KappaEdz.resize(schnek::Array<ptrdiff_t, 1>(low[2]), schnek::Array<ptrdiff_t, 1>(high[2]));
   KappaEdx = 1.0;
   KappaEdy = 1.0;
   KappaEdz = 1.0;
 
-  KappaHdx.resize(schnek::Array<int, 1>(low[0]), schnek::Array<int, 1>(high[0]));
-  KappaHdy.resize(schnek::Array<int, 1>(low[1]), schnek::Array<int, 1>(high[1]));
-  KappaHdz.resize(schnek::Array<int, 1>(low[2]), schnek::Array<int, 1>(high[2]));
+  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<inptrdiff_tt, 1>(high[0]));
+  KappaHdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
+  KappaHdz.resize(schnek::Array<ptrdiff_t, 1>(low[2]), schnek::Array<ptrdiff_t, 1>(high[2]));
   KappaHdx = 1.0;
   KappaHdy = 1.0;
   KappaHdz = 1.0;

@@ -24,7 +24,7 @@ class SimulationContext
      *
      * This quantity is specified through the `N` parameter in the setup file
      */
-    Index gridSize;
+    schnek::Array<int, DIMENSION> gridSize;
 
     /**
      * The physical size of the global grid, \f$L\f$
@@ -92,7 +92,7 @@ class SimulationContext
     /**
      * Get the global maximum grid index, #globalMax
      */
-    Index getGridSize() { return gridSize; }
+    Size getGridSize() { return Size{gridSize}; }
 
     /**
      * Get the grid spacing #dx
