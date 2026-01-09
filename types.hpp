@@ -12,6 +12,7 @@
 #include <schnek/grid/array.hpp>
 #include <schnek/grid/grid.hpp>
 #include <schnek/grid/field.hpp>
+#include <schnek/grid/iteration/range-iteration.hpp>
 
 #include <memory>
 
@@ -108,6 +109,8 @@ typedef std::reference_wrapper<Field3d> rField3d;
 typedef schnek::Range<ptrdiff_t, 3> Range3d;
 typedef schnek::Range<double, 3> Domain3d;
 typedef schnek::Array<bool, 3> Stagger3d;
+
+typedef schnek::RangeCIterationPolicy<DIMENSION> FieldIterator;
 
 #define LOG_ERROR 0
 #define LOG_WARN 1

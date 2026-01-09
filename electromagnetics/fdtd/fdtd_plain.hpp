@@ -98,14 +98,7 @@ class FDTD_Plain : public FieldSolver,
     void stepScheme(double dt);
 
 #ifdef HUERTO_ONE_DIM
-    void stepE(double dt, 
-               Field *Ex = NULL, 
-               Field *Ey = NULL, 
-               Field *Ez = NULL, 
-               Field *Bx = NULL, 
-               Field *By = NULL, 
-               Field *Bz = NULL, 
-               Grid1d *KappaEdx = NULL);
+    void stepE(double dt);
 #endif
 
 #ifdef HUERTO_TWO_DIM
