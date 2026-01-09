@@ -6,21 +6,24 @@
  */
 
 #include "current.hpp"
+#include "../util/fieldsum.hpp"
 
 #include <memory>
 
 void CurrentContainer::addCurrent(pCurrent current)
 {
   current->init();
-  if (current->isValid())
+  if (current->isValid()) {
     this->currents.push_back(current);
+  }
 }
 
 void CurrentContainer::addMagCurrent(pCurrent current)
 {
   current->init();
-  if (current->isValid())
+  if (current->isValid()) {
     this->magCurrents.push_back(current);
+  }
 }
 
 void CurrentContainer::sumCurrents()
@@ -35,39 +38,13 @@ void CurrentContainer::sumCurrents()
     Grid jy = current->getJy();
     Grid jz = current->getJz();
 
-    Index low = jx.getLo();
-    Index high = jx.getHi();
+    FieldSum<Field, Grid> sumJx{Jx, jx};
+    FieldSum<Field, Grid> sumJy{Jy, jy};
+    FieldSum<Field, Grid> sumJz{Jz, jz};
 
-#ifdef HUERTO_ONE_DIM
-    for (int i=low[0]; i<=high[0]; ++i) {
-      Jx(i) += jx(i);
-      Jx(i) += jy(i);
-      Jx(i) += jz(i);
-    }
-#endif
-
-#ifdef HUERTO_TWO_DIM
-    for (int i=low[0]; i<=high[0]; ++i) {
-      for (int j=low[1]; j<=high[1]; ++j) {
-        Jx(i,j) += jx(i,j);
-        Jy(i,j) += jy(i,j);
-        Jz(i,j) += jz(i,j);
-      }
-    }
-#endif
-
-#ifdef HUERTO_THREE_DIM
-    for (int i=low[0]; i<=high[0]; ++i) {
-      for (int j=low[1]; j<=high[1]; ++j) {
-        for (int k=low[2]; k<=high[2]; ++k) {
-          Jx(i,j,k) += jx(i,j,k);
-          Jy(i,j,k) += jy(i,j,k);
-          Jz(i,j,k) += jz(i,j,k);
-        }
-      }
-    }
-#endif
-
+    FieldIterator::forEach(jx.getRange(), sumJx);
+    FieldIterator::forEach(jy.getRange(), sumJy);
+    FieldIterator::forEach(jz.getRange(), sumJz);
   }
 }
 
@@ -83,38 +60,13 @@ void CurrentContainer::sumMagCurrents()
     Grid jy = current->getJy();
     Grid jz = current->getJz();
 
-    Index low = jx.getLo();
-    Index high = jx.getHi();
+    FieldSum<Field, Grid> sumJx{Mx, jx};
+    FieldSum<Field, Grid> sumJy{My, jy};
+    FieldSum<Field, Grid> sumJz{Mz, jz};
 
-#ifdef HUERTO_ONE_DIM
-    for (int i=low[0]; i<=high[0]; ++i){
-      Mx(i) += jx(i);
-      My(i) += jy(i);
-      Mz(i) += jz(i);
-    }
-#endif
-
-#ifdef HUERTO_TWO_DIM
-    for (int i=low[0]; i<=high[0]; ++i) {
-      for (int j=low[1]; j<=high[1]; ++j) {
-        Mx(i,j) += jx(i,j);
-        My(i,j) += jy(i,j);
-        Mz(i,j) += jz(i,j);
-      }
-    }
-#endif
-
-#ifdef HUERTO_THREE_DIM
-    for (int i=low[0]; i<=high[0]; ++i) {
-      for (int j=low[1]; j<=high[1]; ++j) {
-        for (int k=low[2]; k<=high[2]; ++k) {
-          Mx(i,j,k) += jx(i,j,k);
-          My(i,j,k) += jy(i,j,k);
-          Mz(i,j,k) += jz(i,j,k);
-        }
-      }
-    }
-#endif
+    FieldIterator::forEach(jx.getRange(), sumJx);
+    FieldIterator::forEach(jy.getRange(), sumJy);
+    FieldIterator::forEach(jz.getRange(), sumJz);
   }
 }
 

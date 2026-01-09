@@ -38,18 +38,16 @@ struct FDTD_StepE : public FDTD_FieldContainer {
     auto i = pos[0];
     double kappaEdx = KappaDx(i) * dx[0];
 
-    Ex(i) = Ex(i) - dt * Jx(i) / eps_0;
+    Ex(i) += - dt * Jx(i) / eps_0;
 
-    Ey(i) = Ey(i)
-      + dt * (
+    Ey(i) += dt * (
           clight2 * (
           - (Bz(i) - Bz(i-1)) / kappaEdx
           )
         - Jy(i) / eps_0
       );
 
-    Ez(i) = Ez(i)
-      + dt * (
+    Ez(i) += dt * (
           clight2 * (
             (By(i) - By(i-1)) / kappaEdx
           )
@@ -63,14 +61,12 @@ struct FDTD_StepB : public FDTD_FieldContainer {
     auto i = pos[0];
     double kappaHdx = KappaDx(i) * dx[0];
 
-    By(i) = By(i)
-      + dt * (
+    By(i) += dt * (
           (Ez(i+1) - Ez(i)) / kappaHdx
         + Jy(i)
       );
 
-    Bz(i) = Bz(i)
-      + dt * (
+    Bz(i) += dt * (
         - (Ey(i+1) - Ey(i)) / kappaHdx
         + Jz(i)
       );
@@ -85,24 +81,21 @@ struct FDTD_StepE : public FDTD_FieldContainer {
     double kappaEdx = KappaDx(i)*dx[0];
     double kappaEdy = KappaDy(j)*dx[1];
 
-    Ex(i, j) = Ex(i, j)
-      + dt*(
+    Ex(i, j) += dt*(
           clight2*(
             (Bz(i, j) - Bz(i, j-1))/kappaEdy
           )
         - Jx(i, j) / eps_0
       );
 
-    Ey(i, j) = Ey(i, j)
-      + dt*(
+    Ey(i, j) += dt*(
           clight2*(
           - (Bz(i, j) - Bz(i-1, j))/kappaEdx
           )
         - Jy(i, j) / eps_0
       );
 
-    Ez(i, j) = Ez(i, j)
-      + dt*(
+    Ez(i, j) += dt*(
           clight2*(
             (By(i, j) - By(i-1, j))/kappaEdx
           - (Bx(i, j) - Bx(i, j-1))/kappaEdy
@@ -118,20 +111,17 @@ struct FDTD_StepB : public FDTD_FieldContainer {
     double kappaHdx = KappaDx(i)*dx[0];
     double kappaHdy = KappaDy(j)*dx[1];
 
-    Bx(i, j) = Bx(i, j)
-      + dt*(
+    Bx(i, j) += dt*(
         - (Ez(i, j+1) - Ez(i, j))/kappaHdy
         + Jx(i, j)
       );
 
-    By(i, j) = By(i, j)
-      + dt*(
+    By(i, j) += dt*(
           (Ez(i+1, j) - Ez(i, j))/kappaHdx
         + Jy(i, j)
       );
 
-    Bz(i, j) = Bz(i, j)
-      + dt*(
+    Bz(i, j) += dt*(
           (Ex(i, j+1) - Ex(i, j))/kappaHdy
         - (Ey(i+1, j) - Ey(i, j))/kappaHdx
         + Jz(i, j)
@@ -148,8 +138,7 @@ struct FDTD_StepE : public FDTD_FieldContainer {
     double kappaEdy = KappaDy(j)*dx[1];
     double kappaEdz = KappaDz(k)*dx[2];
 
-    Ex(i, j, k) = Ex(i, j, k)
-      + dt * (
+    Ex(i, j, k) += dt * (
           clight2 * (
             (Bz(i, j, k) - Bz(i, j-1, k)) / kappaEdy
           - (By(i, j, k) - By(i, j, k-1)) / kappaEdz
@@ -157,8 +146,7 @@ struct FDTD_StepE : public FDTD_FieldContainer {
         - Jx(i, j, k) / eps_0
       );
 
-    Ey(i, j, k) = Ey(i, j, k)
-      + dt * (
+    Ey(i, j, k) += dt * (
           clight2 * (
             (Bx(i, j, k) - Bx(i, j, k-1)) / kappaEdz
           - (Bz(i, j, k) - Bz(i-1, j, k)) / kappaEdx
@@ -166,8 +154,7 @@ struct FDTD_StepE : public FDTD_FieldContainer {
         - Jy(i, j, k) / eps_0
       );
 
-    Ez(i, j, k) = Ez(i, j, k)
-      + dt * (
+    Ez(i, j, k) += dt * (
           clight2 * (
             (By(i, j, k) - By(i-1, j, k)) / kappaEdx
           - (Bx(i, j, k) - Bx(i, j-1, k)) / kappaEdy
@@ -184,22 +171,19 @@ struct FDTD_StepB : public FDTD_FieldContainer {
     double kappaHdy = KappaDy(j)*dx[1];
     double kappaHdz = KappaDz(k)*dx[2];
 
-    Bx(i, j, k) = Bx(i, j, k)
-      + dt * (
+    Bx(i, j, k) += dt * (
           (Ey(i, j, k+1) - Ey(i, j, k)) / kappaHdz
         - (Ez(i, j+1, k) - Ez(i, j, k)) / kappaHdy
         + Jx(i, j, k)
       );
 
-    By(i, j, k) = By(i, j, k)
-      + dt * (
+    By(i, j, k) += dt * (
           (Ez(i+1, j, k) - Ez(i, j, k)) / kappaHdx
         - (Ex(i, j, k+1) - Ex(i, j, k)) / kappaHdz
         + Jy(i, j, k)
       );
 
-    Bz(i, j, k) = Bz(i, j, k)
-      + dt*(
+    Bz(i, j, k) += dt*(
           (Ex(i, j+1, k) - Ex(i, j, k)) / kappaHdy
         - (Ey(i+1, j, k) - Ey(i, j, k)) / kappaHdx
         + Jz(i, j, k)

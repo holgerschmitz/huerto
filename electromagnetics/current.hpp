@@ -107,6 +107,8 @@ class CurrentBlock :
         public SimulationEntity
 {
   public:
+    virtual ~CurrentBlock() {}
+
     /**
      * Initialise any currents with the current container
      *
