@@ -21,68 +21,192 @@ struct FDTD_FieldContainer {
     Field Ex, Ey, Ez;
     Field Bx, By, Bz;
     Field Jx, Jy, Jz;
-    Grid1d KappaEdx, KappaHdx;
+    Grid1d KappaDx;
 
 #ifndef HUERTO_ONE_DIM
-    Grid1d KappaEdy, KappaHdy;
+    Grid1d KappaDy;
 #endif
 
 #ifdef HUERTO_THREE_DIM
-    Grid1d KappaEdz, KappaHdz;
+    Grid1d KappaDz;
 #endif
 };
 
-// #ifdef HUERTO_ONE_DIM
+#ifdef HUERTO_ONE_DIM
 struct FDTD_StepE : public FDTD_FieldContainer {
-  void operator()(Index pos) {
-    double jx = Jx[pos];
-    double jy = Jy[pos];
-    double jz = Jz[pos];
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto i = pos[0];
+    double kappaEdx = KappaDx(i) * dx[0];
 
-    double kappaEdx = KappaEdx[pos]*dx[0];
+    Ex(i) = Ex(i) - dt * Jx(i) / eps_0;
 
-    Ex[pos] = Ex[pos] - dt*jx/eps_0;
-
-    Ey[pos] = Ey[pos]
-      + dt*(
-          clight2*(
-          - (Bz[pos] - Bz(pos[0]-1))/kappaEdx
+    Ey(i) = Ey(i)
+      + dt * (
+          clight2 * (
+          - (Bz(i) - Bz(i-1)) / kappaEdx
           )
-        - jy/eps_0
+        - Jy(i) / eps_0
       );
 
-    Ez[pos] = Ez[pos]
-      + dt*(
-          clight2*(
-            (By[pos] - By(pos[0]-1))/kappaEdx
+    Ez(i) = Ez(i)
+      + dt * (
+          clight2 * (
+            (By(i) - By(i-1)) / kappaEdx
           )
-        - jz/eps_0
+        - Jz(i) / eps_0
       );
   }
 };
 
 struct FDTD_StepB : public FDTD_FieldContainer {
-  void operator()(Index pos) {
-    double jy = Jy[pos];
-    double jz = Jz[pos];
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto i = pos[0];
+    double kappaHdx = KappaDx(i) * dx[0];
 
-    double kappaHdx = KappaHdx[pos]*dx[0];
-
-    By[pos] = By[pos]
-      + dt*(
-          (Ez(pos[0]+1) - Ez[pos])/kappaHdx
-        + jy
+    By(i) = By(i)
+      + dt * (
+          (Ez(i+1) - Ez(i)) / kappaHdx
+        + Jy(i)
       );
 
-    Bz[pos] = Bz[pos]
+    Bz(i) = Bz(i)
+      + dt * (
+        - (Ey(i+1) - Ey(i)) / kappaHdx
+        + Jz(i)
+      );
+  }
+};
+#endif
+
+#ifdef HUERTO_TWO_DIM
+struct FDTD_StepE : public FDTD_FieldContainer {
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto [i, j] = pos;
+    double kappaEdx = KappaDx(i)*dx[0];
+    double kappaEdy = KappaDy(j)*dx[1];
+
+    Ex(i, j) = Ex(i, j)
       + dt*(
-        - (Ey(pos[0]+1) - Ey[pos])/kappaHdx
-        + jz
+          clight2*(
+            (Bz(i, j) - Bz(i, j-1))/kappaEdy
+          )
+        - Jx(i, j) / eps_0
+      );
+
+    Ey(i, j) = Ey(i, j)
+      + dt*(
+          clight2*(
+          - (Bz(i, j) - Bz(i-1, j))/kappaEdx
+          )
+        - Jy(i, j) / eps_0
+      );
+
+    Ez(i, j) = Ez(i, j)
+      + dt*(
+          clight2*(
+            (By(i, j) - By(i-1, j))/kappaEdx
+          - (Bx(i, j) - Bx(i, j-1))/kappaEdy
+          )
+        - Jz(i, j) / eps_0
       );
   }
 };
 
-// #endif
+struct FDTD_StepB : public FDTD_FieldContainer {
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto [i, j] = pos;
+    double kappaHdx = KappaDx(i)*dx[0];
+    double kappaHdy = KappaDy(j)*dx[1];
+
+    Bx(i, j) = Bx(i, j)
+      + dt*(
+        - (Ez(i, j+1) - Ez(i, j))/kappaHdy
+        + Jx(i, j)
+      );
+
+    By(i, j) = By(i, j)
+      + dt*(
+          (Ez(i+1, j) - Ez(i, j))/kappaHdx
+        + Jy(i, j)
+      );
+
+    Bz(i, j) = Bz(i, j)
+      + dt*(
+          (Ex(i, j+1) - Ex(i, j))/kappaHdy
+        - (Ey(i+1, j) - Ey(i, j))/kappaHdx
+        + Jz(i, j)
+      );
+  }
+};
+#endif
+
+#ifdef HUERTO_THREE_DIM
+struct FDTD_StepE : public FDTD_FieldContainer {
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto [i, j, k] = pos;
+    double kappaEdx = KappaDx(i)*dx[0];
+    double kappaEdy = KappaDy(j)*dx[1];
+    double kappaEdz = KappaDz(k)*dx[2];
+
+    Ex(i, j, k) = Ex(i, j, k)
+      + dt * (
+          clight2 * (
+            (Bz(i, j, k) - Bz(i, j-1, k)) / kappaEdy
+          - (By(i, j, k) - By(i, j, k-1)) / kappaEdz
+          )
+        - Jx(i, j, k) / eps_0
+      );
+
+    Ey(i, j, k) = Ey(i, j, k)
+      + dt * (
+          clight2 * (
+            (Bx(i, j, k) - Bx(i, j, k-1)) / kappaEdz
+          - (Bz(i, j, k) - Bz(i-1, j, k)) / kappaEdx
+          )
+        - Jy(i, j, k) / eps_0
+      );
+
+    Ez(i, j, k) = Ez(i, j, k)
+      + dt * (
+          clight2 * (
+            (By(i, j, k) - By(i-1, j, k)) / kappaEdx
+          - (Bx(i, j, k) - Bx(i, j-1, k)) / kappaEdy
+          )
+        - Jz(i, j, k) / eps_0
+      );
+  }
+};
+
+struct FDTD_StepB : public FDTD_FieldContainer {
+  SCHNEK_INLINE void operator()(Index pos) {
+    auto [i, j, k] = pos;
+    double kappaHdx = KappaDx(i)*dx[0];
+    double kappaHdy = KappaDy(j)*dx[1];
+    double kappaHdz = KappaDz(k)*dx[2];
+
+    Bx(i, j, k) = Bx(i, j, k)
+      + dt * (
+          (Ey(i, j, k+1) - Ey(i, j, k)) / kappaHdz
+        - (Ez(i, j+1, k) - Ez(i, j, k)) / kappaHdy
+        + Jx(i, j, k)
+      );
+
+    By(i, j, k) = By(i, j, k)
+      + dt * (
+          (Ez(i+1, j, k) - Ez(i, j, k)) / kappaHdx
+        - (Ex(i, j, k+1) - Ex(i, j, k)) / kappaHdz
+        + Jy(i, j, k)
+      );
+
+    Bz(i, j, k) = Bz(i, j, k)
+      + dt*(
+          (Ex(i, j+1, k) - Ex(i, j, k)) / kappaHdy
+        - (Ey(i+1, j, k) - Ey(i, j, k)) / kappaHdx
+        + Jz(i, j, k)
+      );
+  }
+};
+#endif
 
 
 void FDTD_Plain::registerData()
@@ -207,228 +331,19 @@ void FDTD_Plain::stepScheme(double dt) {
   stepB(dt);
 }
 
-#ifdef HUERTO_ONE_DIM
 void FDTD_Plain::stepE(double dt)
 {
   sumCurrents();
-  FDTD_StepE stepE{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaHdx};
-  FieldIterator::forEach(Ex.getInnerRange(), stepE);
-
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Ex);
-  sub.exchange(Ey);
-  sub.exchange(Ez);
-}
-
-
-void FDTD_Plain::stepB(double dt)
-{
-  sumMagCurrents();
-  FDTD_StepB stepB{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaEdx, KappaHdx};
-  FieldIterator::forEach(Ex.getInnerRange(), stepB);
-
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Bx);
-  sub.exchange(By);
-  sub.exchange(Bz);
-}
+#ifdef HUERTO_ONE_DIM
+  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx};
 #endif
-
 #ifdef HUERTO_TWO_DIM
-void FDTD_Plain::stepE(double dt, 
-                       Field *Ex_, 
-                       Field *Ey_, 
-                       Field *Ez_, 
-                       Field *Bx_, 
-                       Field *By_,
-                       Field *Bz_, 
-                       Grid1d *KappaEdx_, 
-                       Grid1d *KappaEdy_) {
-  Field &Ex = Ex_ != NULL ? *Ex_ : this->Ex;
-  Field &Ey = Ey_ != NULL ? *Ey_ : this->Ey;
-  Field &Ez = Ez_ != NULL ? *Ez_ : this->Ez;
-
-  Field &Bx = Bx_ != NULL ? *Bx_ : this->Bx;
-  Field &By = By_ != NULL ? *By_ : this->By;
-  Field &Bz = Bz_ != NULL ? *Bz_ : this->Bz;
-
-  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
-  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : this->KappaEdy;
-
-  Index low = Ex.getInnerLo();
-  Index high = Ex.getInnerHi();
-
-  Vector dx = getContext().getDx();
-
-  sumCurrents();
-
-  for (int i=low[0]; i<=high[0]; ++i)
-    for (int j=low[1]; j<=high[1]; ++j)
-  {
-    double jx = this->Jx(i,j);
-    double jy = this->Jy(i,j);
-    double jz = this->Jz(i,j);
-
-    double kappaEdx = rKappaEdx(i)*dx[0];
-    double kappaEdy = rKappaEdy(j)*dx[1];
-
-    Ex(i,j) = Ex(i,j)
-      + dt*(
-          clight2*(
-            (Bz(i,j) - Bz(i,j-1))/kappaEdy
-          )
-        - jx/eps_0
-      );
-
-    Ey(i,j) = Ey(i,j)
-      + dt*(
-          clight2*(
-          - (Bz(i,j) - Bz(i-1,j))/kappaEdx
-          )
-        - jy/eps_0
-      );
-
-    Ez(i,j) = Ez(i,j)
-      + dt*(
-          clight2*(
-            (By(i,j) - By(i-1,j))/kappaEdx
-          - (Bx(i,j) - Bx(i,j-1))/kappaEdy
-          )
-        - jz/eps_0
-      );
-
-  }
-
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Ex);
-  sub.exchange(Ey);
-  sub.exchange(Ez);
-}
-
-
-void FDTD_Plain::stepB(double dt)
-{
-  Index low = Ex.getInnerLo();
-  Index high = Ex.getInnerHi();
-
-  Vector dx = getContext().getDx();
-
-  sumMagCurrents();
-
-  for (int i=low[0]; i<=high[0]; ++i)
-    for (int j=low[1]; j<=high[1]; ++j)
-  {
-    double jx = this->Mx(i,j);
-    double jy = this->My(i,j);
-    double jz = this->Mz(i,j);
-
-    double kappaHdx = KappaHdx(i)*dx[0];
-    double kappaHdy = KappaHdy(j)*dx[1];
-
-    Bx(i,j) = Bx(i,j)
-      + dt*(
-        - (Ez(i,j+1) - Ez(i,j))/kappaHdy
-        + jx
-      );
-
-    By(i,j) = By(i,j)
-      + dt*(
-          (Ez(i+1,j) - Ez(i,j))/kappaHdx
-        + jy
-      );
-
-    Bz(i,j) = Bz(i,j)
-      + dt*(
-          (Ex(i,j+1) - Ex(i,j))/kappaHdy
-        - (Ey(i+1,j) - Ey(i,j))/kappaHdx
-        + jz
-      );
-
-  }
-
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Bx);
-  sub.exchange(By);
-  sub.exchange(Bz);
-}
+  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy};
 #endif
-
 #ifdef HUERTO_THREE_DIM
-void FDTD_Plain::stepE(double dt, 
-                       Field *Ex_, 
-                       Field *Ey_, 
-                       Field *Ez_, 
-                       Field *Bx_, 
-                       Field *By_,
-                       Field *Bz_, 
-                       Grid1d *KappaEdx_, 
-                       Grid1d *KappaEdy_, 
-                       Grid1d *KappaEdz_)
-{
-  Field &Ex = Ex_ != NULL ? *Ex_ : this->Ex;
-  Field &Ey = Ey_ != NULL ? *Ey_ : this->Ey;
-  Field &Ez = Ez_ != NULL ? *Ez_ : this->Ez;
-
-  Field &Bx = Bx_ != NULL ? *Bx_ : this->Bx;
-  Field &By = By_ != NULL ? *By_ : this->By;
-  Field &Bz = Bz_ != NULL ? *Bz_ : this->Bz;
-
-  Grid1d &rKappaEdx= KappaEdx_ != NULL ? *KappaEdx_ : this->KappaEdx;
-  Grid1d &rKappaEdy= KappaEdy_ != NULL ? *KappaEdy_ : this->KappaEdy;
-  Grid1d &rKappaEdz= KappaEdz_ != NULL ? *KappaEdz_ : this->KappaEdz;
-
-
-
-  Index low = Ex.getInnerLo();
-  Index high = Ex.getInnerHi();
-
-  Vector dx = getContext().getDx();
-
-  sumCurrents();
-
-  for (int i=low[0]; i<=high[0]; ++i)
-    for (int j=low[1]; j<=high[1]; ++j)
-      for (int k=low[2]; k<=high[2]; ++k)
-  {
-    double jx = this->Jx(i,j,k);
-    double jy = this->Jy(i,j,k);
-    double jz = this->Jz(i,j,k);
-
-    double kappaEdx = rKappaEdx(i)*dx[0];
-    double kappaEdy = rKappaEdy(j)*dx[1];
-    double kappaEdz = rKappaEdz(k)*dx[2];
-
-    Ex(i,j,k) = Ex(i,j,k)
-      + dt*(
-          clight2*(
-            (Bz(i,j,k) - Bz(i,j-1,k))/kappaEdy
-          - (By(i,j,k) - By(i,j,k-1))/kappaEdz
-          )
-        - jx/eps_0
-      );
-
-    Ey(i,j,k) = Ey(i,j,k)
-      + dt*(
-          clight2*(
-            (Bx(i,j,k) - Bx(i,j,k-1))/kappaEdz
-          - (Bz(i,j,k) - Bz(i-1,j,k))/kappaEdx
-          )
-        - jy/eps_0
-      );
-
-    Ez(i,j,k) = Ez(i,j,k)
-      + dt*(
-          clight2*(
-            (By(i,j,k) - By(i-1,j,k))/kappaEdx
-          - (Bx(i,j,k) - Bx(i,j-1,k))/kappaEdy
-          )
-        - jz/eps_0
-      );
-  }
+  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy, KappaEdz};
+#endif
+  FieldIterator::forEach(Ex.getInnerRange(), stepEFunc);
 
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
 
@@ -437,49 +352,19 @@ void FDTD_Plain::stepE(double dt,
   sub.exchange(Ez);
 }
 
-
 void FDTD_Plain::stepB(double dt)
 {
-  Index low = Ex.getInnerLo();
-  Index high = Ex.getInnerHi();
-
-  Vector dx = getContext().getDx();
-
   sumMagCurrents();
-
-  for (int i=low[0]; i<=high[0]; ++i)
-    for (int j=low[1]; j<=high[1]; ++j)
-      for (int k=low[2]; k<=high[2]; ++k)
-  {
-    double jx = this->Mx(i,j,k);
-    double jy = this->My(i,j,k);
-    double jz = this->Mz(i,j,k);
-
-    double kappaHdx = KappaHdx(i)*dx[0];
-    double kappaHdy = KappaHdy(j)*dx[1];
-    double kappaHdz = KappaHdz(k)*dx[2];
-
-    Bx(i,j,k) = Bx(i,j,k)
-      + dt*(
-          (Ey(i,j,k+1) - Ey(i,j,k))/kappaHdz
-        - (Ez(i,j+1,k) - Ez(i,j,k))/kappaHdy
-        + jx
-      );
-
-    By(i,j,k) = By(i,j,k)
-      + dt*(
-          (Ez(i+1,j,k) - Ez(i,j,k))/kappaHdx
-        - (Ex(i,j,k+1) - Ex(i,j,k))/kappaHdz
-        + jy
-      );
-
-    Bz(i,j,k) = Bz(i,j,k)
-      + dt*(
-          (Ex(i,j+1,k) - Ex(i,j,k))/kappaHdy
-        - (Ey(i+1,j,k) - Ey(i,j,k))/kappaHdx
-        + jz
-      );
-  }
+#ifdef HUERTO_ONE_DIM
+  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx};
+#endif
+#ifdef HUERTO_TWO_DIM
+  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy};
+#endif
+#ifdef HUERTO_THREE_DIM
+  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy, KappaHdz};
+#endif
+  FieldIterator::forEach(Ex.getInnerRange(), stepBFunc);
 
   schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
 
@@ -487,4 +372,4 @@ void FDTD_Plain::stepB(double dt)
   sub.exchange(By);
   sub.exchange(Bz);
 }
-#endif
+
