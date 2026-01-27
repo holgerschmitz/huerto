@@ -10,7 +10,6 @@
 #include "../constants.hpp"
 
 #include <schnek/util/logger.hpp>
-#include <schnek/grid/domainsubdivision.hpp>
 #include <schnek/tools/fieldtools.hpp>
 
 #include <string>
@@ -26,7 +25,16 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
   }
 }
 
-void EMFields::registerData() {
+void EMFields::registerData() {  
+  auto &decomposition = getContext().getDecomposition();
+  E[0].field = decomposition.registerField(schnek::GridFactory<Field>{exStaggerYee, 2});
+  E[1].field = decomposition.registerField(schnek::GridFactory<Field>{eyStaggerYee, 2});
+  E[2].field = decomposition.registerField(schnek::GridFactory<Field>{ezStaggerYee, 2});
+
+  B[0].field = decomposition.registerField(schnek::GridFactory<Field>{bxStaggerYee, 2});
+  B[1].field = decomposition.registerField(schnek::GridFactory<Field>{byStaggerYee, 2});
+  B[2].field = decomposition.registerField(schnek::GridFactory<Field>{bzStaggerYee, 2});
+
   for (size_t i=0; i<3; ++i) {
     addData(indexToCoord(i, "E"), E[i].field);
     addData(indexToCoord(i, "B"), B[i].field);
@@ -35,6 +43,7 @@ void EMFields::registerData() {
 
 void EMFields::fillValues() {
   std::cout << "Filling fields" << std::endl;
+  auto &decomposition = getContext().getDecomposition();
   schnek::pBlockVariables blockVars = getVariables();
   schnek::pDependencyMap depMap(new schnek::DependencyMap(blockVars));
 
@@ -45,8 +54,11 @@ void EMFields::fillValues() {
   updater.addIndependentArray(x_parameters);
 
   for (size_t i=0; i<3; ++i) {
-    schnek::fill_field(E[i].field, x, E[i].value, updater, E[i].parameter);
-    schnek::fill_field(B[i].field, x, B[i].value, updater, B[i].parameter);
+    auto gridContext = decomposition.getGridContext({E[i].field, B[i].field});
+    gridContext.forEach([&](Range& /* range */, Field &Efield, Field &Bfield) {
+      schnek::fill_field(Efield, x, E[i].value, updater, E[i].parameter);
+      schnek::fill_field(Bfield, x, B[i].value, updater, B[i].parameter);
+    });
   }
 }
 
@@ -57,19 +69,6 @@ void EMFields::preInit() {
 void EMFields::init() {
   schnek::ChildBlock<EMFields>::init();
   SimulationEntity::init(this);
-  const schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
-  Index lowIn  = subdivision.getInnerLo();
-  Index highIn = subdivision.getInnerHi();
-
-  schnek::Range<double, DIMENSION> domainSize = subdivision.getInnerExtent(getContext().getSize());
-
-  E[0].field.resize(lowIn, highIn, domainSize, exStaggerYee, 2);
-  E[1].field.resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  E[2].field.resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
-
-  B[0].field.resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  B[1].field.resize(lowIn, highIn, domainSize, byStaggerYee, 2);
-  B[2].field.resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
 
   fillValues();
 }

@@ -13,78 +13,78 @@
 void CurrentContainer::addCurrent(pCurrent current)
 {
   current->init();
-  if (current->isValid()) {
-    this->currents.push_back(current);
-  }
+  this->currents.push_back(current);
 }
 
 void CurrentContainer::addMagCurrent(pCurrent current)
 {
   current->init();
-  if (current->isValid()) {
-    this->magCurrents.push_back(current);
-  }
+  this->magCurrents.push_back(current);
 }
 
 void CurrentContainer::sumCurrents()
 {
-  Jx = 0;
-  Jy = 0;
-  Jz = 0;
+  auto &decomposition = context->getDecomposition();
+  auto gridContext = decomposition.getGridContext({Jx, Jy, Jz});
+  gridContext.forEach([&](Range& /* range */, Field &Jx, Field &Jy, Field &Jz) {
+    Jx = 0;
+    Jy = 0;
+    Jz = 0;
+  });
 
   for (pCurrent current: this->currents)
   {
-    Grid jx = current->getJx();
-    Grid jy = current->getJy();
-    Grid jz = current->getJz();
+    auto currentGridContext = decomposition.getGridContext({current->getJx(), current->getJy(), current->getJz(), Jx, Jy, Jz});
 
-    FieldSum<Field, Grid> sumJx{Jx, jx};
-    FieldSum<Field, Grid> sumJy{Jy, jy};
-    FieldSum<Field, Grid> sumJz{Jz, jz};
+    gridContext.forEach([&](Range& range, Field &jx, Field &jy, Field &jz, Field &Jx, Field &Jy, Field &Jz) {
+        FieldSum<Field, Grid> sumJx{Jx, jx};
+        FieldSum<Field, Grid> sumJy{Jy, jy};
+        FieldSum<Field, Grid> sumJz{Jz, jz};
 
-    FieldIterator::forEach(jx.getRange(), sumJx);
-    FieldIterator::forEach(jy.getRange(), sumJy);
-    FieldIterator::forEach(jz.getRange(), sumJz);
+        FieldIterator::forEach(range, sumJx);
+        FieldIterator::forEach(range, sumJy);
+        FieldIterator::forEach(range, sumJz);
+    });
   }
 }
 
 void CurrentContainer::sumMagCurrents()
 {
-  Mx = 0;
-  My = 0;
-  Mz = 0;
+  auto &decomposition = context->getDecomposition();
+  auto gridContext = decomposition.getGridContext({Mx, My, Mz});
+  gridContext.forEach([&](Range& /* range */, Field &Jx, Field &Jy, Field &Jz) {
+    Jx = 0;
+    Jy = 0;
+    Jz = 0;
+  });
 
   for (pCurrent current: this->magCurrents)
   {
-    Grid jx = current->getJx();
-    Grid jy = current->getJy();
-    Grid jz = current->getJz();
+    auto currentGridContext = decomposition.getGridContext({current->getJx(), current->getJy(), current->getJz(), Mx, My, Mz});
 
-    FieldSum<Field, Grid> sumJx{Mx, jx};
-    FieldSum<Field, Grid> sumJy{My, jy};
-    FieldSum<Field, Grid> sumJz{Mz, jz};
+    gridContext.forEach([&](Range& range, Field &jx, Field &jy, Field &jz, Field &Jx, Field &Jy, Field &Jz) {
+        FieldSum<Field, Grid> sumJx{Jx, jx};
+        FieldSum<Field, Grid> sumJy{Jy, jy};
+        FieldSum<Field, Grid> sumJz{Jz, jz};
 
-    FieldIterator::forEach(jx.getRange(), sumJx);
-    FieldIterator::forEach(jy.getRange(), sumJy);
-    FieldIterator::forEach(jz.getRange(), sumJz);
+        FieldIterator::forEach(range, sumJx);
+        FieldIterator::forEach(range, sumJy);
+        FieldIterator::forEach(range, sumJz);
+    });
   }
 }
 
 void CurrentContainer::init(SimulationContext &context)
 {
+  this->context = &context;
+  auto &decomposition = context.getDecomposition();
+  Jx = decomposition.registerField(schnek::GridFactory<Field>{exStaggerYee, 2});
+  Jy = decomposition.registerField(schnek::GridFactory<Field>{eyStaggerYee, 2});
+  Jz = decomposition.registerField(schnek::GridFactory<Field>{ezStaggerYee, 2});
 
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
-  Index lowIn = subdivision.getInnerLo();
-  Index highIn = subdivision.getInnerHi();
-
-  Domain domainSize = subdivision.getInnerExtent(context.getSize());
-  Jx.resize(lowIn, highIn, domainSize, exStaggerYee, 2);
-  Jy.resize(lowIn, highIn, domainSize, eyStaggerYee, 2);
-  Jz.resize(lowIn, highIn, domainSize, ezStaggerYee, 2);
-
-  Mx.resize(lowIn, highIn, domainSize, bxStaggerYee, 2);
-  My.resize(lowIn, highIn, domainSize, byStaggerYee, 2);
-  Mz.resize(lowIn, highIn, domainSize, bzStaggerYee, 2);
+  Mx = decomposition.registerField(schnek::GridFactory<Field>{bxStaggerYee, 2});
+  My = decomposition.registerField(schnek::GridFactory<Field>{byStaggerYee, 2});
+  Mz = decomposition.registerField(schnek::GridFactory<Field>{bzStaggerYee, 2});
 }
 
 

@@ -36,6 +36,8 @@ typedef std::shared_ptr<Current> pCurrent;
  */
 class CurrentContainer
 {
+  private:
+    SimulationContext *context;
   protected:
     /**
      * A list of pointers to currents
@@ -55,12 +57,12 @@ class CurrentContainer
     /**
      * Sum of all electric currents
      */
-    Field Jx, Jy, Jz;
+    schnek::GridRegistration Jx, Jy, Jz;
 
     /**
      * Sum of all magnetic currents
      */
-    Field Mx, My, Mz;
+    schnek::GridRegistration Mx, My, Mz;
 
     /**
      * Add all electric currents and store the result in #pJx, #pJy, #pJz
@@ -138,7 +140,7 @@ class Current
     /**
      * The grids containing the components of the current
      */
-    Grid Jx, Jy, Jz;
+    schnek::GridRegistration Jx, Jy, Jz;
   public:
     /**
      * Virtual destructor
@@ -168,27 +170,19 @@ class Current
     virtual void stepScheme(double dt) = 0;
 
     /**
-     * Check if the current is valid
-     *
-     * The current is valid if all the components of the current have been
-     * initialised
-     */
-    bool isValid() const { return (Jx.getSize() > 0) && (Jy.getSize() > 0) && (Jz.getSize() > 0); }
-
-    /**
      * Get the x-component of the current
      */
-    const Grid &getJx() { return Jx; }
+    const schnek::GridRegistration getJx() { return Jx; }
 
     /**
      * Get the y-component of the current
      */
-    const Grid &getJy() { return Jy; }
+    const schnek::GridRegistration getJy() { return Jy; }
 
     /**
      * Get the z-component of the current
      */
-    const Grid &getJz() { return Jz; }
+    const schnek::GridRegistration getJz() { return Jz; }
 };
 
 

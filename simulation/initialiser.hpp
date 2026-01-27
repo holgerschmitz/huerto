@@ -4,7 +4,9 @@
 
 #include "../types.hpp"
 
+#include <schnek/util/logger.hpp>
 #include <schnek/variables/block.hpp>
+#include <schnek/decomposition/domaindecomposition.hpp>
 
 #include <memory>
 
@@ -16,7 +18,7 @@
  */
 template<typename T, int D = DIMENSION>
 struct InitialisedField {
-    schnek::Field<T, D, HuertoGridChecker> field;
+    schnek::GridRegistration field;
     schnek::pParameter parameter;
     T value;
 };

@@ -13,6 +13,7 @@
 #include <schnek/grid/grid.hpp>
 #include <schnek/grid/field.hpp>
 #include <schnek/grid/iteration/range-iteration.hpp>
+#include <schnek/decomposition/mpi_cartesian_decomposition.hpp>
 
 #include <memory>
 
@@ -111,6 +112,13 @@ typedef schnek::Range<double, 3> Domain3d;
 typedef schnek::Array<bool, 3> Stagger3d;
 
 typedef schnek::RangeCIterationPolicy<DIMENSION> FieldIterator;
+
+#ifndef HUERTO_DECOMPOSITION
+#define HUERTO_DECOMPOSITION
+
+typedef schnek::MpiCartesianDomainDecomposition<DIMENSION> HuertoDecomposition;
+
+#endif
 
 #define LOG_ERROR 0
 #define LOG_WARN 1

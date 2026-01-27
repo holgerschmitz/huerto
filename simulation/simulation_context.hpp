@@ -11,7 +11,6 @@
 #include "../types.hpp"
 
 #include <schnek/variables/block.hpp>
-#include <schnek/grid/domainsubdivision.hpp>
 
 /**
  * A simulation context representing a regular grid domain simulated through time
@@ -81,7 +80,7 @@ class SimulationContext
     /**
      * The Cartesian MPI subdivision of the grids containing the electromagnetic field
      */
-    std::shared_ptr<schnek::DomainSubdivision<Field>> subdivision;
+    std::shared_ptr<HuertoDecomposition> decomposition;
 
   public:
     /**
@@ -125,9 +124,9 @@ class SimulationContext
     schnek::Array<schnek::pParameter, DIMENSION> &getXParameter() { return x_parameters; }
 
     /**
-     * Get the grid subdivision
+     * Get the grid decomposition
      */
-    schnek::DomainSubdivision<Field> &getSubdivision() { return *subdivision; };
+    HuertoDecomposition &getDecomposition() { return *decomposition; };
 
     /**
      * Initialise the global parameters exposed in the setup file
