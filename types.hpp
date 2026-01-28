@@ -112,6 +112,9 @@ typedef schnek::Range<double, 3> Domain3d;
 typedef schnek::Array<bool, 3> Stagger3d;
 
 typedef schnek::RangeCIterationPolicy<DIMENSION> FieldIterator;
+typedef schnek::RangeCIterationPolicy<1> Field1dIterator;
+typedef schnek::RangeCIterationPolicy<2> Field2dIterator;
+typedef schnek::RangeCIterationPolicy<3> Field3dIterator;
 
 #ifndef HUERTO_DECOMPOSITION
 #define HUERTO_DECOMPOSITION

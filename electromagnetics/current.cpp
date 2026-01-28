@@ -6,7 +6,7 @@
  */
 
 #include "current.hpp"
-#include "../util/fieldsum.hpp"
+#include "../util/field_util.hpp"
 
 #include <memory>
 
@@ -25,52 +25,32 @@ void CurrentContainer::addMagCurrent(pCurrent current)
 void CurrentContainer::sumCurrents()
 {
   auto &decomposition = context->getDecomposition();
-  auto gridContext = decomposition.getGridContext({Jx, Jy, Jz});
-  gridContext.forEach([&](Range& /* range */, Field &Jx, Field &Jy, Field &Jz) {
-    Jx = 0;
-    Jy = 0;
-    Jz = 0;
-  });
+
+  setField<Field>(decomposition, {Jx}, 0.0);
+  setField<Field>(decomposition, {Jy}, 0.0);
+  setField<Field>(decomposition, {Jz}, 0.0);
 
   for (pCurrent current: this->currents)
   {
-    auto currentGridContext = decomposition.getGridContext({current->getJx(), current->getJy(), current->getJz(), Jx, Jy, Jz});
-
-    gridContext.forEach([&](Range& range, Field &jx, Field &jy, Field &jz, Field &Jx, Field &Jy, Field &Jz) {
-        FieldSum<Field, Grid> sumJx{Jx, jx};
-        FieldSum<Field, Grid> sumJy{Jy, jy};
-        FieldSum<Field, Grid> sumJz{Jz, jz};
-
-        FieldIterator::forEach(range, sumJx);
-        FieldIterator::forEach(range, sumJy);
-        FieldIterator::forEach(range, sumJz);
-    });
+    addToField<Field, Grid>(decomposition, Jx, current->getJx());
+    addToField<Field, Grid>(decomposition, Jy, current->getJy());
+    addToField<Field, Grid>(decomposition, Jz, current->getJz());
   }
 }
 
 void CurrentContainer::sumMagCurrents()
 {
   auto &decomposition = context->getDecomposition();
-  auto gridContext = decomposition.getGridContext({Mx, My, Mz});
-  gridContext.forEach([&](Range& /* range */, Field &Jx, Field &Jy, Field &Jz) {
-    Jx = 0;
-    Jy = 0;
-    Jz = 0;
-  });
+
+  setField<Field>(decomposition, {Mx}, 0.0);
+  setField<Field>(decomposition, {My}, 0.0);
+  setField<Field>(decomposition, {Mz}, 0.0);
 
   for (pCurrent current: this->magCurrents)
   {
-    auto currentGridContext = decomposition.getGridContext({current->getJx(), current->getJy(), current->getJz(), Mx, My, Mz});
-
-    gridContext.forEach([&](Range& range, Field &jx, Field &jy, Field &jz, Field &Jx, Field &Jy, Field &Jz) {
-        FieldSum<Field, Grid> sumJx{Jx, jx};
-        FieldSum<Field, Grid> sumJy{Jy, jy};
-        FieldSum<Field, Grid> sumJz{Jz, jz};
-
-        FieldIterator::forEach(range, sumJx);
-        FieldIterator::forEach(range, sumJy);
-        FieldIterator::forEach(range, sumJz);
-    });
+    addToField<Field, Grid>(decomposition, Mx, current->getJx());
+    addToField<Field, Grid>(decomposition, My, current->getJy());
+    addToField<Field, Grid>(decomposition, Mz, current->getJz());
   }
 }
 

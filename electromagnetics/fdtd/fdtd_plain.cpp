@@ -6,6 +6,7 @@
  */
 
 #include "../../constants.hpp"
+#include "../../util/field_util.hpp"
 
 #include <schnek/grid.hpp>
 #include <schnek/tools/literature.hpp>
@@ -226,43 +227,41 @@ void FDTD_Plain::init()
 {
   SimulationEntity::init(this);
 
-  schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
-  Index low  = subdivision.getLo();
-  Index high = subdivision.getHi();
+  auto &decomposition = getContext().getDecomposition();
 
 #ifdef HUERTO_ONE_DIM
-  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaEdx = 1.0;
-  KappaHdx = 1.0;
+  KappaEdx = decomposition.registerField(schnek::GridFactory<Grid1d>{});
+  KappaHdx = decomposition.registerField(schnek::GridFactory<Grid1d>{});
+  setField<Grid1d>(decomposition, KappaEdx, 1.0);
+  setField<Grid1d>(decomposition, KappaHdx, 1.0);
 #endif
 
 #ifdef HUERTO_TWO_DIM
-  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaEdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
-  KappaEdx = 1.0;
-  KappaEdy = 1.0;
+  KappaEdx = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {0});
+  KappaEdy = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {1});
+  setField1D<Grid1d>(decomposition, KappaEdx, 1.0, 0U);
+  setField1D<Grid1d>(decomposition, KappaEdy, 1.0, 1U);
 
-  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaHdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
-  KappaHdx = 1.0;
-  KappaHdy = 1.0;
+  KappaHdx = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {0});
+  KappaHdy = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {1});
+  setField1D<Grid1d>(decomposition, KappaHdx, 1.0, 0U);
+  setField1D<Grid1d>(decomposition, KappaHdy, 1.0, 1U);
 #endif
 
 #ifdef HUERTO_THREE_DIM
-  KappaEdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaEdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
-  KappaEdz.resize(schnek::Array<ptrdiff_t, 1>(low[2]), schnek::Array<ptrdiff_t, 1>(high[2]));
-  KappaEdx = 1.0;
-  KappaEdy = 1.0;
-  KappaEdz = 1.0;
+  KappaEdx = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {0});
+  KappaEdy = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {1});
+  KappaEdz = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {2});
+  setField1D<Grid1d>(decomposition, KappaEdx, 1.0, 0U);
+  setField1D<Grid1d>(decomposition, KappaEdy, 1.0, 1U);
+  setField1D<Grid1d>(decomposition, KappaEdz, 1.0, 2U);
 
-  KappaHdx.resize(schnek::Array<ptrdiff_t, 1>(low[0]), schnek::Array<ptrdiff_t, 1>(high[0]));
-  KappaHdy.resize(schnek::Array<ptrdiff_t, 1>(low[1]), schnek::Array<ptrdiff_t, 1>(high[1]));
-  KappaHdz.resize(schnek::Array<ptrdiff_t, 1>(low[2]), schnek::Array<ptrdiff_t, 1>(high[2]));
-  KappaHdx = 1.0;
-  KappaHdy = 1.0;
-  KappaHdz = 1.0;
+  KappaHdx = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {0});
+  KappaHdy = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {1});
+  KappaHdz = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {2});
+  setField1D<Grid1d>(decomposition, KappaHdx, 1.0, 0U);
+  setField1D<Grid1d>(decomposition, KappaHdy, 1.0, 1U);
+  setField1D<Grid1d>(decomposition, KappaHdz, 1.0, 2U);
 #endif
 
   retrieveData("Ex", Ex);
@@ -318,42 +317,90 @@ void FDTD_Plain::stepScheme(double dt) {
 void FDTD_Plain::stepE(double dt)
 {
   sumCurrents();
+  auto &decomposition = getContext().getDecomposition();
+
 #ifdef HUERTO_ONE_DIM
-  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &jx, Field &jy, Field &jz,
+    Grid1d &kappaEdx) {
+      FDTD_StepE stepEFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, jx, jy, jz, kappaEdx};
+      FieldIterator::forEach(range, stepEFunc);
+  });
 #endif
 #ifdef HUERTO_TWO_DIM
-  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &jx, Field &jy, Field &jz,
+    Grid1d &kappaEdx, Grid1d &kappaEdy) {
+      FDTD_StepE stepEFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, jx, jy, jz, kappaEdx, kappaEdy};
+      FieldIterator::forEach(range, stepEFunc);
+  });
 #endif
 #ifdef HUERTO_THREE_DIM
-  FDTD_StepE stepEFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy, KappaEdz};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Jx, Jy, Jz, KappaEdx, KappaEdy, KappaEdz});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &jx, Field &jy, Field &jz,
+    Grid1d &kappaEdx, Grid1d &kappaEdy, Grid1d &kappaEdz) {
+      FDTD_StepE stepEFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, jx, jy, jz, kappaEdx, kappaEdy, kappaEdz};
+      FieldIterator::forEach(range, stepEFunc);
+  });
 #endif
-  FieldIterator::forEach(Ex.getInnerRange(), stepEFunc);
 
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Ex);
-  sub.exchange(Ey);
-  sub.exchange(Ez);
+  decomposition.exchange({Ex, Ey, Ez});
 }
 
 void FDTD_Plain::stepB(double dt)
 {
   sumMagCurrents();
+  auto &decomposition = getContext().getDecomposition();
+
 #ifdef HUERTO_ONE_DIM
-  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &mx, Field &my, Field &mz,
+    Grid1d &kappaHdx) {
+      FDTD_StepB stepBFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, mx, my, mz, kappaHdx};
+      FieldIterator::forEach(range, stepBFunc);
+  });
 #endif
 #ifdef HUERTO_TWO_DIM
-  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &mx, Field &my, Field &mz,
+    Grid1d &kappaHdx, Grid1d &kappaHdy) {
+      FDTD_StepB stepBFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, mx, my, mz, kappaHdx, kappaHdy};
+      FieldIterator::forEach(range, stepBFunc);
+  });
 #endif
 #ifdef HUERTO_THREE_DIM
-  FDTD_StepB stepBFunc{getContext().getDx(), dt, Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy, KappaHdz};
+  auto gridContext = decomposition.getGridContext({Ex, Ey, Ez, Bx, By, Bz, Mx, My, Mz, KappaHdx, KappaHdy, KappaHdz});
+  gridContext.forEach([&](
+    Range range, 
+    Field &ex, Field &ey, Field &ez, 
+    Field &bx, Field &by, Field &bz,
+    Field &mx, Field &my, Field &mz,
+    Grid1d &kappaHdx, Grid1d &kappaHdy, Grid1d &kappaHdz) {
+      FDTD_StepB stepBFunc{getContext().getDx(), dt, ex, ey, ez, bx, by, bz, mx, my, mz, kappaHdx, kappaHdy, kappaHdz};
+      FieldIterator::forEach(range, stepBFunc);
+  });
 #endif
-  FieldIterator::forEach(Ex.getInnerRange(), stepBFunc);
 
-  schnek::DomainSubdivision<Field> &sub = getContext().getSubdivision();
-
-  sub.exchange(Bx);
-  sub.exchange(By);
-  sub.exchange(Bz);
+  decomposition.exchange({Bx, By, Bz});
 }
 

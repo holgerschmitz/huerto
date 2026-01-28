@@ -35,26 +35,26 @@ class FDTD_Plain : public FieldSolver,
      * The local grid of the electric field components,
      * \f$\mathbf{E}\f$
      */
-    Field Ex, Ey, Ez;
+    schnek::GridRegistration Ex, Ey, Ez;
 
     /**
      * The local grid of the magnetic field components,
      * \f$\mathbf{E}\f$
      */
-    Field Bx, By, Bz;
+    schnek::GridRegistration Bx, By, Bz;
 
 #ifdef HUERTO_ONE_DIM
     /**
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    Grid1d KappaEdx;
+    schnek::GridRegistration KappaEdx;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    Grid1d KappaHdx;
+    schnek::GridRegistration KappaHdx;
 #endif
 
 #ifdef HUERTO_TWO_DIM
@@ -62,13 +62,13 @@ class FDTD_Plain : public FieldSolver,
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    Grid1d KappaEdx, KappaEdy;
+    schnek::ProjectedGridRegistration<1, 2> KappaEdx, KappaEdy;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    Grid1d KappaHdx, KappaHdy;
+    schnek::ProjectedGridRegistration<1, 2> KappaHdx, KappaHdy;
 #endif
 
 #ifdef HUERTO_THREE_DIM
@@ -76,13 +76,13 @@ class FDTD_Plain : public FieldSolver,
      * Stretch factors for the grid cell size of the electric fields; used by CPML
      * schemes.
      */
-    Grid1d KappaEdx, KappaEdy, KappaEdz;
+    schnek::ProjectedGridRegistration<1, 3> KappaEdx, KappaEdy, KappaEdz;
 
     /**
      * Stretch factors for the grid cell size of the magnetic fields; used by CPML
      * schemes.
      */
-    Grid1d KappaHdx, KappaHdy, KappaHdz;
+    schnek::ProjectedGridRegistration<1, 3> KappaHdx, KappaHdy, KappaHdz;
 #endif
 
   public:
