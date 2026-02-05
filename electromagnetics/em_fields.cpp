@@ -25,7 +25,9 @@ void EMFields::initParameters(schnek::BlockParameters &parameters)
   }
 }
 
-void EMFields::registerData() {  
+void EMFields::registerData() {
+  SimulationEntity::init(this);
+  
   auto &decomposition = getContext().getDecomposition();
   E[0].field = decomposition.registerField(schnek::GridFactory<Field>{exStaggerYee, 2});
   E[1].field = decomposition.registerField(schnek::GridFactory<Field>{eyStaggerYee, 2});
@@ -68,7 +70,6 @@ void EMFields::preInit() {
 
 void EMFields::init() {
   schnek::ChildBlock<EMFields>::init();
-  SimulationEntity::init(this);
 
   fillValues();
 }
