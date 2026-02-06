@@ -7,6 +7,12 @@
 class CPMLBorder : public CurrentBlock
 {
   public:
+#ifdef HUERTO_ONE_DIM
+    typedef schnek::GridRegistration GridLineRegistration;
+#else
+    /// 1D grid containing the coefficients
+    typedef schnek::ProjectedGridRegistration<1, DIMENSION> GridLineRegistration;
+#endif
     void initCurrents(CurrentContainer &container);
   protected:
     void initParameters(schnek::BlockParameters &blockPars);
@@ -37,7 +43,7 @@ class CPMLBorderCurrent : public Current
     bool reverse;
     int thickness;
 
-    int dim;
+    size_t dim;
     int transverse1, transverse2;
 
     Direction dir;
@@ -52,8 +58,11 @@ class CPMLBorderCurrent : public Current
     double sigmaMax;
     double eps;
 
-    Grid1d bCoeff;
-    Grid1d cCoeff;
+    Range borderRange;
+
+    /// 1D grid containing the coefficients
+    CPMLBorder::GridLineRegistration bCoeff;
+    CPMLBorder::GridLineRegistration cCoeff;
 
     CurrentBlock &borderBlock;
 
@@ -77,8 +86,11 @@ class CPMLBorderECurrent : public CPMLBorderCurrent
     void stepScheme(double dt);
   protected:
 
-    Field B[3];
-    Grid Psi[2];
+    // The B-field components
+    schnek::GridRegistration B[3];
+    
+    // The components of the Psi grid
+    schnek::GridRegistration Psi[2];
     double dx;
 };
 
@@ -98,8 +110,10 @@ class CPMLBorderHCurrent : public CPMLBorderCurrent
     void stepSchemeInit(double dt);
     void stepScheme(double dt);
   protected:
-    Field E[3];
-    Grid Psi[2];
+    // The E-field components
+    schnek::GridRegistration E[3];
+    // The components of the Psi grid
+    schnek::GridRegistration Psi[2];
     double dx;
 };
 

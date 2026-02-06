@@ -19,37 +19,28 @@ bool getBorderExtent(Direction dir,
                      SimulationContext &context,
                      bool /* restricted */)
 {
-  bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
 
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
-  Range gdomain = subdivision.getGlobalDomain();
-  Index glow  = gdomain.getLo();
-  Index ghigh = gdomain.getHi();
-
-  Index low  = subdivision.getInnerLo();
-  Index high = subdivision.getInnerHi();
-
+  auto &decomposition = context.getDecomposition();
+  Range grange = decomposition.getGlobalRange();
+  Index glow  = grange.getLo();
+  Index ghigh = grange.getHi();
 
   switch (dir)
   {
     case west:
-      bhigh[0] = std::min(glow[0]+thickness-1+distanceLow, high[0]);
-      blow[0] = std::max(glow[0]+distanceLow, low[0]);
+      bhigh[0] = glow[0]+thickness-1+distanceLow;
+      blow[0] = glow[0]+distanceLow;
 
       break;
     case east:
-      blow[0] = std::max(ghigh[0]-thickness+2-distance, low[0]);
-      bhigh[0] = std::min(ghigh[0]-distance+1, high[0]);
+      blow[0] = ghigh[0]-thickness+2-distance;
+      bhigh[0] = ghigh[0]-distance+1;
 
       break;
   }
 
-  haveBorder = (blow[0] <= high[0]) && (bhigh[0] >= low[0]);
-
-  SCHNEK_TRACE_LOG(3, "Border " << haveBorder << " " << blow << " " << bhigh);
-
-  return haveBorder;
+  return true;
 }
 #endif
 
@@ -63,23 +54,19 @@ bool getBorderExtent(Direction dir,
                      SimulationContext &context,
                      bool restricted)
 {
-  bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
   int distanceHigh = distance - 0; //(isH?0:1);
 
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
-  Range gdomain = subdivision.getGlobalDomain();
-  Index glow  = gdomain.getLo();
-  Index ghigh = gdomain.getHi();
+  auto &decomposition = context.getDecomposition();
+  Range grange = decomposition.getGlobalRange();
+  Index glow  = grange.getLo();
+  Index ghigh = grange.getHi();
 
-  Index low  = subdivision.getInnerLo();
-  Index high = subdivision.getInnerHi();
+  blow[0] = glow[0];
+  blow[1] = glow[1];
 
-  blow[0] = low[0];
-  blow[1] = low[1];
-
-  bhigh[0] = high[0];
-  bhigh[1] = high[1];
+  bhigh[0] = ghigh[0];
+  bhigh[1] = ghigh[1];
 
   Index coords(0,1);
 
@@ -104,31 +91,24 @@ bool getBorderExtent(Direction dir,
   {
     case west:
     case south:
-      bhigh[normal] = std::min(glow[normal]+thickness-1+distanceLow, high[normal]);
-      blow[normal] = std::max(glow[normal]+distanceLow, low[normal]);
+      bhigh[normal] = glow[normal]+thickness-1+distanceLow;
+      blow[normal] = glow[normal]+distanceLow;
 
       break;
     case east:
     case north:
-      blow[normal] = std::max(ghigh[normal]-thickness+2-distance, low[normal]);
-      bhigh[normal] = std::min(ghigh[normal]-distance+1, high[normal]);
+      blow[normal] = ghigh[normal]-thickness+2-distance;
+      bhigh[normal] = ghigh[normal]-distance+1;
 
       break;
   }
 
-  haveBorder = (blow[normal] <= high[normal]) && (bhigh[normal] >= low[normal]);
-
-  if (haveBorder && restricted) {
-    bhigh[t1] = std::min(ghigh[t1]-distanceHigh, high[t1]);
-    blow[t1] = std::max(glow[t1]+distance, low[t1]);
-
-    haveBorder = haveBorder
-        && (blow[t1] <= high[t1]) && (bhigh[t1] >= low[t1]);
+  if (restricted) {
+    bhigh[t1] = ghigh[t1]-distanceHigh;
+    blow[t1] = glow[t1]+distance;
   }
 
-  SCHNEK_TRACE_LOG(3, "Border " << haveBorder << " " << blow << " " << bhigh);
-
-  return haveBorder;
+  return true;
 }
 #endif
 
@@ -142,25 +122,21 @@ bool getBorderExtent(Direction dir,
                      SimulationContext &context,
                      bool restricted)
 {
-  bool haveBorder = false;
   int distanceLow = distance - (isH?1:0);
   int distanceHigh = distance - 0; //(isH?0:1);
 
-  schnek::DomainSubdivision<Field> &subdivision = context.getSubdivision();
-  Range gdomain = subdivision.getGlobalDomain();
-  Index glow  = gdomain.getLo();
-  Index ghigh = gdomain.getHi();
+  auto &decomposition = context.getDecomposition();
+  Range grange = decomposition.getGlobalRange();
+  Index glow  = grange.getLo();
+  Index ghigh = grange.getHi();
 
-  Index low  = subdivision.getInnerLo();
-  Index high = subdivision.getInnerHi();
+  blow[0] = glow[0];
+  blow[1] = glow[1];
+  blow[2] = glow[2];
 
-  blow[0] = low[0];
-  blow[1] = low[1];
-  blow[2] = low[2];
-
-  bhigh[0] = high[0];
-  bhigh[1] = high[1];
-  bhigh[2] = high[2];
+  bhigh[0] = ghigh[0];
+  bhigh[1] = ghigh[1];
+  bhigh[2] = ghigh[2];
 
   Index coords(0,1,2);
 
@@ -191,36 +167,28 @@ bool getBorderExtent(Direction dir,
     case west:
     case south:
     case down:
-      bhigh[normal] = std::min(glow[normal]+thickness-1+distanceLow, high[normal]);
-      blow[normal] = std::max(glow[normal]+distanceLow, low[normal]);
+      bhigh[normal] = glow[normal]+thickness-1+distanceLow;
+      blow[normal] = glow[normal]+distanceLow;
 
       break;
     case east:
     case north:
     case up:
-      blow[normal] = std::max(ghigh[normal]-thickness+2-distance, low[normal]);
-      bhigh[normal] = std::min(ghigh[normal]-distance+1, high[normal]);
+      blow[normal] = ghigh[normal]-thickness+2-distance;
+      bhigh[normal] = ghigh[normal]-distance+1;
 
       break;
   }
 
-  haveBorder = (blow[normal] <= high[normal]) && (bhigh[normal] >= low[normal]);
+  if (restricted) {
+    bhigh[t1] = ghigh[t1]-distanceHigh;
+    blow[t1] = glow[t1]+distance;
 
-  if (haveBorder && restricted) {
-    bhigh[t1] = std::min(ghigh[t1]-distanceHigh, high[t1]);
-    blow[t1] = std::max(glow[t1]+distance, low[t1]);
-
-    bhigh[t2] = std::min(ghigh[t2]-distanceHigh, high[t2]);
-    blow[t2] = std::max(glow[t2]+distance, low[t2]);
-
-    haveBorder = haveBorder
-        && (blow[t1] <= high[t1]) && (bhigh[t1] >= low[t1])
-        && (blow[t2] <= high[t2]) && (bhigh[t2] >= low[t2]);
+    bhigh[t2] = ghigh[t2]-distanceHigh;
+    blow[t2] = glow[t2]+distance;
   }
 
-  SCHNEK_TRACE_LOG(3, "Border " << haveBorder << " " << blow << " " << bhigh);
-
-  return haveBorder;
+  return true;
 }
 #endif
 

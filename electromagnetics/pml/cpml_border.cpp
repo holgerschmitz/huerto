@@ -1,6 +1,7 @@
 #include "cpml_border.hpp"
 
 #include "../../constants.hpp"
+#include "../../util/field_util.hpp"
 #include "../fieldsolver.hpp"
 #include "../source/border.hpp"
 
@@ -89,21 +90,15 @@ void CPMLBorder::initCurrents(CurrentContainer &container)
 
 void CPMLBorder::initCoefficients()
 {
-  schnek::DomainSubdivision<Field> &subdivision = getContext().getSubdivision();
+  auto &decomposition = getContext().getDecomposition();
   // initialize Kappas here
 
-  Range gdomain = subdivision.getGlobalDomain();
+  Range gdomain = decomposition.getGlobalRange();
   Index glow  = gdomain.getLo();
   Index ghigh = gdomain.getHi();
 
-  Index low  = subdivision.getInnerLo();
-  Index high = subdivision.getInnerHi();
-
-  std::vector<Grid1d> KappaEdk(DIMENSION);
-  std::vector<Grid1d> KappaHdk(DIMENSION);
-
-  std::vector<Grid1d> CpmlSigmaE(DIMENSION);
-  std::vector<Grid1d> CpmlSigmaH(DIMENSION);
+  std::vector<CPMLBorder::GridLineRegistration> KappaEdk(DIMENSION);
+  std::vector<CPMLBorder::GridLineRegistration> KappaHdk(DIMENSION);
 
   retrieveData("KappaEdx", KappaEdk[0]);
 #ifndef HUERTO_ONE_DIM
@@ -123,124 +118,55 @@ void CPMLBorder::initCoefficients()
 
   for (size_t dim = 0; dim<DIMENSION; ++dim)
   {
-    std::cerr << "Dim " << dim << std::endl;
+    ptrdiff_t lo_loE = glow[dim] + 1;
+    ptrdiff_t lo_hiE = glow[dim] + thickness;
 
-    KappaEdk[dim] = 1.0;
-    KappaHdk[dim] = 1.0;
+    ptrdiff_t lo_loH = glow[dim];
+    ptrdiff_t lo_hiH = glow[dim] + thickness - 1;
 
+    ptrdiff_t hi_lo = glow[dim] - thickness + 1;
+    ptrdiff_t hi_hi = glow[dim];
 
-    Index blow, bhigh;
-    Direction dir;
-
-    switch (dim)
-    {
-      case 0: dir = west; break;
-#ifndef HUERTO_ONE_DIM
-      case 1: dir = south; break;
+#ifdef HUERTO_ONE_DIM
+    auto gridContext = decomposition.getGridContext({KappaEdk[dim], KappaHdk[dim]});
+#else
+    auto gridContext = decomposition.getProjectedGridContext({KappaEdk[dim], KappaHdk[dim]});
 #endif
-#ifdef HUERTO_THREE_DIM
-      case 2: dir = down; break;
-#endif
-    }
+    gridContext.forEach([&](Range1d range, Grid1d &kappaEdk, Grid1d &kappaHdk) {
+      Field1dIterator::forEach(range, [=, &kappaEdk, &kappaHdk](Index1d posIndex){
+        ptrdiff_t pos = posIndex[0];
 
-    if (getBorderExtent(dir, thickness, 1, blow, bhigh, false, getContext(), false)) {
-      int lowk  = blow[dim];
-      int highk = bhigh[dim];
-      int kLimit = highk-lowk + 1;
+        kappaEdk(pos) = 1.0;
+        kappaHdk(pos) = 1.0;
 
-      for (int k=0; k<kLimit; ++k) {
-        double x = 1 - double(k)/double(thickness);
-        double x3 = x*x*x;
+        double x, x3;
 
-        KappaEdk[dim](lowk+k) = 1 + (this->kappaMax - 1)*x3;
-      }
-    }
+        if (pos >= lo_loE && pos <= lo_hiE) {
+          ptrdiff_t k = pos - lo_loE;
+          x = 1 - double(k)/double(thickness);
+          x3 = x*x*x;
+          kappaEdk(pos) = 1 + (kappaMax - 1)*x3;
+        }  
 
-    if (getBorderExtent(dir, thickness, 1, blow, bhigh, true, getContext(), false)) {
-      int lowk  = blow[dim];
-      int highk = bhigh[dim];
-      int kLimit = highk-lowk + 1;
+        if (pos >= lo_loH && pos <= lo_hiH) {
+          ptrdiff_t k = pos - lo_loH;
+          x = 1 - (double(k) - 0.5)/double(thickness);
+          x3 = x*x*x;
+          kappaHdk(pos) = 1 + (kappaMax - 1)*x3;
+        }
 
-      for (int k=0; k<kLimit; ++k) {
-        double x = 1 - (double(k) - 0.5)/double(thickness);
-        double x3 = x*x*x;
-
-        KappaHdk[dim](lowk+k) = 1 + (this->kappaMax - 1)*x3;
-      }
-    }
-
-    switch (dim)
-    {
-      case 0: dir = east; break;
-#ifndef HUERTO_ONE_DIM
-      case 1: dir = north; break;
-#endif
-#ifdef HUERTO_THREE_DIM
-      case 2: dir = up; break;
-#endif
-    }
-
-    if (getBorderExtent(dir, thickness, 1, blow, bhigh, false, getContext(), false)) {
-      int lowk  = blow[dim];
-      int highk = bhigh[dim];
-      int kLimit = highk-lowk + 1;
-
-      for (int k=0; k<kLimit; ++k) {
-        double x = 1 - double(k)/double(thickness);
-        double x3 = x*x*x;
-
-        KappaEdk[dim](highk-k) = 1 + (this->kappaMax - 1)*x3;
-      }
-    }
-
-    if (getBorderExtent(dir, thickness, 1, blow, bhigh, true, getContext(), false)) {
-      int lowk  = blow[dim];
-      int highk = bhigh[dim];
-      int kLimit = highk-lowk + 1;
-
-      for (int k=0; k<kLimit; ++k) {
-        double x = 1 - (double(k) - 0.5)/double(thickness);
-        double x3 = x*x*x;
-
-        KappaHdk[dim](highk-k) = 1 + (this->kappaMax - 1)*x3;
-      }
-    }
-
-//
-//
-//    if (low[dim]<glow[dim]+thickness)
-//    {
-//
-//      for (int i=0; i<=thickness; ++i)
-//      {
-//        double x  = 1 - double(i)/double(thickness);
-//        double x3 = x*x*x;
-//        (*pKappaEdk[dim])(low[dim]+i) = 1 + (this->kappaMax - 1)*x3;
-//      }
-//      for (int i=0; i<thickness; ++i)
-//      {
-//        double x  = 1 - (double(i)+0.5)/double(thickness);
-//        double x3 = x*x*x;
-//        (*pKappaHdk[dim])(low[dim]+i) = 1 + (this->kappaMax - 1)*x3;
-//      }
-//    }
-//
-//    if (high[dim]>ghigh[dim]-thickness)
-//    {
-//      for (int i=0; i<=thickness; ++i)
-//      {
-//        double x  = 1 - double(i)/double(thickness);
-//        double x3 = x*x*x;
-//        (*pKappaHdk[dim])(high[dim]-i) = 1 + (this->kappaMax - 1)*x3;
-//      }
-//      for (int i=0; i<thickness; ++i)
-//
-//      {
-//        double x  = 1 - (double(i)+0.5)/double(thickness);
-//        double x3 = x*x*x;
-//        (*pKappaEdk[dim])(high[dim]-i) = 1 + (this->kappaMax - 1)*x3;
-//      }
-//    }
+        if (pos >= hi_lo && pos <= hi_hi) {
+          ptrdiff_t k = hi_hi - pos;
+          x = 1 - double(k)/double(thickness);
+          x3 = x*x*x;
+          kappaEdk(pos) = 1 + (kappaMax - 1)*x3;
+          
+          double x = 1 - (double(k) - 0.5)/double(thickness);
+          double x3 = x*x*x;
+          kappaHdk(pos) = 1 + (kappaMax - 1)*x3;
+        }
+      });
+    });
   }
 }
 
@@ -284,8 +210,8 @@ CPMLBorderCurrent::CPMLBorderCurrent(int thickness, Direction dir, bool isH,
 
 void CPMLBorderCurrent::makeCoeff()
 {
-  Index low  = Jx.getLo();
-  Index high = Jx.getHi();
+  int lowk  = borderRange.getLo(dim);
+  int highk = borderRange.getHi(dim);
 
   switch (dir)
   {
@@ -309,12 +235,14 @@ void CPMLBorderCurrent::makeCoeff()
       break;
   }
 
-
-  int lowk  = low[dim];
-  int highk = high[dim];
-
-  bCoeff.resize(lowk, highk);
-  cCoeff.resize(lowk, highk);
+  auto &decomposition = borderBlock.getContext().getDecomposition();
+#ifdef HUERTO_ONE_DIM
+  bCoeff = decomposition.registerField(schnek::GridFactory<Grid1d>{});
+  cCoeff = decomposition.registerField(schnek::GridFactory<Grid1d>{});
+#else
+  bCoeff = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {dim});
+  cCoeff = decomposition.registerFieldProjection(schnek::GridFactory<Grid1d>{}, {dim});
+#endif
 
   double offset = 0.0;
   lowOffset = 1;
@@ -325,26 +253,35 @@ void CPMLBorderCurrent::makeCoeff()
     lowOffset = 0;
   }
 
+#ifdef HUERTO_ONE_DIM
+  auto gridContext = decomposition.getGridContext({bCoeff, cCoeff});
+#else
+  auto gridContext = decomposition.getProjectedGridContext({bCoeff, cCoeff});
+#endif
+  gridContext.forEach([=](Range1d range, Grid1d &b_coeff, Grid1d &c_coeff) {
+    Field1dIterator::forEach(range, [=, &b_coeff, &c_coeff](Index1d posIndex){
+      ptrdiff_t pos = posIndex[0];
+      double b, c;
+      if (pos >= lowk && pos <= highk) {
+        int k = reverse ? pos - lowk : highk - pos;
+        double x = 1 - (double(k)-offset)/double(thickness);
+        double x3 = x*x*x;
 
-  int kLimit = highk-lowk + 1;
+        double sigma = x3*sigmaMax;
+        double kappa = 1 + (kappaMax - 1)*x3;
+        double a = aMax*(1-x);
 
-  for (int k=0; k<kLimit; ++k) {
-    double x = 1 - (double(k)-offset)/double(thickness);
-    double x3 = x*x*x;
+        b = exp(-(sigma/kappa + a));
+        c = sigma*(b-1)/(kappa*(sigma+kappa*a));
+      } else {
+        b = 0.0;
+        c = 0.0;
+      }
 
-    int pos = reverse ? (lowk+k) : (highk-k);
-
-    double sigma = x3*sigmaMax;
-    double kappa = 1 + (kappaMax - 1)*x3;
-    double a = aMax*(1-x);
-
-    double b = exp(-(sigma/kappa + a));
-    double c = sigma*(b-1)/(kappa*(sigma+kappa*a));
-
-    bCoeff(pos) = b;
-    cCoeff(pos) = c;
-  }
-
+      b_coeff(pos) = b;
+      c_coeff(pos) = c;
+    });
+  });
 }
 
 //===============================================================
@@ -366,16 +303,17 @@ CPMLBorderECurrent::CPMLBorderECurrent(int thickness,
 void CPMLBorderECurrent::init()
 {
   Index blow, bhigh;
+  getBorderExtent(dir, thickness, 1, blow, bhigh, false, borderBlock.getContext(), false);
 
-  if (!getBorderExtent(dir, thickness, 1, blow, bhigh, false, borderBlock.getContext(), false)) return;
+  auto &decomposition = borderBlock.getContext().getDecomposition();
+  borderRange = Range{blow, bhigh};
+  Jx = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
+  Jy = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
+  Jz = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
 
-  Jx.resize(blow, bhigh);
-  Jy.resize(blow, bhigh);
-  Jz.resize(blow, bhigh);
-
-  Jx = 0.0;
-  Jy = 0.0;
-  Jz = 0.0;
+  setField<Grid>(decomposition, Jx, 0.0);
+  setField<Grid>(decomposition, Jy, 0.0);
+  setField<Grid>(decomposition, Jz, 0.0);
 
   switch (dir)
   {
@@ -423,41 +361,21 @@ void CPMLBorderECurrent::stepSchemeInit(double /* dt */)
 
 void CPMLBorderECurrent::stepScheme(double /* dt */)
 {
-  Index low  = Psi[0].getLo();
-  Index high = Psi[0].getHi();
-
-  Grid &Psi0 = Psi[0];
-  Grid &Psi1 = Psi[1];
-  Field &B0 = B[0];
-  Field &B1 = B[1];
-
-  Index ind, indn;
-
-  for (ind[0]=low[0]; ind[0]<=high[0]; ++ind[0]) {
-#ifndef HUERTO_ONE_DIM
-    for (ind[1]=low[1]; ind[1]<=high[1]; ++ind[1]) {
-#endif
-#ifdef HUERTO_THREE_DIM
-      for (ind[2]=low[2]; ind[2]<=high[2]; ++ind[2]) {
-#endif
-
+  auto gridContext = borderBlock.getContext().getDecomposition().getGridContext({Psi[0], Psi[1], B[0], B[1], bCoeff, cCoeff});
+  gridContext.forEach([&](Range range, Grid &psi0, Grid &psi1, Field &B0, Field &B1, Grid1d &b_coeff, Grid1d &c_coeff) {
+    FieldIterator::forEach(range, [=, &psi0, &psi1](Index ind) {
         int j = ind[dim];
-        Index indm(ind);
+        Index indm{ind};
         --indm[dim];
 
-        Psi0[ind]
-          = bCoeff(j)*Psi0[ind]
-            + cCoeff(j)*(B1[ind]-B1[indm])/(mu_0*dx);
-        Psi1[ind]
-          = bCoeff(j)*Psi1[ind]
-            - cCoeff(j)*(B0[ind]-B0[indm])/(mu_0*dx);
-#ifdef HUERTO_THREE_DIM
-      }
-#endif
-#ifndef HUERTO_ONE_DIM
-    }
-#endif
-  }
+        psi0[ind]
+          = b_coeff(j)*psi0[ind]
+            + c_coeff(j)*(B1[ind]-B1[indm])/(mu_0*dx);
+        psi1[ind]
+          = b_coeff(j)*psi1[ind]
+            - c_coeff(j)*(B0[ind]-B0[indm])/(mu_0*dx);
+    });
+  });
 }
 
 
@@ -479,16 +397,17 @@ CPMLBorderHCurrent::CPMLBorderHCurrent(int thickness,
 void CPMLBorderHCurrent::init()
 {
   Index blow, bhigh;
+  getBorderExtent(dir, thickness, 1, blow, bhigh, true, borderBlock.getContext(), false);
 
-  if (!getBorderExtent(dir, thickness, 1, blow, bhigh, true, borderBlock.getContext(), false)) return;
-
-  Jx.resize(blow, bhigh);
-  Jy.resize(blow, bhigh);
-  Jz.resize(blow, bhigh);
-
-  Jx = 0.0;
-  Jy = 0.0;
-  Jz = 0.0;
+  auto &decomposition = borderBlock.getContext().getDecomposition();
+  borderRange = Range{blow, bhigh};
+  Jx = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
+  Jy = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
+  Jz = decomposition.registerField(schnek::GridFactory<Grid>{}, borderRange);
+  
+  setField<Grid>(decomposition, Jx, 0.0);
+  setField<Grid>(decomposition, Jy, 0.0);
+  setField<Grid>(decomposition, Jz, 0.0);
 
   switch (dir)
   {
@@ -539,41 +458,20 @@ void CPMLBorderHCurrent::stepSchemeInit(double dt)
 
 void CPMLBorderHCurrent::stepScheme(double /* dt */)
 {
-  Index low  = Psi[0].getLo();
-  Index high = Psi[0].getHi();
-
-  Grid &Psi0 = Psi[0];
-  Grid &Psi1 = Psi[1];
-  Field &E0 = E[0];
-  Field &E1 = E[1];
-
-  Index ind, indn;
-
-  for (ind[0]=low[0]; ind[0]<=high[0]; ++ind[0]) {
-#ifndef HUERTO_ONE_DIM
-    for (ind[1]=low[1]; ind[1]<=high[1]; ++ind[1]) {
-#endif
-#ifdef HUERTO_THREE_DIM
-      for (ind[2]=low[2]; ind[2]<=high[2]; ++ind[2]) {
-#endif
+  auto gridContext = borderBlock.getContext().getDecomposition().getGridContext({Psi[0], Psi[1], E[0], E[1], bCoeff, cCoeff});
+  gridContext.forEach([&](Range range, Grid &psi0, Grid &psi1, Field &E0, Field &E1, Grid1d &b_coeff, Grid1d &c_coeff) {
+    FieldIterator::forEach(range, [=, &psi0, &psi1](Index ind) {
         int j = ind[dim];
         Index indp(ind);
         ++indp[dim];
 
-        Psi0[ind]
-          = bCoeff(j)*Psi0[ind]
-            + cCoeff(j)*(E1[indp]-E1[ind])/dx;
+        psi0[ind]
+          = b_coeff(j)*psi0[ind]
+            + c_coeff(j)*(E1[indp]-E1[ind])/dx;
 
-        Psi1[ind]
-          = bCoeff(j)*Psi1[ind]
-            - cCoeff(j)*(E0[indp]-E0[ind])/dx;
-#ifdef HUERTO_THREE_DIM
-      }
-#endif
-#ifndef HUERTO_ONE_DIM
-    }
-#endif
-  }
+        psi1[ind]
+          = b_coeff(j)*psi1[ind]
+            - c_coeff(j)*(E0[indp]-E0[ind])/dx;
+    });
+  });
 }
-
-
