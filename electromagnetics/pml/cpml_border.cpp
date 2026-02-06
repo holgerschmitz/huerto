@@ -124,8 +124,8 @@ void CPMLBorder::initCoefficients()
     ptrdiff_t lo_loH = glow[dim];
     ptrdiff_t lo_hiH = glow[dim] + thickness - 1;
 
-    ptrdiff_t hi_lo = glow[dim] - thickness + 1;
-    ptrdiff_t hi_hi = glow[dim];
+    ptrdiff_t hi_lo = ghigh[dim] - thickness + 1;
+    ptrdiff_t hi_hi = ghigh[dim];
 
 #ifdef HUERTO_ONE_DIM
     auto gridContext = decomposition.getGridContext({KappaEdk[dim], KappaHdk[dim]});
